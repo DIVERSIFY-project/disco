@@ -37,6 +37,7 @@ import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Test;
@@ -44,6 +45,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.cloudml.codecs.JsonCodec;
 import org.cloudml.core.ArtefactInstance;
+import org.cloudml.core.Binding;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.NodeInstance;
 import org.cloudml.core.Property;
@@ -91,8 +93,31 @@ public class ForwardTransformTest
         CloudML model = new CloudML();
         
         initWithSenseApp(model);
-        
+        Transformation transformation = new Transformation();  
         assertEquals(2, model.getRoot().getNodeTypes().size());
+        
+        Population population = transformation.forward(model);
+        
+        assertEquals(6, population.getSpecies().size());
+    }
+    
+    public void testProvision(){
+        CloudML model = new CloudML();
+        
+        initWithSenseApp(model);
+        
+        Transformation transformation = new Transformation();
+        
+       
+        
+        ArtefactInstance ai = transformation.provision(model.root.getArtefactTypes().get("SensAppGUIWar"), "noname");
+        Collection<Binding> bd = transformation.fixBinding(model.getRoot(), ai);
+        
+        assertTrue(bd.isEmpty());
+        
+        //should be a new binding instance created
+        assertEquals(6, model.getRoot().getBindingInstances().size());
+        
     }
     
     public void initWithSenseApp(CloudML model){
