@@ -18,9 +18,18 @@ package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.cloudml.codecs.JsonCodec;
+import org.cloudml.core.ArtefactInstance;
+import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.NodeInstance;
+import org.cloudml.core.Property;
 
 /**
  * Unit test for simple App.
@@ -57,8 +66,35 @@ public class ForwardTransformTest
         
         Population population = transformation.forward(model);
         
-        assertEquals(3, population.getSpecies().size());
-        
+        assertEquals(3, population.getSpecies().size());        
         assertEquals(5,population.getSpecie("huge").getIndividualCount());
+    }
+    
+    public void testLoadSenseApp(){
+        CloudML model = new CloudML();
+        
+        initWithSenseApp(model);
+        
+        assertEquals(2, model.getRoot().getNodeTypes().size());
+    }
+    
+    public void initWithSenseApp(CloudML model){
+        
+        JsonCodec jsonCodec = new JsonCodec();
+        DeploymentModel root = null;
+        try {
+            root = (DeploymentModel) jsonCodec.load(new FileInputStream("sensappAdmin.json"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ForwardTransformTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(NodeInstance ni : root.getNodeInstances()){
+            ni.getProperties().add(new Property("state","onn"));
+        }
+        for(ArtefactInstance ai : root.getArtefactInstances()){
+            ai.getProperties().add(new Property("state","onn"));
+        }
+        
+        model.setRoot(root);
     }
 }

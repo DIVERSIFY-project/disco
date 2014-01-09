@@ -33,6 +33,10 @@ public class CloudML {
         return root;
     }
     
+    public void setRoot(DeploymentModel root){
+        this.root = root;
+    }
+    
     public void init(){
         root = new DeploymentModel();
     }
