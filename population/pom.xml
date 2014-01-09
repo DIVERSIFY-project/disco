@@ -7,7 +7,7 @@
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>population</name>
+  <name>Disco :: Population</name>
   <url>http://maven.apache.org</url>
 
   <properties>

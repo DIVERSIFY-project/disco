@@ -10,7 +10,7 @@
   <groupId>eu.diversify.disco</groupId>
   <artifactId>controller</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>controller</name>
+  <name>Disco :: Controller</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,6 +21,12 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>eu.diversify.disco</groupId>
+        <artifactId>population</artifactId>
+        <version>0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

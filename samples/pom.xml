@@ -10,5 +10,8 @@
   <artifactId>samples</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>samples</name>
+  <name>Disco :: Samples </name>
+  
+  
+  <modules><module>cloudml</module></modules>
 </project>

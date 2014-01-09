@@ -10,5 +10,5 @@
   <artifactId>experiments</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>experiments</name>
+  <name>Disco :: Experiments</name>
 </project>
