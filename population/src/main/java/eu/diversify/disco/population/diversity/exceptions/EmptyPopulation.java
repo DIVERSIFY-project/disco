@@ -16,32 +16,29 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package eu.diversify.disco.population.diversity.exceptions;
 
 
-package eu.diversify.disco.population.exceptions;
-
-import eu.diversify.disco.population.Specie;
+import eu.diversify.disco.population.Population;
 
 /**
- * Raised when a specie has a negative individual count
- *
+ * Exception raised when the diversity is evaluated on an empty population.
+ * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public class NegativeIndividualCount extends RuntimeException {
+public class EmptyPopulation extends RuntimeException {
 
-    private final Specie specie;
-    private final int count;
+    private final Population population;
+    
     /**
-     * Create a new NegativeIndividualCount exception pointing to the faulty
-     * specie.
-     *
-     * @param specie the faulty specie
-     * @param count the negative individual count
+     * Create a new EmptyPopulation exception.
+     * 
+     * @param population the faulty population
      */
-    public NegativeIndividualCount(Specie specie, int count) {
-        this.specie = specie;
-        this.count = count;
+    public EmptyPopulation(Population population) {
+        this.population = population;
     }
-
+    
+    
 }

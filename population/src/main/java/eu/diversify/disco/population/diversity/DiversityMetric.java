@@ -15,36 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
-package eu.diversify.disco.population.exceptions;
+package eu.diversify.disco.population.diversity;
 
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.diversity.exceptions.EmptyPopulation;
 
 /**
- * Exception raised if one tries to create to specie with the same unique ID.
- * 
+ * General interface of diversity metrics, modelled as a function from
+ * population to Real values.
+ *
  * @author Franck Chauvel
  * @since 0.1
  */
-public class DuplicateSpecieId extends RuntimeException {
-    
-    private Population population;
-    private String duplicateName;
+public interface DiversityMetric {
 
-    
     /**
-     * Create a new DuplicateSpecieId exception with the population at sake and 
-     * ID which is already used.
+     * Measure the diversity level of a given population. A diversity of 1 means
+     * that all species share the same number of individuals whereas a diversity
+     * of 0 mean that all individuals are in a single species.
+     *
+     * @param population the population whose diversity level is needed
      * 
-     * @param population the erroneous population 
-     * @param duplicateName the specie name already used the given population
+     * @return a real value on the unit interval representing the diversity
+     * level.
      */
-    public DuplicateSpecieId(Population population, String duplicateName) {
-        this.population = population;
-        this.duplicateName = duplicateName;
-    }
-        
-    
+    public double applyTo(Population population) throws EmptyPopulation ;
 }

@@ -15,33 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+package eu.diversify.disco.population.diversity;
 
-
-
-package eu.diversify.disco.population.exceptions;
-
-import eu.diversify.disco.population.Specie;
+import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.diversity.exceptions.EmptyPopulation;
+import junit.framework.TestCase;
+import org.junit.Rule;
+import org.junit.Test; 
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
- * Raised when a specie has a negative individual count
- *
+ * Test the quadratic mean used as a diversity metric.
+ * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public class NegativeIndividualCount extends RuntimeException {
+@RunWith(JUnit4.class)
+public class QuadraticMeanTest extends DiversityMetricTest {
 
-    private final Specie specie;
-    private final int count;
-    /**
-     * Create a new NegativeIndividualCount exception pointing to the faulty
-     * specie.
-     *
-     * @param specie the faulty specie
-     * @param count the negative individual count
-     */
-    public NegativeIndividualCount(Specie specie, int count) {
-        this.specie = specie;
-        this.count = count;
+    @Override
+    public DiversityMetric newMetricUnderTest() {
+        return new QuadraticMean();
     }
-
+      
+    
 }
