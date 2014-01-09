@@ -14,41 +14,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.population;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+package eu.diversify.disco.population.exceptions;
+
+import eu.diversify.disco.population.Specie;
 
 /**
- * Unit test for simple App.
+ * Raised when a specie has a negative individual count
+ *
+ * @author Franck Chauvel
+ * @since 0.1
  */
-public class AppTest 
-    extends TestCase
-{
+public class NegativeIndividualCount extends RuntimeException {
+
+    private final Specie specie;
+    private final int count;
     /**
-     * Create the test case
+     * Create a new NegativeIndividualCount exception pointing to the faulty
+     * specie.
      *
-     * @param testName name of the test case
+     * @param specie the faulty specie
+     * @param count the negative individual count
      */
-    public AppTest( String testName )
-    {
-        super( testName );
+    public NegativeIndividualCount(Specie specie, int count) {
+        this.specie = specie;
+        this.count = count;
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
 }
