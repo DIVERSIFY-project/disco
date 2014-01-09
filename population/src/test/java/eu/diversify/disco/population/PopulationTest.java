@@ -15,13 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
 import eu.diversify.disco.population.exceptions.NegativeIndividualCount;
 import eu.diversify.disco.population.exceptions.UnknownSpecie;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -154,4 +171,55 @@ public class PopulationTest extends TestCase {
                 90,
                 p.getIndividualCount());
     }
+
+    /**
+     * Test the equality of two populations
+     */
+    @Test
+    public void testPopulationEquality() {
+        Population p1 = new Population();
+        p1.addSpecie("lion", 23);
+        p1.addSpecie("tiger", 12);
+        p1.addSpecie("horse", 17);
+
+        Population p2 = new Population();
+        p2.addSpecie("lion", 23);
+        p2.addSpecie("tiger", 12);
+        p2.addSpecie("horse", 17);
+
+        assertTrue(
+                "Two equal populations shall be equal",
+                p1.equals(p2));
+
+        assertTrue(
+                "Two equal populations shall be equal",
+                p2.equals(p1));
+
+        assertTrue(
+                "Two equal populations shall be equal",
+                p1.equals(p1));
+
+
+        // Check the detection of a missing specie
+        Population p3 = new Population();
+        p3.addSpecie("lion", 23);
+        p3.addSpecie("horse", 17);
+
+        assertFalse(
+                "A missing specie shall make two populations different",
+                p1.equals(p3));
+
+        // Check the detection of different individual count
+        Population p4 = new Population();
+        p4.addSpecie("lion", 25); // Update: +1!
+        p4.addSpecie("tiger", 12);
+        p4.addSpecie("horse", 17);
+
+        assertFalse(
+                "Different individual count shall make two populations different",
+                p1.equals(p4));
+
+    }
+    
+    
 }

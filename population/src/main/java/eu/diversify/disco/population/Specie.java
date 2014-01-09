@@ -89,4 +89,20 @@ public class Specie {
         }
         this.individualCount = count;
     }
+    
+    
+    /**
+     * Check whether this specie is equivalent to the given one
+     * @param that the given specie to be compared with this one.
+     * @return true if the two specie are equivalent.
+     */
+    public boolean equals(Object that) {
+        boolean result = (that instanceof Specie);
+        if (result) {
+            Specie specie = (Specie) that;
+            result = specie.individualCount == this.individualCount 
+                    && specie.name.equals(name);
+        }
+        return result;
+    }
 }
