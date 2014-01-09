@@ -1,4 +1,5 @@
 /**
+ *
  * This file is part of Disco.
  *
  * Disco is free software: you can redistribute it and/or modify
@@ -14,6 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.exceptions.NegativeIndividualCount;

@@ -1,4 +1,5 @@
 /**
+ *
  * This file is part of Disco.
  *
  * Disco is free software: you can redistribute it and/or modify
@@ -14,38 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
@@ -74,6 +44,16 @@ public class Population {
      */
     public Population() {
         this.species = new HashMap<String, Specie>();
+    }
+
+    /**
+     * Check whether the population is empty, i.e., whether all species have a
+     * individual count of 0.
+     * 
+     * @return true if the population is empty, false otherwise
+     */
+    public boolean isEmpty() {
+        return this.getIndividualCount() <= 0;
     }
 
     /**
@@ -159,4 +139,6 @@ public class Population {
     public Specie deleteSpecie(String specieName) {
         return this.species.remove(specieName);
     }
+    
+    
 }

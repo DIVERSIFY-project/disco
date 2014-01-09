@@ -1,4 +1,5 @@
 /**
+ *
  * This file is part of Disco.
  *
  * Disco is free software: you can redistribute it and/or modify
@@ -14,10 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.cloudml.CloudML;
@@ -29,7 +27,8 @@ import org.cloudml.core.NodeInstance;
 
 /**
  *
- * @author franckc
+ * @author Hui Song
+ * @since 0.1
  */
 public class Transformation {
 
