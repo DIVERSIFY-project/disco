@@ -20,10 +20,22 @@
  */
 package eu.diversify.disco.cloudml;
 
+import org.cloudml.core.DeploymentModel;
+
 /**
  *
  * @author franckc
  */
 public class CloudML {
+    DeploymentModel root = null;
+    
+    public DeploymentModel getRoot(){
+        return root;
+    }
+    
+    public void init(){
+        root = new DeploymentModel();
+    }
+    
     
 }

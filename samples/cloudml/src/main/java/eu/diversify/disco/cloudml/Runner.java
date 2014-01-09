@@ -16,11 +16,14 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.transformations.Forward;
-import eu.diversify.disco.cloudml.transformations.Backward;
-
+import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.controller.Controller;
+import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Node;
+import org.cloudml.core.NodeInstance;
+import org.cloudml.core.Property;
+import org.cloudml.core.Provider;
        
         
 
@@ -33,13 +36,46 @@ public class Runner
     public static void main( String[] args )
     {
         CloudML model = null;
-        Forward forward = new Forward();
-        Population population = forward.apply(model);
+        Transformation transformation = new Transformation();
+        Population population = transformation.forward(model);
         
         Controller controller = new Controller();
         Population toBe = controller.apply(population);
         
-        Backward backward = new Backward();
-        backward.apply(model, toBe);
+        transformation.backward(model, toBe);
+    }
+    
+    public static void initFakeModel(CloudML model){
+        model.init();
+        DeploymentModel dm = model.getRoot();
+        
+        Provider hugeProvider = new Provider("huge", "./credentials");
+        Provider bigsmallProvider = new Provider("bigsmall","./credentials");
+        dm.getProviders().add(hugeProvider);
+        dm.getProviders().add(bigsmallProvider);
+        
+        Node huge = new Node("huge");
+        huge.setProvider(hugeProvider);
+        Node big = new Node("big");
+        big.setProvider(bigsmallProvider);
+        Node small = new Node("small");
+        small.setProvider(bigsmallProvider);
+        
+        dm.getNodeTypes().put("huge", huge);
+        dm.getNodeTypes().put("big", big);
+        dm.getNodeTypes().put("small", small);
+        
+        for(int i = 0; i < 5; i++)
+            dm.getNodeInstances().add(huge.instanciates("huge"+i));
+        
+        for(int i = 0; i < 10; i++)
+            dm.getNodeInstances().add(big.instanciates("big"+i));
+        
+        for(int i = 0; i< 10; i++)
+            dm.getNodeInstances().add(small.instanciates("small"+i));
+        
+        for(NodeInstance ni : dm.getNodeInstances()){
+            ni.getProperties().add(new Property("state","on"));
+        }
     }
 }

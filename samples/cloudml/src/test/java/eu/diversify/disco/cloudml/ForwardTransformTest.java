@@ -16,6 +16,8 @@
  */
 package eu.diversify.disco.cloudml;
 
+import eu.diversify.disco.cloudml.transformations.Transformation;
+import eu.diversify.disco.population.Population;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,7 +25,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
+public class ForwardTransformTest 
     extends TestCase
 {
     /**
@@ -31,7 +33,7 @@ public class AppTest
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public ForwardTransformTest( String testName )
     {
         super( testName );
     }
@@ -41,14 +43,22 @@ public class AppTest
      */
     public static Test suite()
     {
-        return new TestSuite( AppTest.class );
+        return new TestSuite( ForwardTransformTest.class );
     }
 
     /**
      * Rigourous Test :-)
      */
-    public void testApp()
+    public void testForwardTrans()
     {
-        assertTrue( true );
+        CloudML model = new CloudML();
+        Runner.initFakeModel(model);
+        Transformation transformation = new Transformation();
+        
+        Population population = transformation.forward(model);
+        
+        assertEquals(3, population.getSpecies().size());
+        
+        assertEquals(5,population.getSpecie("huge").getIndividualCount());
     }
 }
