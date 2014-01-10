@@ -15,24 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.diversify.disco.population.diversity;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
- * Test the quadratic mean used as a diversity metric.
+ * Test the Gini-Simpson index metric
  * 
  * @author Franck Chauvel
  * @since 0.1
  */
-@RunWith(JUnit4.class)
-public class QuadraticMeanTest extends DiversityMetricTest {
+public class GiniSimpsonIndexTest extends DiversityMetricTest {
 
     @Override
     public DiversityMetric newMetricUnderTest() {
-        return new QuadraticMean();
+        return new GiniSimpsonIndex();
     }
-      
     
 }

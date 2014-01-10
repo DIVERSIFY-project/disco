@@ -55,7 +55,7 @@ public abstract class DiversityMetricTest {
         population.addSpecie("Elephant", 10);
         
         DiversityMetric metric = newMetricUnderTest();
-        final double diversity = metric.applyTo(population);
+        final double diversity = metric.normalised(population);
         assertEquals(
                 "Wrong diversity metric",
                 1.,
@@ -77,7 +77,7 @@ public abstract class DiversityMetricTest {
         population.addSpecie("Elephant", 0);
         
         DiversityMetric metric = newMetricUnderTest();
-        final double diversity = metric.applyTo(population);
+        final double diversity = metric.normalised(population);
         assertEquals(
                 "Wrong diversity metric",
                 0.,
@@ -91,12 +91,12 @@ public abstract class DiversityMetricTest {
     @Test
     public void testMediumDiversity() {
         Population population = new Population();
-        population.addSpecie("Lion", 30);
-        population.addSpecie("Tiger", 0);
-        population.addSpecie("Elephant", 0);
+        population.addSpecie("Lion", 10);
+        population.addSpecie("Tiger", 13);
+        population.addSpecie("Elephant", 6);
         
         DiversityMetric metric = newMetricUnderTest();
-        final double diversity = metric.applyTo(population);
+        final double diversity = metric.normalised(population);
         assertTrue(
                 "Wrong diversity metric",
                 diversity < 1. && diversity > 0.);
@@ -110,6 +110,6 @@ public abstract class DiversityMetricTest {
         Population population = new Population();
         
         DiversityMetric metric = newMetricUnderTest();
-        metric.applyTo(population);
+        metric.absolute(population);
     }
 }

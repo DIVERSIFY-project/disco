@@ -92,7 +92,7 @@ public abstract class Controller {
      * @return
      */
     public Evaluation evaluate(int iteration, Population population, double reference) {
-        final double diversity = this.metric.applyTo(population);
+        final double diversity = this.metric.normalised(population);
         final double error = Math.pow(reference - diversity, 2);
         return new Evaluation(iteration, population, reference, diversity, error);
     }
