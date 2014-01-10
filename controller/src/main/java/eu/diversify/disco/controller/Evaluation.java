@@ -26,7 +26,7 @@ import eu.diversify.disco.population.Population;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Result {
+public class Evaluation {
 
     private final int iteration;
     private final Population population;
@@ -42,7 +42,7 @@ public class Result {
      * @param reference the reference value
      * @param diversity the diversity of the resulting population
      */
-    public Result(int iteration, Population population, double reference, double diversity, double error) {
+    public Evaluation(int iteration, Population population, double reference, double diversity, double error) {
         this.iteration = iteration;
         this.population = population;
         this.reference = reference;

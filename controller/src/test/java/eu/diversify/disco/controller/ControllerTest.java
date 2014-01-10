@@ -66,7 +66,7 @@ public abstract class ControllerTest extends TestCase {
         population.addSpecie("Pig", 10);
 
         final double reference = 0.;
-        Result result = controller.adjust(population, reference);
+        Evaluation result = controller.applyTo(population, reference);
         assertEquals(
                 "Illegal update of the population size",
                 population.getIndividualCount(),

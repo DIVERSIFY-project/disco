@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
  * @since 0.1
  */
 @RunWith(JUnit4.class)
-public class ResultTest extends TestCase {
+public class EvaluationTest extends TestCase {
     
     
     /**
@@ -44,10 +44,10 @@ public class ResultTest extends TestCase {
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
         
-        final Result result = new Result(30, p, 0.5, 0.45, 0.025);
+        final Evaluation result = new Evaluation(30, p, 0.5, 0.45, 0.025);
         final String text = result.toString();
         assertEquals(
-                "Wrong formatting of results",
+                "Wrong formatting of evaluation",
                 " - Iteration count: 30\n - Population: {Lion: 5, Sludge: 4}\n - Reference: 0.5\n - Diversity: 0.45\n - Error: 0.025\n",
                 text
                 );

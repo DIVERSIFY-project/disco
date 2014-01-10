@@ -19,7 +19,7 @@ package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.Controller;
 import eu.diversify.disco.controller.HillClimber;
-import eu.diversify.disco.controller.Result;
+import eu.diversify.disco.controller.Evaluation;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.QuadraticMean;
 
@@ -59,7 +59,7 @@ public class Runner {
         System.out.println(controller.evaluate(0, population, reference));
 
         System.out.println("After Hill Climbing:");
-        Result result = controller.adjust(population, 0.14);
+        Evaluation result = controller.applyTo(population, 0.14);
         System.out.println(result);
 
         System.out.println("That's all folks!");

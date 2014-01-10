@@ -16,28 +16,10 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.DiversityMetric;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,17 +28,10 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Controller {
+public abstract class Controller {
 
     private final DiversityMetric metric;
-
-    /**
-     * TODO: to remove
-     */
-    public Controller() {
-        this.metric = null;
-    }
-
+    
     /**
      * Create a new controller based on a given diversity metric
      *
@@ -66,10 +41,7 @@ public class Controller {
         this.metric = metric;
     }
 
-    public Population apply(Population population) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     /**
      * Adjust the given population to the selected reference
      *
@@ -79,9 +51,9 @@ public class Controller {
      * @return the updated population wrapped with additional information such
      * as actual diversity, error, and step count.
      */
-    public Result adjust(Population population, double reference) {
-        Result current = evaluate(0, population, reference);
-        Result next = refine(current);
+    public Evaluation applyTo(Population population, double reference) {
+        Evaluation current = evaluate(0, population, reference);
+        Evaluation next = refine(current);
         while (next.getIteration() != current.getIteration()) {
             current = next;
             next = refine(next);
@@ -96,10 +68,10 @@ public class Controller {
      * @param current the current evaluation
      * @return the new evaluation, after refinement
      */
-    private Result refine(Result current) {
-        Result output = current;
+    private Evaluation refine(Evaluation current) {
+        Evaluation output = current;
         for (Update update : getLegalUpdates(current.getPopulation())) {
-            Result next = evaluate(
+            Evaluation next = evaluate(
                     current.getIteration() + 1,
                     update.applyTo(current.getPopulation()),
                     current.getReference());
@@ -119,10 +91,10 @@ public class Controller {
      * @param reference the reference
      * @return
      */
-    public Result evaluate(int iteration, Population population, double reference) {
+    public Evaluation evaluate(int iteration, Population population, double reference) {
         final double diversity = this.metric.applyTo(population);
         final double error = Math.pow(reference - diversity, 2);
-        return new Result(iteration, population, reference, diversity, error);
+        return new Evaluation(iteration, population, reference, diversity, error);
     }
 
     
@@ -132,7 +104,6 @@ public class Controller {
      * @param population the population whose candidates update are needed
      * @return the list of candidate updates
      */
-    protected List<Update> getLegalUpdates(Population population) {
-        return new ArrayList<Update>();
-    }
+    protected abstract List<Update> getLegalUpdates(Population population);
+    
 }
