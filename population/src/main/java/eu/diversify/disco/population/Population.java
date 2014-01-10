@@ -16,6 +16,7 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
@@ -23,7 +24,8 @@ import eu.diversify.disco.population.exceptions.NegativeIndividualCount;
 import eu.diversify.disco.population.exceptions.UnknownSpecie;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -37,19 +39,19 @@ import java.util.List;
  */
 public class Population {
 
-    private final HashMap<String, Specie> species;
+    private final LinkedHashMap<String, Specie> species;
 
     /**
      * Create a new empty population model
      */
     public Population() {
-        this.species = new HashMap<String, Specie>();
+        this.species = new LinkedHashMap<String, Specie>();
     }
 
     /**
      * Check whether the population is empty, i.e., whether all species have a
      * individual count of 0.
-     * 
+     *
      * @return true if the population is empty, false otherwise
      */
     public boolean isEmpty() {
@@ -115,6 +117,16 @@ public class Population {
     }
 
     /**
+     * Check whether this population has a specie with the given name
+     *
+     * @param name the name of the needed specie
+     * @return true if the population has a specie with the given name
+     */
+    public boolean hasSpecie(String name) {
+        return this.species.containsKey(name);
+    }
+
+    /**
      * Extract the specie with the given name or raise an exception if no such
      * specie exists.
      *
@@ -139,6 +151,48 @@ public class Population {
     public Specie deleteSpecie(String specieName) {
         return this.species.remove(specieName);
     }
+
+    /**
+     * Check the equality between two populations
+     *
+     * @param that the other population with which this population must be
+     * compared.
+     *
+     * @return true if the two population are the same
+     *
+     */
+    public boolean equals(Object that) {
+        boolean result = (that instanceof Population);
+        if (result) {
+            Population p = (Population) that;
+            result = p.getSpecies().size() == this.getSpecies().size();
+            if (result) {
+                Iterator<Specie> iterator = getSpecies().iterator();
+                while (iterator.hasNext() && result) {
+                    Specie specie = iterator.next();
+                    result = p.hasSpecie(specie.getName()) && p.getSpecie(specie.getName()).getIndividualCount() == specie.getIndividualCount();
+                }
+            }
+        }
+        return result;
+    }
     
+    @Override
+    public String toString() {
+        final StringBuilder result = new StringBuilder();
+        result.append("{");
+        final List<Specie> species = this.getSpecies();
+        for(int i=0 ; i<species.size() ; i++) {
+            final Specie specie = species.get(i);
+            result.append(specie.getName());
+            result.append(": ");
+            result.append(specie.getIndividualCount());
+            if (i < species.size() - 1) {
+                result.append(", ");
+            }
+        }
+        result.append("}");
+        return result.toString();
+    }
     
 }

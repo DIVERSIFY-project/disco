@@ -22,6 +22,9 @@ package eu.diversify.disco.cloudml;
 import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.controller.Controller;
+import eu.diversify.disco.controller.Evaluation;
+import eu.diversify.disco.controller.HillClimber;
+import eu.diversify.disco.population.diversity.QuadraticMean;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
@@ -42,10 +45,12 @@ public class Runner
         Transformation transformation = new Transformation();
         Population population = transformation.forward(model);
         
-        Controller controller = new Controller();
-        Population toBe = controller.apply(population);
+        Controller controller = new HillClimber(new QuadraticMean());
         
-        transformation.backward(model, toBe);
+        final double reference = 0.25; // The diversity level we aim at
+        Evaluation result = controller.applyTo(population, reference);
+        
+        transformation.backward(model, result.getPopulation());
     }
     
     public static void initFakeModel(CloudML model){
