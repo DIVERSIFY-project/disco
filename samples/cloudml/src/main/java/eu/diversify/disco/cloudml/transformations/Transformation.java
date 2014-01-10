@@ -19,16 +19,21 @@
 package eu.diversify.disco.cloudml.transformations;
 
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import eu.diversify.disco.cloudml.CloudML;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.Specie;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import static java.util.Collections.shuffle;
 import java.util.List;
+import java.util.Random;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.Binding;
@@ -36,6 +41,7 @@ import org.cloudml.core.BindingInstance;
 import org.cloudml.core.ClientPort;
 import org.cloudml.core.ClientPortInstance;
 import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.NamedElement;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
 import org.cloudml.core.ServerPort;
@@ -48,6 +54,8 @@ import org.cloudml.core.ServerPortInstance;
  * @since 0.1
  */
 public class Transformation {
+    
+    Random random = new Random();
 
 
     public Population forward(CloudML model) {
@@ -79,8 +87,64 @@ public class Transformation {
     }
 
     public void backward(CloudML model, Population toBe) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        DeploymentModel dm = model.getRoot();        
+        
+        for(Specie specie : toBe.getSpecies()){
+            final String specieName = specie.getName();
+            if(dm.getNodeTypes().containsKey(specieName)){
+                Collection<NodeInstance> existings = filter(dm.getNodeInstances(), new Predicate<NodeInstance>(){
+                    public boolean apply(NodeInstance t) {
+                        return t.getType().getName().equals(specieName);
+                    }
+                });
+                int current = existings.size();
+                int desired = specie.getIndividualCount();
+                for(int i = current; i < desired; i++){
+                    NodeInstance ni = provision(dm.getNodeTypes().get(specieName), uniqueId(dm.getNodeInstances(),specieName));
+                    dm.getNodeInstances().add(ni);
+                }
+                if(current > desired){
+                    List<NodeInstance> existingList = new ArrayList<NodeInstance>();
+                    shuffle(existingList);
+                    for(int i = current; i > desired; i--){
+                        dm.getNodeInstances().remove(existingList.get(i-1));
+                    }
+                }
+            }
+            else if(dm.getArtefactTypes().containsKey(specieName)){
+                Collection<ArtefactInstance> existings = filter(dm.getArtefactInstances(), new Predicate<ArtefactInstance>(){
+                    public boolean apply(ArtefactInstance t) {
+                        return t.getType().getName().equals(specieName);
+                    }
+                });
+                int current = existings.size();
+                int desired = specie.getIndividualCount();
+                for(int i = current; i < desired; i++){
+                    ArtefactInstance ai = provision(dm.getArtefactTypes().get(specieName), uniqueId(dm.getArtefactInstances(),specieName));
+                    dm.getArtefactInstances().add(ai);
+                }
+                if(current > desired){
+                    List<ArtefactInstance> existingsList = new ArrayList<ArtefactInstance>();
+                    shuffle(existingsList);
+                    for(int i = current; i > desired; i --){
+                        dm.getArtefactInstances().remove(existingsList.get(i-1));
+                    }
+                }
+            }
+            
+            List<Binding> requiredBindings = new ArrayList<Binding>();
+            for(ArtefactInstance ai : dm.getArtefactInstances()){
+                requiredBindings.addAll(fixBinding(dm, ai));
+                
+            }
+            
+            fixAllDestination(dm);
+            
+        }
     }
+    
+
+    
 
     public NodeInstance provision(Node type, String name){
         NodeInstance ni = type.instanciates(name);
@@ -99,13 +163,53 @@ public class Transformation {
         return ai;
     }
     
+    public void fixAllDestination(DeploymentModel dm){
+        Multimap<ArtefactInstance, ArtefactInstance> connected = HashMultimap.create();
+        for(BindingInstance bi : dm.getBindingInstances()){
+            if(bi.getType().getClient().getIsRemote() &&  bi.getType().getServer().getIsRemote())
+                continue;
+            connected.put(bi.getServer().getOwner(), bi.getClient().getOwner());
+            connected.put(bi.getClient().getOwner(), bi.getServer().getOwner());
+        }
+        
+        while(true){
+            for(ArtefactInstance ai : dm.getArtefactInstances()){
+                if(ai.getDestination() != null)
+                    continue;
+                for(ArtefactInstance c : connected.get(ai)){
+                    if(c.getDestination()!= null){
+                        ai.setDestination( c.getDestination());
+                        break;
+                    }
+                }
+            }
+            
+            boolean finished = true;
+            for(ArtefactInstance ai : dm.getArtefactInstances()){
+                if(ai.getDestination() == null){
+                    NodeInstance ni = dm.getNodeInstances().get(random.nextInt(dm.getNodeInstances().size()));
+                    ai.setDestination(ni);
+                    finished = false;
+                    break;
+                }
+            }
+            if(finished)
+                break;
+        }
+    }
+
+    
+ 
+    
     public Collection<Binding> fixBinding(DeploymentModel dm, ArtefactInstance ai){
+        
+        List<Binding> lacks = new ArrayList<Binding>();
         
         for(final ClientPortInstance cpi : ai.getRequired()){
             
             Collection<BindingInstance> bound = filter(dm.getBindingInstances(), new Predicate<BindingInstance>(){
                 public boolean apply(BindingInstance t) {
-                    return t.getClient() == cpi;
+                    return t.getClient().equals(cpi);
                 }                
             });
             
@@ -118,6 +222,7 @@ public class Transformation {
                 public boolean apply(Binding t) {
                     //need to check: how to compare two port types?
                     return t.getClient().getName().equals(cpi.getType().getName());
+                    //return t.getClient().equals(cpi.getType());
                 }
 
             });
@@ -134,8 +239,11 @@ public class Transformation {
                     for(ServerPortInstance spi : serverAi.getProvided()){
                         if(spi.getType().getName().equals(bd.getServer().getName())){
                             bdi = new BindingInstance(cpi, spi, bd);
+                            break;
                         }
                     }
+                    if(bdi != null)
+                        break;
                 }
                 if(bdi != null){
                     dm.getBindingInstances().add(bdi);
@@ -144,14 +252,28 @@ public class Transformation {
             }
             if(bdi == null){
                 //Some client cannot be satisfied
-                return potential;
+                lacks.addAll(potential);
             }
             
         }
         
-        return Collections.EMPTY_LIST;
+        return lacks;
     }
 
-    
+    public<T extends NamedElement> String uniqueId(List<T> pool, String prefix){
+        Collection<String> names = transform(pool, new Function<T, String>(){
+
+            public String apply(T f) {
+                return f.getName();
+            }
+
+
+        });
+        
+        String name = prefix + random.nextInt(1000);
+        while(names.contains(name))
+            name = prefix += random.nextInt(1000);
+        return name;
+    }
     
 }

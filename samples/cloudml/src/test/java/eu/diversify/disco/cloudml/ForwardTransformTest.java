@@ -33,6 +33,8 @@
  */
 package eu.diversify.disco.cloudml;
 
+import com.google.common.base.Predicate;
+import static com.google.common.collect.Collections2.filter;
 import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
 import java.io.FileInputStream;
@@ -43,7 +45,9 @@ import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.commons.jxpath.JXPathContext;
 import org.cloudml.codecs.JsonCodec;
+import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.Binding;
 import org.cloudml.core.DeploymentModel;
@@ -111,12 +115,42 @@ public class ForwardTransformTest
        
         
         ArtefactInstance ai = transformation.provision(model.root.getArtefactTypes().get("SensAppGUIWar"), "noname");
+        //ai = transformation.provision(model.root.getArtefactTypes().get("SensAppGUIWar"), "noname2");
         Collection<Binding> bd = transformation.fixBinding(model.getRoot(), ai);
         
         assertTrue(bd.isEmpty());
         
         //should be a new binding instance created
         assertEquals(6, model.getRoot().getBindingInstances().size());
+        
+    }
+    
+    public void testWithMDMS(){
+        
+        CloudML model = new CloudML();
+        initWithMDMS(model);
+        
+        
+        
+        Transformation transformation = new Transformation();
+        
+        Population population = transformation.forward(model);
+        population.getSpecie("RingoJS").setIndividualCount(3);
+        
+        transformation.backward(model, population);
+        
+        ArtefactInstance ai = filter(model.getRoot().getArtefactInstances(), new Predicate<ArtefactInstance>(){
+
+            public boolean apply(ArtefactInstance t) {
+                return t.getName().startsWith("RingoJS");
+            }
+        }).iterator().next();
+        
+        assertEquals("ec2_mdms", ai.getDestination().getName());
+        
+        assertEquals(10, model.getRoot().getBindingInstances().size());
+        
+        
         
     }
     
@@ -138,5 +172,25 @@ public class ForwardTransformTest
         }
         
         model.setRoot(root);
+    }
+    
+    public void initWithMDMS(CloudML model){
+        
+        
+        MdmsModelCreator creator = new MdmsModelCreator();
+        
+        DeploymentModel dm = creator.create();
+        
+        model.setRoot(dm);
+        
+        
+        
+        
+    }
+
+    public <T extends Object> T parseMe(final String xpath, final Object context) {
+        JXPathContext _newContext = JXPathContext.newContext(context);
+        Object _value = _newContext.getValue(xpath);
+        return ((T) _value);
     }
 }
