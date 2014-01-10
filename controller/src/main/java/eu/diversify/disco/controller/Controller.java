@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  *
  * This file is part of Disco.
@@ -100,7 +101,7 @@ public class Controller {
         for (Update update : getLegalUpdates(current.getPopulation())) {
             Result next = evaluate(
                     current.getIteration() + 1,
-                    current.getPopulation(),
+                    update.applyTo(current.getPopulation()),
                     current.getReference());
             if (next.getError() < output.getError()) {
                 output = next;
@@ -118,14 +119,19 @@ public class Controller {
      * @param reference the reference
      * @return
      */
-    private Result evaluate(int iteration, Population population, double reference) {
+    public Result evaluate(int iteration, Population population, double reference) {
         final double diversity = this.metric.applyTo(population);
-        final double error = 0;
+        final double error = Math.pow(reference - diversity, 2);
         return new Result(iteration, population, reference, diversity, error);
     }
 
     
     
+    /**
+     * Return the list of update operation which are legal on a given population
+     * @param population the population whose candidates update are needed
+     * @return the list of candidate updates
+     */
     protected List<Update> getLegalUpdates(Population population) {
         return new ArrayList<Update>();
     }

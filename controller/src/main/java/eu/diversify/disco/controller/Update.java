@@ -15,11 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.Specie;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Update which can be undergone on a population. An update is a modification of
@@ -30,14 +50,14 @@ import java.util.HashMap;
  */
 public class Update {
 
-    public final HashMap<String, Integer> updates;
+    public final LinkedHashMap<String, Integer> updates;
 
     /**
      * Create an empty update, which is the update that does nothing aside of
      * duplicating the given population.
      */
     public Update() {
-        this.updates = new HashMap<String, Integer>();
+        this.updates = new LinkedHashMap<String, Integer>();
     }
 
     /**
@@ -71,5 +91,35 @@ public class Update {
         }
         return result;
     }
-    
+
+    /**
+     * Return the update associated with the given specie
+     *
+     * @param specie the specie whose update is needed
+     * @return the update associated with the selected specie
+     */
+    public int getUpdate(String specie) {
+        int result = 0;
+        if (this.updates.containsKey(specie)) {
+            result = this.updates.get(specie);
+        }
+        return result;
+    }
+
+    /**
+     * @return the list of impacted species (their names)
+     */
+    public List<String> getImpactedSpecies() {
+        return Collections.unmodifiableList(new ArrayList<String>(this.updates.keySet()));
+    }
+
+    /**
+     * Check whether this update contains the given modification
+     *
+     * @return true if this update effectively perform the given update on the
+     * given specie
+     */
+    public boolean contains(String specie, int update) {
+        return this.getUpdate(specie) == update;
+    }
 }

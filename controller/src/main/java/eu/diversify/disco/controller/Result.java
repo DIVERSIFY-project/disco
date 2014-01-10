@@ -87,4 +87,16 @@ public class Result {
         return this.error;
     }
     
+    
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(" - Iteration count: ").append(iteration).append("\n");
+        builder.append(" - Population: ").append(population.toString()).append("\n");
+        builder.append(" - Reference: ").append(reference).append("\n");
+        builder.append(" - Diversity: ").append(diversity).append("\n");
+        builder.append(" - Error: ").append(error).append("\n");        
+        return builder.toString();
+    }
+    
 }

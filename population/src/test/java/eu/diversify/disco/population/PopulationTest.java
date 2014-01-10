@@ -32,13 +32,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
 import eu.diversify.disco.population.exceptions.NegativeIndividualCount;
 import eu.diversify.disco.population.exceptions.UnknownSpecie;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -86,7 +86,8 @@ public class PopulationTest extends TestCase {
     }
 
     /**
-     * Check whether duplicate specie id are caught on specie creation
+     * Check whether duplicate specie id are caught on specie creation, without
+     * individual count
      *
      * @throws DuplicateSpecieId
      */
@@ -107,6 +108,31 @@ public class PopulationTest extends TestCase {
                 2,
                 p.getSpecies().size());
     }
+    
+    /**
+     * Check whether duplicate specie id are caught on specie creation, without
+     * individual count
+     *
+     * @throws DuplicateSpecieId
+     */
+    @Test(expected = DuplicateSpecieId.class)
+    public void testDuplicateSpecieIdDetectionWithCount() throws DuplicateSpecieId {
+        Population p = new Population();
+        assertEquals("Wrong initial species count",
+                0,
+                p.getSpecies().size());
+
+        p.addSpecie("Elephant", 34);
+        assertEquals("Wrong initial species count after specie addition",
+                1,
+                p.getSpecies().size());
+
+        p.addSpecie("Elephant", 23);
+        assertEquals("Wrong initial species count after specie addition",
+                2,
+                p.getSpecies().size());
+    }
+    
 
     /**
      * Test incrementing the individual count of a given specie
@@ -173,6 +199,32 @@ public class PopulationTest extends TestCase {
     }
 
     /**
+     * Test the species equality
+     */
+    @Test
+    public void testSpecieEquality() {
+        Specie s1 = new Specie("lion", 23);
+        assertTrue(
+                "A specie shall be equal to itself",
+                s1.equals(s1));
+
+        Specie s2 = new Specie("lion", 23);
+        assertTrue(
+                "A specie shall be equal to any other equivalent specie",
+                s1.equals(s2));
+
+        Specie s3 = new Specie("lion", 34);
+        assertFalse(
+                "Individual count must distinguish two species",
+                s1.equals(s3));
+
+        Specie s4 = new Specie("sludge", 23);
+        assertFalse(
+                "Specie name must distinguish two species",
+                s1.equals(s4));
+    }
+
+    /**
      * Test the equality of two populations
      */
     @Test
@@ -221,5 +273,30 @@ public class PopulationTest extends TestCase {
 
     }
     
+    /**
+     * Test the default formatting of a population
+     */
+    @Test
+    public void testPopulationFormatting() {
+        Population p = new Population();
+        String text = p.toString();
+        assertEquals(
+                "Empty population shall be properly formatted",
+                "{}",
+                text
+                );
+        
+        Population p2 = new Population();
+        p2.addSpecie("Elephant");
+        p2.addSpecie("Lion", 30);
+        p2.addSpecie("Hippopotamus", 4);
+        String text2 = p2.toString();
+        assertEquals(
+                "population shall be properly formatted",
+                "{Elephant: 0, Lion: 30, Hippopotamus: 4}",
+                text2
+                );
+      
+    }
     
 }

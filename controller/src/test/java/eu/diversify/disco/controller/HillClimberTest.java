@@ -21,9 +21,12 @@
  */
 package eu.diversify.disco.controller;
 
+import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.QuadraticMean;
+import java.util.List;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -38,6 +41,62 @@ public class HillClimberTest extends ControllerTest {
     
     public Controller factory() {
         return new HillClimber(new QuadraticMean());
+    }
+    
+    
+    /**
+     * Test the extraction of legal updates
+     */
+    @Test
+    public void testLegalUpdates() {
+        final HillClimber controller = (HillClimber) factory();
+        final Population p = new Population();
+        p.addSpecie("Lion", 2);
+        p.addSpecie("Tiger", 0);
+        final List<Update> updates = controller.getLegalUpdates(p);
+        assertEquals(
+                "Wrong number of updates",
+                1,
+                updates.size()
+                );
+        
+        assertEquals(
+                "Wrong negative update",
+                -1,
+                updates.get(0).getUpdate("Lion")
+                );
+        assertEquals(
+                "Wrong positive update",
+                +1,
+                updates.get(0).getUpdate("Tiger")
+                );
+        assertEquals(
+                "Wrong number of species impacted",
+                2,
+                updates.get(0).getImpactedSpecies().size());
+
+        
+        final Population p2 = new Population();
+        p2.addSpecie("Lion", 5);
+        p2.addSpecie("Tiger", 2);
+        List<Update> updates2 = controller.getLegalUpdates(p2);
+        assertEquals(
+                "Wrong number of updates",
+                2,
+                updates2.size()
+                );
+        assertEquals(
+                "Wrong first update",
+                -1,
+                updates2.get(0).getUpdate("Lion")
+                );
+        assertEquals(
+                "Wrong first update",
+                1,
+                updates2.get(0).getUpdate("Tiger")
+                );
+        
+        
     }
     
 }

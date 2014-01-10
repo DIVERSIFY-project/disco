@@ -2,19 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>root</artifactId>
+    <artifactId>experiments.controllers</artifactId>
     <groupId>eu.diversify.disco</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  
   <groupId>eu.diversify.disco</groupId>
-  <artifactId>experiments</artifactId>
+  <artifactId>experiments.controllers.singlerun</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>Disco :: Experiments</name>
+  <packaging>jar</packaging>
+  <name>Disco :: Experiments :: Controller :: Single Run</name>
   
-  <modules>
-      <module>controllers</module>
-  </modules>
-  
+  <dependencies>
+      <dependency>
+          <groupId>eu.diversify.disco</groupId>
+          <artifactId>controller</artifactId>
+          <version>0.1-SNAPSHOT</version>
+      </dependency>
+  </dependencies>
 </project>
