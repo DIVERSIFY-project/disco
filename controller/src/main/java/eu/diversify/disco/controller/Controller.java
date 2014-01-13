@@ -67,7 +67,7 @@ public abstract class Controller {
      * as actual diversity, error, and step count.
      */
     public Evaluation applyTo(Population population, double reference) {
-        Evaluation current = evaluate(0, population, reference);
+        Evaluation current = evaluate(null, population, reference);
         return search(current);
     }
 
@@ -86,7 +86,6 @@ public abstract class Controller {
         return next;
     }
 
-    
     /**
      * Refine the given evaluation, by selecting and applying the most promising
      * update on the given population.
@@ -98,7 +97,7 @@ public abstract class Controller {
         Evaluation output = current;
         for (Update update : getLegalUpdates(current.getPopulation())) {
             Evaluation next = evaluate(
-                    current.getIteration() + 1,
+                    current,
                     update.applyTo(current.getPopulation()),
                     current.getReference());
             if (next.getError() < output.getError()) {
@@ -117,10 +116,16 @@ public abstract class Controller {
      * @param reference the reference
      * @return
      */
-    public Evaluation evaluate(int iteration, Population population, double reference) {
+    public Evaluation evaluate(Evaluation previous, Population population, double reference) {
         final double diversity = this.metric.normalised(population);
         final double error = Math.pow(reference - diversity, 2);
-        return new Evaluation(iteration, population, reference, diversity, error);
+        Evaluation result;
+        if (previous == null) {
+            result = new Evaluation(population, reference, diversity, error);
+        } else {
+            result = new Evaluation(previous, population, reference, diversity, error);
+        }
+        return result;
     }
 
     /**
