@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
@@ -25,35 +24,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of the simple Hill Climbing strategy.
+ * Adaptive Hill-Climbing with a twiddling mechanism.
  *
- * The controller tries to refine the given population by searching for an
- * update that reduces the error with respect to the given reference.
+ * When the the search is successful, the adaptive hill climber will try a twice
+ * bigger step in the next step. When the search is not successful, the step is
+ * reduced, until it returns to one.
  *
  * @author Franck Chauvel
  * @since 0.1
  */
-public class HillClimber extends Controller {
+public class AdaptiveHillClimber extends Controller {
+
+    private int stepSize;
 
     /**
-     * Create a new hill climber controller
+     * Create a new instance of the Adaptive Hill Climbing strategy, tailored to
+     * use a particular diversity metric.
      *
-     * @param metric the diversity metric that the controller shall use
+     * @param metric the diversity metric to use
      */
-    public HillClimber(DiversityMetric metric) {
+    public AdaptiveHillClimber(DiversityMetric metric) {
         super(metric);
+        this.stepSize = 1;
     }
 
+    
+    @Override
+    protected Evaluation search(Evaluation current) {
+        Evaluation output = refine(current);
+        if (output.getError() >= current.getError()) {
+            if (this.stepSize > 1) {
+                this.stepSize /= 2;
+                output = search(current);
+            }
+        } else {
+            this.stepSize *= 2;
+            output = search(output);
+        }
+        return output;
+    }
+
+    
     @Override
     protected List<Update> getLegalUpdates(Population population) {
         final ArrayList<Update> updates = new ArrayList<Update>();
         for (Specie s1 : population.getSpecies()) {
-            if (s1.getIndividualCount() > 0) {
+            if (s1.getIndividualCount() >= stepSize) {
                 for (Specie s2 : population.getSpecies()) {
                     if (!s1.getName().equals(s2.getName())) {
                         final Update u = new Update();
-                        u.setUpdate(s1.getName(), -1);
-                        u.setUpdate(s2.getName(), +1);
+                        u.setUpdate(s1.getName(), -stepSize);
+                        u.setUpdate(s2.getName(), +stepSize);
                         updates.add(u);
                     }
                 }

@@ -15,7 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
@@ -31,7 +47,7 @@ import java.util.List;
 public abstract class Controller {
 
     private final DiversityMetric metric;
-    
+
     /**
      * Create a new controller based on a given diversity metric
      *
@@ -41,7 +57,6 @@ public abstract class Controller {
         this.metric = metric;
     }
 
-    
     /**
      * Adjust the given population to the selected reference
      *
@@ -53,6 +68,16 @@ public abstract class Controller {
      */
     public Evaluation applyTo(Population population, double reference) {
         Evaluation current = evaluate(0, population, reference);
+        return search(current);
+    }
+
+    /**
+     * Refine the given population until the quality does improve anymore.
+     *
+     * @param current the evaluation of the current population
+     * @return the evaluation resulting from the successive refinements
+     */
+    protected Evaluation search(Evaluation current) {
         Evaluation next = refine(current);
         while (next.getIteration() != current.getIteration()) {
             current = next;
@@ -61,6 +86,7 @@ public abstract class Controller {
         return next;
     }
 
+    
     /**
      * Refine the given evaluation, by selecting and applying the most promising
      * update on the given population.
@@ -68,7 +94,7 @@ public abstract class Controller {
      * @param current the current evaluation
      * @return the new evaluation, after refinement
      */
-    private Evaluation refine(Evaluation current) {
+    protected Evaluation refine(Evaluation current) {
         Evaluation output = current;
         for (Update update : getLegalUpdates(current.getPopulation())) {
             Evaluation next = evaluate(
@@ -97,13 +123,11 @@ public abstract class Controller {
         return new Evaluation(iteration, population, reference, diversity, error);
     }
 
-    
-    
     /**
      * Return the list of update operation which are legal on a given population
+     *
      * @param population the population whose candidates update are needed
      * @return the list of candidate updates
      */
     protected abstract List<Update> getLegalUpdates(Population population);
-    
 }

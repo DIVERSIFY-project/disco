@@ -50,7 +50,6 @@ public class ShannonIndex extends DiversityMetric {
     @Override
     public double maximum(Population population) {
         final double s = population.getSpecies().size();
-        final double n = population.getIndividualCount();
         return -s * ((1. / s) * Math.log(1. / s));
     }
 
