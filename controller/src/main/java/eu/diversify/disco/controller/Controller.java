@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
@@ -67,8 +51,8 @@ public abstract class Controller {
      * as actual diversity, error, and step count.
      */
     public Evaluation applyTo(Population population, double reference) {
-        Evaluation current = evaluate(null, population, reference);
-        return search(current);
+        Case c = new Case(population, reference, metric);
+        return search(c.evaluate(population));
     }
 
     /**
@@ -96,36 +80,12 @@ public abstract class Controller {
     protected Evaluation refine(Evaluation current) {
         Evaluation output = current;
         for (Update update : getLegalUpdates(current.getPopulation())) {
-            Evaluation next = evaluate(
-                    current,
-                    update.applyTo(current.getPopulation()),
-                    current.getReference());
+            Evaluation next = current.refineWith(update);
             if (next.getError() < output.getError()) {
                 output = next;
             }
         }
         return output;
-    }
-
-    /**
-     * Evaluate a given population using the metric associated with this
-     * controller.
-     *
-     * @param iteration the iteration count
-     * @param population the population evaluated
-     * @param reference the reference
-     * @return
-     */
-    public Evaluation evaluate(Evaluation previous, Population population, double reference) {
-        final double diversity = this.metric.normalised(population);
-        final double error = Math.pow(reference - diversity, 2);
-        Evaluation result;
-        if (previous == null) {
-            result = new Evaluation(population, reference, diversity, error);
-        } else {
-            result = new Evaluation(previous, population, reference, diversity, error);
-        }
-        return result;
     }
 
     /**

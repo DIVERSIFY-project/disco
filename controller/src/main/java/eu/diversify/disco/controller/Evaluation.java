@@ -45,42 +45,39 @@ import eu.diversify.disco.population.Population;
  */
 public class Evaluation {
 
-    private final Evaluation previous;
+    private final Case problem;
+    private Evaluation previous;
     private final Population population;
-    private final double reference;
     private final double diversity;
     private final double error;
 
     /**
      * Create a new result object
      *
+     * @param problem the case against which the population was evaluated
      * @param population the resulting population
      * @param reference the reference value
      * @param diversity the diversity of the resulting population
      */
-    public Evaluation(Population population, double reference, double diversity, double error) {
+    public Evaluation(Case problem, Population population, double diversity, double error) {
+        this.problem = problem;
         this.previous = null;
         this.population = population;
-        this.reference = reference;
         this.diversity = diversity;
         this.error = error;
     }
 
     /**
-     * Create a new evaluation object, linked to the evaluation it was a
-     * refinement of.
+     * Refine this evaluation by applying the given update on the population
      *
-     * @param previous the previous evaluation which led to this new one.
-     * @param population the resulting population
-     * @param reference the reference value
-     * @param diversity the diversity of the resulting population
+     * @param update the update to apply to refine this evaluation
+     * @return the evaluation (a newly created object) of the population
+     * resulting from applying the given update on the population.
      */
-    public Evaluation(Evaluation previous, Population population, double reference, double diversity, double error) {
-        this.previous = previous;
-        this.population = population;
-        this.reference = reference;
-        this.diversity = diversity;
-        this.error = error;
+    public Evaluation refineWith(Update u) {
+        Evaluation evaluation = problem.evaluate(u.applyTo(population));
+        evaluation.previous = this;
+        return evaluation;
     }
 
     /**
@@ -103,11 +100,11 @@ public class Evaluation {
      * @return the current iteration count
      */
     public int getIteration() {
-       int count = 1;
-       if (hasPrevious()) {
-           count += this.getPrevious().getIteration();
-       } 
-       return count;
+        int count = 1;
+        if (hasPrevious()) {
+            count += this.getPrevious().getIteration();
+        }
+        return count;
     }
 
     /**
@@ -116,11 +113,12 @@ public class Evaluation {
     public Population getPopulation() {
         return this.population;
     }
+
     /**
      * @return the reference diversity level used to reach this result
      */
     public double getReference() {
-        return this.reference;
+        return this.problem.getReference();
     }
 
     /**
@@ -138,11 +136,22 @@ public class Evaluation {
     }
 
     @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if (o instanceof Evaluation) {
+            final Evaluation evaluation = (Evaluation) o;
+            result = evaluation.problem.equals(problem)
+                    && evaluation.population.equals(population);
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(" - Iteration count: ").append(this.getIteration()).append("\n");
         builder.append(" - Population: ").append(population.toString()).append("\n");
-        builder.append(" - Reference: ").append(reference).append("\n");
+        builder.append(" - Reference: ").append(this.getReference()).append("\n");
         builder.append(" - Diversity: ").append(diversity).append("\n");
         builder.append(" - Error: ").append(error).append("\n");
         return builder.toString();
