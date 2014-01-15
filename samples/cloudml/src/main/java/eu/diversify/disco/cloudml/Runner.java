@@ -57,8 +57,8 @@ public class Runner
         model.init();
         DeploymentModel dm = model.getRoot();
         
-        Provider hugeProvider = new Provider("huge", "./credentials");
-        Provider bigsmallProvider = new Provider("bigsmall","./credentials");
+        Provider hugeProvider = new Provider("huge", "../src/main/resources/credentials");
+        Provider bigsmallProvider = new Provider("bigsmall", "../src/main/resources/credentials");
         dm.getProviders().add(hugeProvider);
         dm.getProviders().add(bigsmallProvider);
         

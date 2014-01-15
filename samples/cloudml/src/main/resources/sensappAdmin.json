@@ -4,7 +4,7 @@
     "providers" : [{
         "eClass" : "net.cloudml.core:Provider",
         "name" : "aws-ec2",
-        "credentials" : "./credentials"
+        "credentials" : "../src/main/resources/credentials"
     }
     ],
     "artefactTypes" : [{

@@ -46,7 +46,7 @@ public class MdmsModelCreator {
     this.dm = _deploymentModel;
     final Procedure1<DeploymentModel> _function = new Procedure1<DeploymentModel>() {
         public void apply(final DeploymentModel it) {
-          Provider _provider = new Provider("provider", "./credentials");
+          Provider _provider = new Provider("provider", "../src/main/resources/credentials");
           final Provider prov = _provider;
           List<Provider> _providers = it.getProviders();
           _providers.add(prov);

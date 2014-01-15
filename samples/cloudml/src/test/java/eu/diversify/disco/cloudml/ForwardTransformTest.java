@@ -15,22 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.cloudml;
 
 import com.google.common.base.Predicate;
@@ -47,7 +31,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.jxpath.JXPathContext;
 import org.cloudml.codecs.JsonCodec;
-import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.Binding;
 import org.cloudml.core.DeploymentModel;
@@ -159,7 +142,8 @@ public class ForwardTransformTest
         JsonCodec jsonCodec = new JsonCodec();
         DeploymentModel root = null;
         try {
-            root = (DeploymentModel) jsonCodec.load(new FileInputStream("sensappAdmin.json"));
+            root = (DeploymentModel) jsonCodec.load(new FileInputStream("../src/main/resources/sensappAdmin.json"));
+       
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ForwardTransformTest.class.getName()).log(Level.SEVERE, null, ex);
         }

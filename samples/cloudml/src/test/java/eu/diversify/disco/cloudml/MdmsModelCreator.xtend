@@ -22,7 +22,7 @@ class MdmsModelCreator {
 	def DeploymentModel create(){
 		dm = new DeploymentModel("mdms") 
 		dm => [
-			val prov = new Provider("provider", "./credentials")
+			val prov = new Provider("provider", "../src/main/resources/credentials")
 			providers += prov
 			nodeTypes.put("EC2", new Node("EC2") => [
 				provider = prov

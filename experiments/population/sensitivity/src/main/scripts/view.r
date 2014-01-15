@@ -30,12 +30,14 @@ plot(x=NULL,
      frame=FALSE
 );
 
-for (i in seq(1, 3)) {
-	d <- subset(data, metric == levels(data$metric)[i]);
+names <- levels(data$metric);
+
+for (i in seq(1, length(names))) {
+	d <- subset(data, metric == names[i]);
 	lines(d$specie..1, d$value, type="l", lty=i);
 }
 
-legend("bottomright", legend=levels(data$metric), lty=c(1, 2, 3), bty="n");
+legend("bottomright", legend=levels(data$metric), lty=seq(1, length(names)), bty="n");
 
 dev.off();
 
@@ -62,12 +64,13 @@ plot(x=NULL,
      frame=FALSE
 );
 
-for (i in seq(1, 3)) {
-	d <- subset(data, metric == levels(data$metric)[i]);
+names <- levels(data$metric);
+for (i in seq(1, length(names))) {
+	d <- subset(data, metric == names[i]);
 	lines(d$species.count, d$value, type="l", lty=i);
 }
 
-legend("bottomright", legend=levels(data$metric), lty=c(1, 2, 3), bty="n");
+legend("topleft", legend=levels(data$metric), lty=seq(length(names)), bty="n");
 
 
 dev.off(); 
