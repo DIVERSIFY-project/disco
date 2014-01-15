@@ -17,7 +17,7 @@
  */
 package eu.diversify.disco.controller;
 
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 
 /**
  *
@@ -29,7 +29,7 @@ public class AdaptiveHillClimberTest extends ControllerTest {
 
     @Override
     public Controller factory() {
-        return new AdaptiveHillClimber(new QuadraticMean());
+        return new AdaptiveHillClimber(new TrueDiversity());
     }
     
 }

@@ -22,7 +22,7 @@
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -40,7 +40,7 @@ import org.junit.runners.JUnit4;
 public class HillClimberTest extends ControllerTest {
     
     public Controller factory() {
-        return new HillClimber(new QuadraticMean());
+        return new HillClimber(new TrueDiversity());
     }
     
     

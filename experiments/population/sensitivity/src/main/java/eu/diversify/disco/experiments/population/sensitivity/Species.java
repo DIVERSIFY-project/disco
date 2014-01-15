@@ -19,7 +19,7 @@ package eu.diversify.disco.experiments.population.sensitivity;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.DiversityMetric;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

@@ -31,7 +31,7 @@ public class QuadraticMeanTest extends DiversityMetricTest {
 
     @Override
     public DiversityMetric newMetricUnderTest() {
-        return new QuadraticMean();
+        return new TrueDiversity();
     }
       
     

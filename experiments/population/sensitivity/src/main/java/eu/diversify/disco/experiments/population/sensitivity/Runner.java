@@ -18,7 +18,7 @@
 package eu.diversify.disco.experiments.population.sensitivity;
 
 import eu.diversify.disco.population.diversity.GiniSimpsonIndex;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import eu.diversify.disco.population.diversity.ShannonIndex;
 import java.io.FileNotFoundException;
 
@@ -44,7 +44,8 @@ public class Runner {
         
         System.out.println("Sensitivity to individual distribution ...");
         Individuals exp1 = new Individuals();
-        exp1.addMetric("True Diversity", new QuadraticMean());
+        exp1.addMetric("True Diversity (theta = 2)", new TrueDiversity(2.));
+        exp1.addMetric("True Diversity (theta = 5)", new TrueDiversity(5.));
         exp1.addMetric("Shannon Index", new ShannonIndex());
         exp1.addMetric("Gini-Simpson Index", new GiniSimpsonIndex());
 
@@ -61,7 +62,8 @@ public class Runner {
         System.out.println("Sensitivity to species count variations ...");
         
         Species exp2 = new Species();
-        exp2.addMetric("True Diversity", new QuadraticMean());
+        exp2.addMetric("True Diversity (theta = 2)", new TrueDiversity(2.));
+        exp2.addMetric("True Diversity (theta = 5)", new TrueDiversity(5.));
         exp2.addMetric("Shannon Index", new ShannonIndex());
         exp2.addMetric("Gini-Simpson Index", new GiniSimpsonIndex());
 

@@ -35,7 +35,7 @@
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -62,7 +62,7 @@ public class EvaluationTest extends TestCase {
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
 
-        Case c = new Case(p, 0.5, new QuadraticMean());
+        Case c = new Case(p, 0.5, new TrueDiversity());
         final Evaluation e1 = c.evaluate(p);
         final Evaluation e2 = c.evaluate(p);
         assertTrue(
@@ -89,7 +89,7 @@ public class EvaluationTest extends TestCase {
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
 
-        final Case c = new Case(p, 0.5, new QuadraticMean());
+        final Case c = new Case(p, 0.5, new TrueDiversity());
 
         final Population p2 = new Population();
         p2.addSpecie("Lion", 6);
@@ -131,7 +131,7 @@ public class EvaluationTest extends TestCase {
         final Population p = new Population();
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
-        final Case c = new Case(p, 0.5, new QuadraticMean());
+        final Case c = new Case(p, 0.5, new TrueDiversity());
 
         final Evaluation result = c.evaluate(p);
         final String text = result.toString();

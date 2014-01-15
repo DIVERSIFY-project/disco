@@ -18,7 +18,7 @@
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import eu.diversify.disco.population.diversity.ShannonIndex;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -43,7 +43,7 @@ public class CaseTest extends TestCase {
         p.addSpecie("Lion", 10);
         p.addSpecie("Snails", 23);
 
-        Case c1 = new Case(p, 0.5, new QuadraticMean());
+        Case c1 = new Case(p, 0.5, new TrueDiversity());
         assertTrue(
                 "A case shall be equal to itself",
                 c1.equals(c1));
@@ -52,7 +52,7 @@ public class CaseTest extends TestCase {
         p2.addSpecie("Lion", 10);
         p2.addSpecie("Snails", 23);
 
-        Case c2 = new Case(p2, 0.5, new QuadraticMean());
+        Case c2 = new Case(p2, 0.5, new TrueDiversity());
         assertTrue(
                 "A case shall be equal to an equivalent case",
                 c1.equals(c2));
@@ -62,12 +62,12 @@ public class CaseTest extends TestCase {
         p3.addSpecie("Snails", 23);
         p3.addSpecie("Hippos", 45);
 
-        Case c3 = new Case(p3, 0.5, new QuadraticMean());
+        Case c3 = new Case(p3, 0.5, new TrueDiversity());
         assertFalse(
                 "Two cases shall not be equal if their population differ",
                 c1.equals(c3));
 
-        Case c4 = new Case(p2, 0.6, new QuadraticMean());
+        Case c4 = new Case(p2, 0.6, new TrueDiversity());
         assertFalse(
                 "Two cases shall not be equal if their reference differ",
                 c1.equals(c4));
@@ -86,7 +86,7 @@ public class CaseTest extends TestCase {
         p.addSpecie("Lion", 10);
         p.addSpecie("Snails", 23);
 
-        Case c1 = new Case(p, 0.5, new QuadraticMean());
+        Case c1 = new Case(p, 0.5, new TrueDiversity());
 
         final Population p2 = new Population();
         p2.addSpecie("Lion", 10);

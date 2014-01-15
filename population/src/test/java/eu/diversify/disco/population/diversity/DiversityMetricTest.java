@@ -133,8 +133,8 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testEquality() {
-        DiversityMetric m1 = new QuadraticMean();
-        DiversityMetric m2 = new QuadraticMean();
+        DiversityMetric m1 = new TrueDiversity();
+        DiversityMetric m2 = new TrueDiversity();
         DiversityMetric m3 = new ShannonIndex();
 
         assertTrue(

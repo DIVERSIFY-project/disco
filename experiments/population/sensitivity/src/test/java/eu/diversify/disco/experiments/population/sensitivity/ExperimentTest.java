@@ -19,7 +19,7 @@
 package eu.diversify.disco.experiments.population.sensitivity;
 
 import eu.diversify.disco.population.diversity.GiniSimpsonIndex;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import eu.diversify.disco.population.diversity.ShannonIndex;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,7 +47,7 @@ public class ExperimentTest extends TestCase {
     public void testSensitivityToIndividuals() throws FileNotFoundException {
         Individuals experiment = new Individuals();
         
-        experiment.addMetric("Quadratic Mean", new QuadraticMean());
+        experiment.addMetric("Quadratic Mean", new TrueDiversity());
         experiment.addMetric("Shannon Index", new ShannonIndex());
         experiment.addMetric("Gini-Simpson Index", new GiniSimpsonIndex());
         
@@ -72,7 +72,7 @@ public class ExperimentTest extends TestCase {
     public void testSpeciesCountSensitivity() throws FileNotFoundException {
         Species experiment = new Species();
         
-        experiment.addMetric("Quadratic Mean", new QuadraticMean());
+        experiment.addMetric("Quadratic Mean", new TrueDiversity());
         experiment.addMetric("Shannon Index", new ShannonIndex());
         experiment.addMetric("Gini-Simpson Index", new GiniSimpsonIndex());
         

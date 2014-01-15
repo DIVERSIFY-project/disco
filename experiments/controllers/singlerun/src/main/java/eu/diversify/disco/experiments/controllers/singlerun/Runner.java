@@ -21,7 +21,7 @@ package eu.diversify.disco.experiments.controllers.singlerun;
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.HillClimber;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.FileNotFoundException;
 
 /**
@@ -58,8 +58,8 @@ public class Runner {
         
         experiment.setInitialPopulation(population);
         experiment.setReference(0.14);
-        experiment.addController("Hill Climber", new HillClimber(new QuadraticMean()));
-        experiment.addController("Adaptive Hill Climber", new AdaptiveHillClimber(new QuadraticMean()));
+        experiment.addController("Hill Climber", new HillClimber(new TrueDiversity()));
+        experiment.addController("Adaptive Hill Climber", new AdaptiveHillClimber(new TrueDiversity()));
         
         experiment.run();
         try {

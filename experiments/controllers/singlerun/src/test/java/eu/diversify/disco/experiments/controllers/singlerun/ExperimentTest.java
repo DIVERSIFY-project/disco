@@ -20,7 +20,7 @@ package eu.diversify.disco.experiments.controllers.singlerun;
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.HillClimber;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.QuadraticMean;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import junit.framework.TestCase;
@@ -43,8 +43,8 @@ public class ExperimentTest extends TestCase {
         Experiment runner = new Experiment();
 
         // Set the runners
-        runner.addController("Hill Climbing", new HillClimber(new QuadraticMean()));
-        runner.addController("Adaptive Hill Climbing", new AdaptiveHillClimber(new QuadraticMean()));
+        runner.addController("Hill Climbing", new HillClimber(new TrueDiversity()));
+        runner.addController("Adaptive Hill Climbing", new AdaptiveHillClimber(new TrueDiversity()));
         assertEquals(
                 "Wrong set of controllers",
                 2,
