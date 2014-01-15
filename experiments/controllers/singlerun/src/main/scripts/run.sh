@@ -24,6 +24,6 @@
 #
 
 
-java -cp ".\bin\controller-0.1-SNAPSHOT.jar:.\bin\population-0.1-SNAPSHOT.jar:.\bin\experiments.controllers.singlerun-0.1-SNAPSHOT.jar" eu.diversify.disco.experiments.controllers.singlerun.Runner
+java -cp "./bin/controller-0.1-SNAPSHOT.jar:./bin/population-0.1-SNAPSHOT.jar:./bin/experiments.controllers.singlerun-0.1-SNAPSHOT.jar" eu.diversify.disco.experiments.controllers.singlerun.Runner
 
-r < view.r
+R CMD BATCH view.r
