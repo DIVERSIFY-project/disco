@@ -15,6 +15,7 @@
   
     <modules>
         <module>controllers</module>
+        <module>population</module>
     </modules>
  
   
