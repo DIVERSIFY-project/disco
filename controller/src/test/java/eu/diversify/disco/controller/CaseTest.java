@@ -20,9 +20,6 @@ package eu.diversify.disco.controller;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import eu.diversify.disco.population.diversity.ShannonIndex;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,13 +78,19 @@ public class CaseTest extends TestCase {
     }
 
     @Test
-    public void test() {
+    public void testUsage() {
         final Population p = new Population();
         p.addSpecie("Lion", 10);
         p.addSpecie("Snails", 23);
 
         Case c1 = new Case(p, 0.5, new TrueDiversity());
-
+        assertEquals(
+                "Wrong initial population",
+                p,
+                c1.getInitialPopulation()
+                );
+        
+        
         final Population p2 = new Population();
         p2.addSpecie("Lion", 10);
         p2.addSpecie("Snails", 22);

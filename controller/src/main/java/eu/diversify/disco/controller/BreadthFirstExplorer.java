@@ -103,15 +103,6 @@ public class BreadthFirstExplorer extends Controller {
         return this.explored;
     }
 
-    /**
-     * Set the set of population evaluated so far
-     *
-     * @param populations the set of population to set
-     */
-    void setExplored(Set<Evaluation> populations) {
-        this.explored.clear();
-        explored.addAll(populations);
-    }
 
     /**
      * @return the frontier populations, whose neighbours have not yet been
@@ -119,15 +110,6 @@ public class BreadthFirstExplorer extends Controller {
      */
     HashSet<Evaluation> getFrontier() {
         return this.frontier;
-    }
-
-    /**
-     * Set the frontier populations, whose neighbours will be evaluated at the
-     * next iteration
-     */
-    void setFrontier(Set<Evaluation> populations) {
-        this.frontier.clear();
-        this.frontier.addAll(populations);
     }
 
     @Override
