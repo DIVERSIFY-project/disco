@@ -25,4 +25,5 @@
 
 java -cp "./bin/controller-0.1-SNAPSHOT.jar:./bin/population-0.1-SNAPSHOT.jar:./bin/experiments.population.sensitivity-0.1-SNAPSHOT.jar" eu.diversify.disco.experiments.population.sensitivity.Runner
 
-R CMD BATCH view.r
+R CMD BATCH view.r 
+
