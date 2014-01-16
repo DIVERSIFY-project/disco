@@ -30,7 +30,7 @@ import java.util.List;
  */
 public abstract class Controller {
 
-    private final DiversityMetric metric;
+    protected final DiversityMetric metric;
 
     /**
      * Create a new controller based on a given diversity metric

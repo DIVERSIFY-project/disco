@@ -36,6 +36,7 @@ package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.TrueDiversity;
+import java.util.HashSet;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -64,6 +65,12 @@ public class EvaluationTest extends TestCase {
 
         Case c = new Case(p, 0.5, new TrueDiversity());
         final Evaluation e1 = c.evaluate(p);
+        assertTrue(
+                "An evaluation should equal itself",
+                e1.equals(e1)
+                );
+        
+        
         final Evaluation e2 = c.evaluate(p);
         assertTrue(
                 "Two evaluations of similar populations for a given case shall be equal",
@@ -104,11 +111,11 @@ public class EvaluationTest extends TestCase {
                 1,
                 e1.getIteration());
 
-        
+
         final Update u = new Update();
         u.setUpdate("Lion", +1);
         u.setUpdate("Sludge", -1);
-        
+
         final Evaluation e2 = e1.refineWith(u);
         assertTrue(
                 "Shall have a previous evaluation",
@@ -127,7 +134,6 @@ public class EvaluationTest extends TestCase {
      */
     @Test
     public void testFormatting() {
-
         final Population p = new Population();
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
@@ -139,5 +145,30 @@ public class EvaluationTest extends TestCase {
                 "Wrong formatting of evaluation",
                 " - Iteration count: 1\n - Population: {Lion: 5, Sludge: 4}\n - Reference: 0.5\n - Diversity: 0.9791177639715973\n - Error: 0.22955383175314326\n",
                 text);
+    }
+
+    /**
+     * Test placing evaluation in a collections
+     */
+    @Test
+    public void testCollectionUse() {
+        final Population p = new Population();
+        p.addSpecie("Lion", 5);
+        p.addSpecie("Sludge", 4);
+        final Case c = new Case(p, 0.5, new TrueDiversity());
+
+        final Evaluation e = c.evaluate(p);
+        final HashSet<Evaluation> set = new HashSet<Evaluation>();
+        set.add(c.evaluate(p));
+
+        assertTrue(
+                "collections do not recognize the same evaluation",
+                set.contains(e));
+
+        assertTrue(
+                "collections do not recognize similar evaluations",
+                set.contains(c.evaluate(p)));
+
+
     }
 }

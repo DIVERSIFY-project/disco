@@ -15,29 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
-import java.io.File;
-import static junit.framework.Assert.assertEquals;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,10 +48,10 @@ public abstract class ControllerTest extends TestCase {
         Controller controller = factory();
 
         Population population = new Population();
-        population.addSpecie("Tiger", 10);
-        population.addSpecie("Sludge", 10);
-        population.addSpecie("Hippopotamus", 10);
-        population.addSpecie("Pig", 10);
+        population.addSpecie("Tiger", 5);
+        population.addSpecie("Sludge", 5);
+        //population.addSpecie("Hippopotamus", 5);
+        //population.addSpecie("Pig", 5);
 
         final double reference = 0.;
         Evaluation result = controller.applyTo(population, reference);
@@ -105,10 +87,10 @@ public abstract class ControllerTest extends TestCase {
         Controller controller = factory();
 
         Population population = new Population();
-        population.addSpecie("Tiger", 40);
+        population.addSpecie("Tiger", 20);
         population.addSpecie("Sludge", 0);
-        population.addSpecie("Hippopotamus", 0);
-        population.addSpecie("Pig", 0);
+        //population.addSpecie("Hippopotamus", 0);
+        //population.addSpecie("Pig", 0);
 
         final double reference = 1.;
         Evaluation result = controller.applyTo(population, reference);

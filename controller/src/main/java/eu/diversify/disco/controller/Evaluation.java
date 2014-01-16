@@ -131,6 +131,15 @@ public class Evaluation {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (this.problem != null ? this.problem.hashCode() : 0);
+        hash = 53 * hash + (this.population != null ? this.population.hashCode() : 0);
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.diversity) ^ (Double.doubleToLongBits(this.diversity) >>> 32));
+        return hash;
+    }
+
+    @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(" - Iteration count: ").append(this.getIteration()).append("\n");
