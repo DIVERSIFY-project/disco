@@ -6,3 +6,5 @@
 /samples/cloudml/target/
 /experiments/controllers/singlerun/target/
 /experiments/population/sensitivity/target/
+/experiments/controllers/singlerun - Copy/target/
+/experiments/controllers/scalability/target/

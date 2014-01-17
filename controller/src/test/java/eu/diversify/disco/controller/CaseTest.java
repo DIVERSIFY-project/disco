@@ -90,6 +90,11 @@ public class CaseTest extends TestCase {
                 c1.getInitialPopulation()
                 );
         
+        assertEquals(
+                "Wrong initial evaluation",
+                c1.evaluate(p),
+                c1.getInitialEvaluation());
+        
         
         final Population p2 = new Population();
         p2.addSpecie("Lion", 10);

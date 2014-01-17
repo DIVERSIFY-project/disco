@@ -106,6 +106,14 @@ public class Case {
         hash = 97 * hash + (this.initialPopulation != null ? this.initialPopulation.hashCode() : 0);
         return hash;
     }
+
+    
+    /**
+     * @return the evaluation of the initial population
+     */
+    public Evaluation getInitialEvaluation() {
+        return this.evaluate(this.initialPopulation);
+    }
     
     
 }

@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
@@ -23,7 +40,6 @@ import eu.diversify.disco.population.diversity.DiversityMetric;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Implementation of a breadth-first search strategy.
@@ -42,6 +58,11 @@ public class BreadthFirstExplorer extends Controller {
     private final HashSet<Evaluation> frontier;
     private Evaluation best = null;
 
+    
+    /**
+     * Create a new BreadthFirstExplorer tailored for a given diversity metric
+     * @param metric the metric of interest
+     */
     public BreadthFirstExplorer(DiversityMetric metric) {
         super(metric);
         this.explored = new HashSet<Evaluation>();
@@ -61,6 +82,12 @@ public class BreadthFirstExplorer extends Controller {
         return best;
     }
 
+    /**
+     * Expand the frontier.
+     *
+     * For each candidate evaluation in the frontier, explore the possible
+     * neighbours, pushing the frontier back for those that brings a benefit.
+     */
     public void pushback() {
         final HashSet<Evaluation> newFrontier = new HashSet<Evaluation>();
         for (Evaluation fp : frontier) {
@@ -70,7 +97,7 @@ public class BreadthFirstExplorer extends Controller {
                     if (!this.explored.contains(next)
                             && !this.frontier.contains(next)) {
                         if (next.getError() < best.getError()) {
-                            best = next;
+                            this.best = next;
                         }
                         newFrontier.add(next);
                     }
@@ -78,8 +105,8 @@ public class BreadthFirstExplorer extends Controller {
             }
             this.explored.add(fp);
         }
-        frontier.clear();
-        frontier.addAll(newFrontier);
+        this.frontier.clear();
+        this.frontier.addAll(newFrontier);
     }
 
     /**
@@ -102,7 +129,6 @@ public class BreadthFirstExplorer extends Controller {
     HashSet<Evaluation> getExplored() {
         return this.explored;
     }
-
 
     /**
      * @return the frontier populations, whose neighbours have not yet been

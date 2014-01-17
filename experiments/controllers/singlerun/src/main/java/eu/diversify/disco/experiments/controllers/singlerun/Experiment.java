@@ -15,10 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.Controller;
@@ -32,8 +29,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- * @author franckc
+ * Run all the control strategies against a single example and retrieve the
+ * resulting trajectories.
+ * 
+ * @author Franck Chauvel
+ * @since 0.1
  */
 public class Experiment {
 

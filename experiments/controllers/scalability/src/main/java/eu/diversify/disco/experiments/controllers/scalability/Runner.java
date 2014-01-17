@@ -16,7 +16,7 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.experiments.controllers.singlerun;
+package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.BreadthFirstExplorer;
@@ -50,30 +50,33 @@ public class Runner {
         System.out.println(DISCLAIMER);
         System.out.println("");
 
-        Experiment experiment = new Experiment();
-        
-        final Population population = new Population();
-        population.addSpecie("Specie no. 1", 10);
-        population.addSpecie("Specie no. 2", 12);
-        population.addSpecie("Specie no. 3", 8);
-        
-        Case problem = new Case(population, 0.25, new TrueDiversity());
-        
-        System.out.println("Initial Evaluation:");
-        System.out.println(problem.getInitialEvaluation());
-        
-        experiment.setInitialPopulation(population);
-        experiment.setReference(0.25);
-        experiment.addController("Hill Climber", new HillClimber(new TrueDiversity()));
-        experiment.addController("Adaptive Hill Climber", new AdaptiveHillClimber(new TrueDiversity()));
-        experiment.addController("Breadth-First Search", new BreadthFirstExplorer(new TrueDiversity()));
-        
-        experiment.run();
+        System.out.println("Sensitivity to species count:");
+        Experiment exp1 = new Experiment();
+        exp1.setIndividualsCount(new int[]{2000});
+        exp1.setSpeciesCounts(new int[]{2, 4, 8, 16, 32, 64 /**, 128, 256, 512, 1024 **/});
+        exp1.addController("Hill Climber", new HillClimber(new TrueDiversity()));
+        exp1.addController("Adaptive Hill Climber", new AdaptiveHillClimber(new TrueDiversity()));               
+        exp1.run();
         try {
-            experiment.saveResultsAs("results.csv"); 
+            exp1.saveResultsAs("species-scalability.csv"); 
         
         } catch (FileNotFoundException ex) {
-            System.out.println("ERROR: Unable to write 'result.csv'");
+            System.out.println("ERROR: Unable to write 'species-scalability.csv'");
+        }
+        
+        
+        System.out.println("Sensitivity to species count:");
+        Experiment exp2 = new Experiment();
+        exp2.setIndividualsCount(new int[]{25, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800});
+        exp2.setSpeciesCounts(new int[]{25});
+        exp2.addController("Hill Climber", new HillClimber(new TrueDiversity()));
+        exp2.addController("Adaptive Hill Climber", new AdaptiveHillClimber(new TrueDiversity()));               
+        exp2.run();
+        try {
+            exp2.saveResultsAs("individuals-scalability.csv"); 
+        
+        } catch (FileNotFoundException ex) {
+            System.out.println("ERROR: Unable to write 'individuals-scalability.csv'");
         }
         
         
