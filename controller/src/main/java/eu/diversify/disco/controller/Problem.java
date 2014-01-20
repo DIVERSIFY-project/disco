@@ -29,7 +29,7 @@ import eu.diversify.disco.population.diversity.DiversityMetric;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Case {
+public class Problem {
 
     private final DiversityMetric metric;
     private final double reference;
@@ -43,7 +43,7 @@ public class Case {
      * @param reference the reference diversity level
      * @param metric the diversity metric of interest
      */
-    public Case(Population initialPopulation, double reference, DiversityMetric metric) {
+    public Problem(Population initialPopulation, double reference, DiversityMetric metric) {
         this.metric = metric;
         this.reference = reference;
         this.initialPopulation = initialPopulation;
@@ -77,10 +77,10 @@ public class Case {
      * @param p the population to evaluate
      * @return an evaluation of the given population
      */
-    public Evaluation evaluate(Population p) {
+    public Solution evaluate(Population p) {
         final double diversity = this.metric.normalised(p);
         final double error = Math.pow(this.reference - diversity, 2);
-        return new Evaluation(this, p, diversity, error);
+        return new Solution(this, p, diversity, error);
     }
     
     
@@ -89,8 +89,8 @@ public class Case {
     @Override
     public boolean equals(Object o) {
         boolean result = false;
-        if (o instanceof Case) {
-            Case c = (Case) o;
+        if (o instanceof Problem) {
+            Problem c = (Problem) o;
             result = this.initialPopulation.equals(c.initialPopulation) 
                     && this.reference == c.reference 
                     && this.metric.equals(c.metric);
@@ -111,7 +111,7 @@ public class Case {
     /**
      * @return the evaluation of the initial population
      */
-    public Evaluation getInitialEvaluation() {
+    public Solution getInitialEvaluation() {
         return this.evaluate(this.initialPopulation);
     }
     

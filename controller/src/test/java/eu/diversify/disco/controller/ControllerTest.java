@@ -15,11 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +53,7 @@ public abstract class ControllerTest extends TestCase {
     /**
      * @return a fresh instance of the controller to test.
      */
-    public abstract Controller factory();
+    public abstract IterativeSearch factory();
 
     /**
      * Check that the controller is able to drop the diversity to its lowest
@@ -45,16 +61,16 @@ public abstract class ControllerTest extends TestCase {
      */
     @Test
     public void testMinimizeDiversity() {
-        Controller controller = factory();
+        IterativeSearch controller = factory();
 
         Population population = new Population();
         population.addSpecie("Tiger", 5);
         population.addSpecie("Sludge", 5);
-        //population.addSpecie("Hippopotamus", 5);
-        //population.addSpecie("Pig", 5);
-
+    
         final double reference = 0.;
-        Evaluation result = controller.applyTo(population, reference);
+
+        final Problem problem = new Problem(population, reference, new TrueDiversity());
+        Solution result = controller.applyTo(problem);
         assertEquals(
                 "Illegal update of the population size",
                 population.getIndividualCount(),
@@ -84,16 +100,17 @@ public abstract class ControllerTest extends TestCase {
      */
     @Test
     public void testMaximizeDiversity() {
-        Controller controller = factory();
+        IterativeSearch controller = factory();
 
         Population population = new Population();
         population.addSpecie("Tiger", 20);
         population.addSpecie("Sludge", 0);
-        //population.addSpecie("Hippopotamus", 0);
-        //population.addSpecie("Pig", 0);
-
+        
         final double reference = 1.;
-        Evaluation result = controller.applyTo(population, reference);
+        
+        final Problem problem = new Problem(population, reference, new TrueDiversity());
+        Solution result = controller.applyTo(problem);
+        
         assertEquals(
                 "Illegal update of the population size",
                 population.getIndividualCount(),
@@ -116,6 +133,4 @@ public abstract class ControllerTest extends TestCase {
                 result.getError(),
                 1e-10);
     }
-
-
 }

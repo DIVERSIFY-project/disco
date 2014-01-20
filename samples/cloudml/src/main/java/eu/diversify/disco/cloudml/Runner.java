@@ -21,9 +21,10 @@ package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.controller.Controller;
-import eu.diversify.disco.controller.Evaluation;
+import eu.diversify.disco.controller.IterativeSearch;
+import eu.diversify.disco.controller.Solution;
 import eu.diversify.disco.controller.HillClimber;
+import eu.diversify.disco.controller.Problem;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
@@ -45,10 +46,10 @@ public class Runner
         Transformation transformation = new Transformation();
         Population population = transformation.forward(model);
         
-        Controller controller = new HillClimber(new TrueDiversity());
+        IterativeSearch controller = new HillClimber();
         
-        final double reference = 0.25; // The diversity level we aim at
-        Evaluation result = controller.applyTo(population, reference);
+        final Problem problem = new Problem(population, 0.25, new TrueDiversity());
+        Solution result = controller.applyTo(problem);
         
         transformation.backward(model, result.getPopulation());
     }

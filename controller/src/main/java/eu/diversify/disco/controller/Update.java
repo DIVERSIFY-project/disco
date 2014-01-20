@@ -122,4 +122,20 @@ public class Update {
     public boolean contains(String specie, int update) {
         return this.getUpdate(specie) == update;
     }
+
+    /**
+     * Scale this update by the given factor. A new update object is return
+     * while this update is left unchanged.
+     *
+     * @param factor the factor by which this update must be scaled
+     * @return a new update object
+     */
+    public Update times(int factor) {
+        Update result = new Update();
+        for (String key: this.updates.keySet()) {
+            final int update = this.getUpdate(key);
+            result.setUpdate(key, update * factor);
+        }
+        return result;
+    }
 }

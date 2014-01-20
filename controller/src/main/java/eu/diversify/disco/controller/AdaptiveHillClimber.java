@@ -33,7 +33,7 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class AdaptiveHillClimber extends Controller {
+public class AdaptiveHillClimber extends IterativeSearch {
 
     private int stepSize;
 
@@ -43,15 +43,14 @@ public class AdaptiveHillClimber extends Controller {
      *
      * @param metric the diversity metric to use
      */
-    public AdaptiveHillClimber(DiversityMetric metric) {
-        super(metric);
+    public AdaptiveHillClimber() {
         this.stepSize = 1;
     }
 
     
     @Override
-    protected Evaluation search(Evaluation current) {
-        Evaluation output = refine(current);
+    protected Solution search(Solution current) {
+        Solution output = refine(current);
         if (output.getError() >= current.getError()) {
             if (this.stepSize > 1) {
                 this.stepSize /= 2;

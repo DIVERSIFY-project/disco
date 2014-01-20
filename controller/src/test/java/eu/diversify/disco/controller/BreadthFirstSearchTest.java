@@ -21,8 +21,6 @@ package eu.diversify.disco.controller;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.HashSet;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,8 +35,8 @@ import org.junit.runners.JUnit4;
 public class BreadthFirstSearchTest extends ControllerTest {
 
     @Override
-    public Controller factory() {
-        return new BreadthFirstExplorer(new TrueDiversity());
+    public IterativeSearch factory() {
+        return new BreadthFirstExplorer();
     }
     
     
@@ -47,13 +45,13 @@ public class BreadthFirstSearchTest extends ControllerTest {
      */
     @Test
     public void testPushback() {
-        final BreadthFirstExplorer explorer = new BreadthFirstExplorer(new TrueDiversity());
+        final BreadthFirstExplorer explorer = new BreadthFirstExplorer();
         
         final Population p1 = new Population();
         p1.addSpecie("sp1", 5);
         p1.addSpecie("sp2", 5);
                 
-        Case c1 = new Case(p1, 0.25, new TrueDiversity());
+        Problem c1 = new Problem(p1, 0.25, new TrueDiversity());
 
         
         explorer.reset(c1.evaluate(p1));

@@ -82,8 +82,8 @@ public class ExperimentTest extends TestCase {
         Experiment experiment = new Experiment();
 
         // Set the runners
-        experiment.addController("Hill Climbing", new HillClimber(new TrueDiversity()));
-        experiment.addController("Adaptive Hill Climbing", new AdaptiveHillClimber(new TrueDiversity()));
+        experiment.addController("Hill Climbing", new HillClimber());
+        experiment.addController("Adaptive Hill Climbing", new AdaptiveHillClimber());
         assertEquals(
                 "Wrong set of controllers",
                 2,

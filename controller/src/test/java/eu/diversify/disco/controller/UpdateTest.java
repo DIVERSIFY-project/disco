@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
@@ -52,6 +36,28 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class UpdateTest extends TestCase {
 
+    
+    public void testUpdateMultiplication() {        
+        Update u = new Update();
+        u.setUpdate("Lion", 3);
+        u.setUpdate("Tiger", 5);
+        
+        final Update u2 = u.times(4);
+        assertEquals(
+                "Wrong number of updates after multiplication",
+                2,
+                u2.getImpactedSpecies().size());
+        assertEquals(
+                "Wrong update multiplcation",
+                12,
+                u2.getUpdate("Lion"));
+        assertEquals(
+                "Wrong update multiplication",
+                20,
+                u2.getUpdate("Tiger"));
+        
+    }
+    
     /**
      * Test the retrieval of local updates
      */

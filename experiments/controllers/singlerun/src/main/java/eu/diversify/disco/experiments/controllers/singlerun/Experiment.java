@@ -18,9 +18,11 @@
 
 package eu.diversify.disco.experiments.controllers.singlerun;
 
-import eu.diversify.disco.controller.Controller;
-import eu.diversify.disco.controller.Evaluation;
+import eu.diversify.disco.controller.IterativeSearch;
+import eu.diversify.disco.controller.Problem;
+import eu.diversify.disco.controller.Solution;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -37,8 +39,8 @@ import java.util.Map;
  */
 public class Experiment {
 
-    private final HashMap<String, Controller> controllers;
-    private final HashMap<String, Evaluation> results;
+    private final HashMap<String, IterativeSearch> controllers;
+    private final HashMap<String, Solution> results;
     private double reference;
     private Population population;
 
@@ -49,8 +51,8 @@ public class Experiment {
      * 1.
      */
     public Experiment() {
-        this.controllers = new HashMap<String, Controller>();
-        this.results = new HashMap<String, Evaluation>();
+        this.controllers = new HashMap<String, IterativeSearch>();
+        this.results = new HashMap<String, Solution>();
     }
 
     /**
@@ -59,7 +61,7 @@ public class Experiment {
      * @param name the name of the controller
      * @param controller the controller
      */
-    public void addController(String name, Controller controller) {
+    public void addController(String name, IterativeSearch controller) {
         this.controllers.put(name, controller);
     }
 
@@ -67,7 +69,7 @@ public class Experiment {
      * @return the map of controllers and the name to which they are associated
      * with
      */
-    public Map<String, Controller> getControllers() {
+    public Map<String, IterativeSearch> getControllers() {
         return Collections.unmodifiableMap(this.controllers);
     }
 
@@ -109,8 +111,9 @@ public class Experiment {
     public void run() {
         for (String key : this.controllers.keySet()) {
             System.out.println("Running '" + key + "'");
-            final Controller controller = this.controllers.get(key);
-            final Evaluation eval = controller.applyTo(this.population, this.reference);
+            final IterativeSearch controller = this.controllers.get(key);
+            final Problem problem = new Problem(this.population, this.reference, new TrueDiversity());
+            final Solution eval = controller.applyTo(problem);
             System.out.println(eval);
             this.results.put(key, eval);
         }
@@ -128,7 +131,7 @@ public class Experiment {
         out.println("controller, step, diversity");
 
         for (String key : this.results.keySet()) {
-            Evaluation result = this.results.get(key);
+            Solution result = this.results.get(key);
             while (result.hasPrevious()) {
                 out.printf("%s, %d, %2.2e\n", key, result.getIteration(), result.getDiversity());
                 result = result.getPrevious();

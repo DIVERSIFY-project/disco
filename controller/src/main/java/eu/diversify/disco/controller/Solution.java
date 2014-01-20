@@ -27,10 +27,10 @@ import eu.diversify.disco.population.Population;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Evaluation {
+public class Solution {
 
-    private final Case problem;
-    private Evaluation previous;
+    private final Problem problem;
+    private Solution previous;
     private final Population population;
     private final double diversity;
     private final double error;
@@ -43,7 +43,7 @@ public class Evaluation {
      * @param reference the reference value
      * @param diversity the diversity of the resulting population
      */
-    public Evaluation(Case problem, Population population, double diversity, double error) {
+    public Solution(Problem problem, Population population, double diversity, double error) {
         this.problem = problem;
         this.previous = null;
         this.population = population;
@@ -58,8 +58,8 @@ public class Evaluation {
      * @return the evaluation (a newly created object) of the population
      * resulting from applying the given update on the population.
      */
-    public Evaluation refineWith(Update u) {
-        Evaluation evaluation = problem.evaluate(u.applyTo(population));
+    public Solution refineWith(Update u) {
+        Solution evaluation = problem.evaluate(u.applyTo(population));
         evaluation.previous = this;
         return evaluation;
     }
@@ -76,7 +76,7 @@ public class Evaluation {
     /**
      * @return the previous evaluation which was refined to obtained this one.
      */
-    public Evaluation getPrevious() {
+    public Solution getPrevious() {
         return this.previous;
     }
 
@@ -122,8 +122,8 @@ public class Evaluation {
     @Override
     public boolean equals(Object o) {
         boolean result = false;
-        if (o instanceof Evaluation) {
-            final Evaluation evaluation = (Evaluation) o;
+        if (o instanceof Solution) {
+            final Solution evaluation = (Solution) o;
             result = evaluation.problem.equals(problem)
                     && evaluation.population.equals(population);
         }

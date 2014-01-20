@@ -33,15 +33,14 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class HillClimber extends Controller {
+public class HillClimber extends IterativeSearch {
 
     /**
      * Create a new hill climber controller
      *
      * @param metric the diversity metric that the controller shall use
      */
-    public HillClimber(DiversityMetric metric) {
-        super(metric);
+    public HillClimber() {
     }
 
     @Override
@@ -61,4 +60,5 @@ public class HillClimber extends Controller {
         }
         return updates;
     }
+    
 }

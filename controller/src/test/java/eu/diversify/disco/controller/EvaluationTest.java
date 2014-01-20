@@ -63,15 +63,15 @@ public class EvaluationTest extends TestCase {
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
 
-        Case c = new Case(p, 0.5, new TrueDiversity());
-        final Evaluation e1 = c.evaluate(p);
+        Problem c = new Problem(p, 0.5, new TrueDiversity());
+        final Solution e1 = c.evaluate(p);
         assertTrue(
                 "An evaluation should equal itself",
                 e1.equals(e1)
                 );
         
         
-        final Evaluation e2 = c.evaluate(p);
+        final Solution e2 = c.evaluate(p);
         assertTrue(
                 "Two evaluations of similar populations for a given case shall be equal",
                 e1.equals(e2));
@@ -79,7 +79,7 @@ public class EvaluationTest extends TestCase {
         final Population p2 = new Population();
         p2.addSpecie("Lion", 6);
         p2.addSpecie("Sludge", 3);
-        final Evaluation e3 = c.evaluate(p2);
+        final Solution e3 = c.evaluate(p2);
         assertFalse(
                 "Two evaluations of two different populations shall not be equal",
                 e1.equals(e3));
@@ -96,13 +96,13 @@ public class EvaluationTest extends TestCase {
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
 
-        final Case c = new Case(p, 0.5, new TrueDiversity());
+        final Problem c = new Problem(p, 0.5, new TrueDiversity());
 
         final Population p2 = new Population();
         p2.addSpecie("Lion", 6);
         p2.addSpecie("Sludge", 3);
 
-        final Evaluation e1 = c.evaluate(p2);
+        final Solution e1 = c.evaluate(p2);
         assertFalse(
                 "Shall not have a previous evaluation",
                 e1.hasPrevious());
@@ -116,7 +116,7 @@ public class EvaluationTest extends TestCase {
         u.setUpdate("Lion", +1);
         u.setUpdate("Sludge", -1);
 
-        final Evaluation e2 = e1.refineWith(u);
+        final Solution e2 = e1.refineWith(u);
         assertTrue(
                 "Shall have a previous evaluation",
                 e2.hasPrevious());
@@ -137,9 +137,9 @@ public class EvaluationTest extends TestCase {
         final Population p = new Population();
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
-        final Case c = new Case(p, 0.5, new TrueDiversity());
+        final Problem c = new Problem(p, 0.5, new TrueDiversity());
 
-        final Evaluation result = c.evaluate(p);
+        final Solution result = c.evaluate(p);
         final String text = result.toString();
         assertEquals(
                 "Wrong formatting of evaluation",
@@ -155,10 +155,10 @@ public class EvaluationTest extends TestCase {
         final Population p = new Population();
         p.addSpecie("Lion", 5);
         p.addSpecie("Sludge", 4);
-        final Case c = new Case(p, 0.5, new TrueDiversity());
+        final Problem c = new Problem(p, 0.5, new TrueDiversity());
 
-        final Evaluation e = c.evaluate(p);
-        final HashSet<Evaluation> set = new HashSet<Evaluation>();
+        final Solution e = c.evaluate(p);
+        final HashSet<Solution> set = new HashSet<Solution>();
         set.add(c.evaluate(p));
 
         assertTrue(

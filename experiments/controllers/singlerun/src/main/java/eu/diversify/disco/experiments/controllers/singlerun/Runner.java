@@ -20,7 +20,7 @@ package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.BreadthFirstExplorer;
-import eu.diversify.disco.controller.Case;
+import eu.diversify.disco.controller.Problem;
 import eu.diversify.disco.controller.HillClimber;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.TrueDiversity;
@@ -57,16 +57,16 @@ public class Runner {
         population.addSpecie("Specie no. 2", 12);
         population.addSpecie("Specie no. 3", 8);
         
-        Case problem = new Case(population, 0.25, new TrueDiversity());
+        Problem problem = new Problem(population, 0.25, new TrueDiversity());
         
         System.out.println("Initial Evaluation:");
         System.out.println(problem.getInitialEvaluation());
         
         experiment.setInitialPopulation(population);
         experiment.setReference(0.25);
-        experiment.addController("Hill Climber", new HillClimber(new TrueDiversity()));
-        experiment.addController("Adaptive Hill Climber", new AdaptiveHillClimber(new TrueDiversity()));
-        experiment.addController("Breadth-First Search", new BreadthFirstExplorer(new TrueDiversity()));
+        experiment.addController("Hill Climber", new HillClimber());
+        experiment.addController("Adaptive Hill Climber", new AdaptiveHillClimber());
+        experiment.addController("Breadth-First Search", new BreadthFirstExplorer());
         
         experiment.run();
         try {

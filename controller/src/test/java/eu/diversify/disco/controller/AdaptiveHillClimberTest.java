@@ -28,8 +28,8 @@ import eu.diversify.disco.population.diversity.TrueDiversity;
 public class AdaptiveHillClimberTest extends ControllerTest {
 
     @Override
-    public Controller factory() {
-        return new AdaptiveHillClimber(new TrueDiversity());
+    public IterativeSearch factory() {
+        return new AdaptiveHillClimber();
     }
     
 }

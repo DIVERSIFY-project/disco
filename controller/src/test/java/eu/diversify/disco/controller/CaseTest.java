@@ -40,7 +40,7 @@ public class CaseTest extends TestCase {
         p.addSpecie("Lion", 10);
         p.addSpecie("Snails", 23);
 
-        Case c1 = new Case(p, 0.5, new TrueDiversity());
+        Problem c1 = new Problem(p, 0.5, new TrueDiversity());
         assertTrue(
                 "A case shall be equal to itself",
                 c1.equals(c1));
@@ -49,7 +49,7 @@ public class CaseTest extends TestCase {
         p2.addSpecie("Lion", 10);
         p2.addSpecie("Snails", 23);
 
-        Case c2 = new Case(p2, 0.5, new TrueDiversity());
+        Problem c2 = new Problem(p2, 0.5, new TrueDiversity());
         assertTrue(
                 "A case shall be equal to an equivalent case",
                 c1.equals(c2));
@@ -59,17 +59,17 @@ public class CaseTest extends TestCase {
         p3.addSpecie("Snails", 23);
         p3.addSpecie("Hippos", 45);
 
-        Case c3 = new Case(p3, 0.5, new TrueDiversity());
+        Problem c3 = new Problem(p3, 0.5, new TrueDiversity());
         assertFalse(
                 "Two cases shall not be equal if their population differ",
                 c1.equals(c3));
 
-        Case c4 = new Case(p2, 0.6, new TrueDiversity());
+        Problem c4 = new Problem(p2, 0.6, new TrueDiversity());
         assertFalse(
                 "Two cases shall not be equal if their reference differ",
                 c1.equals(c4));
 
-        Case c5 = new Case(p2, 0.5, new ShannonIndex());
+        Problem c5 = new Problem(p2, 0.5, new ShannonIndex());
         assertFalse(
                 "Two cases shall not be equal if their metric differ",
                 c1.equals(c5));
@@ -83,7 +83,7 @@ public class CaseTest extends TestCase {
         p.addSpecie("Lion", 10);
         p.addSpecie("Snails", 23);
 
-        Case c1 = new Case(p, 0.5, new TrueDiversity());
+        Problem c1 = new Problem(p, 0.5, new TrueDiversity());
         assertEquals(
                 "Wrong initial population",
                 p,
@@ -100,7 +100,7 @@ public class CaseTest extends TestCase {
         p2.addSpecie("Lion", 10);
         p2.addSpecie("Snails", 22);
 
-        Evaluation e1 = c1.evaluate(p2);
+        Solution e1 = c1.evaluate(p2);
         assertEquals(
                 "Wrong error",
                 e1.getError(),

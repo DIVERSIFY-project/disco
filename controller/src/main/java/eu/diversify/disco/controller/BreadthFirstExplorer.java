@@ -15,28 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.controller;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.Specie;
-import eu.diversify.disco.population.diversity.DiversityMetric;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,33 +35,28 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class BreadthFirstExplorer extends Controller {
+public class BreadthFirstExplorer extends IterativeSearch {
 
-    private final HashSet<Evaluation> explored;
-    private final HashSet<Evaluation> frontier;
-    private Evaluation best = null;
+    private final HashSet<Solution> explored;
+    private final HashSet<Solution> frontier;
+    private Solution best = null;
 
     
     /**
      * Create a new BreadthFirstExplorer tailored for a given diversity metric
      * @param metric the metric of interest
      */
-    public BreadthFirstExplorer(DiversityMetric metric) {
-        super(metric);
-        this.explored = new HashSet<Evaluation>();
-        this.frontier = new HashSet<Evaluation>();
+    public BreadthFirstExplorer() {
+        this.explored = new HashSet<Solution>();
+        this.frontier = new HashSet<Solution>();
     }
 
     @Override
-    public Evaluation applyTo(Population population, double reference) {
-        Case problem = new Case(population, reference, this.metric);
-
-        reset(problem.evaluate(population));
-
+    public Solution applyTo(Problem problem) {
+        reset(problem.getInitialEvaluation());
         while (!frontier.isEmpty()) {
             pushback();
         }
-
         return best;
     }
 
@@ -89,10 +67,10 @@ public class BreadthFirstExplorer extends Controller {
      * neighbours, pushing the frontier back for those that brings a benefit.
      */
     public void pushback() {
-        final HashSet<Evaluation> newFrontier = new HashSet<Evaluation>();
-        for (Evaluation fp : frontier) {
+        final HashSet<Solution> newFrontier = new HashSet<Solution>();
+        for (Solution fp : frontier) {
             for (Update update : getLegalUpdates(fp.getPopulation())) {
-                final Evaluation next = fp.refineWith(update);
+                final Solution next = fp.refineWith(update);
                 if (next.getError() < fp.getError()) {
                     if (!this.explored.contains(next)
                             && !this.frontier.contains(next)) {
@@ -116,7 +94,7 @@ public class BreadthFirstExplorer extends Controller {
      *
      * @param seed the evaluation to start from
      */
-    void reset(Evaluation seed) {
+    void reset(Solution seed) {
         this.best = seed;
         this.explored.clear();
         this.frontier.clear();
@@ -126,7 +104,7 @@ public class BreadthFirstExplorer extends Controller {
     /**
      * @return the set of population evaluated so far
      */
-    HashSet<Evaluation> getExplored() {
+    HashSet<Solution> getExplored() {
         return this.explored;
     }
 
@@ -134,7 +112,7 @@ public class BreadthFirstExplorer extends Controller {
      * @return the frontier populations, whose neighbours have not yet been
      * evaluated
      */
-    HashSet<Evaluation> getFrontier() {
+    HashSet<Solution> getFrontier() {
         return this.frontier;
     }
 
