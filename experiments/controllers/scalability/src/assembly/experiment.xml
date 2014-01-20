@@ -42,8 +42,9 @@
                 <include>view.r</include>
                 <include>run.bat</include>
                 <include>run.sh</include>
+                <include>setup_species.yml</include>
+                <include>setup_individuals.yml</include>
             </includes>
-            <lineEnding>dos</lineEnding>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}</directory>

@@ -24,6 +24,6 @@
 
 @echo off
 
-java -cp .\bin\controller-0.1-SNAPSHOT.jar;.\bin\population-0.1-SNAPSHOT.jar;.\bin\experiments.controllers.scalability-0.1-SNAPSHOT.jar eu.diversify.disco.experiments.controllers.scalability.Runner
+java -cp .\bin\controller-0.1-SNAPSHOT.jar;.\bin\snakeyaml-1.13.jar;.\bin\population-0.1-SNAPSHOT.jar;.\bin\experiments.controllers.scalability-0.1-SNAPSHOT.jar eu.diversify.disco.experiments.controllers.scalability.Runner
 
 r CMD BATCH --vanilla --slave view.r

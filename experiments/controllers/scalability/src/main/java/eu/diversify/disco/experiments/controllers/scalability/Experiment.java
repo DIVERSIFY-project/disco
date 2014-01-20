@@ -15,28 +15,55 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.controllers.scalability;
 
+import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.Controller;
-import eu.diversify.disco.controller.Evaluation;
+import eu.diversify.disco.controller.HillClimber;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
  * Evaluate the sensitivity of the response time against an increase of the
- * number of specie in the population.
+ * number of specie and/or an increase in the number of individuals in the
+ * population.
  *
  * @author Franck Chauvel
  * @since 0.1
  */
 public class Experiment {
 
+    private static final String HILL_CLIMBING = "HILL_CLIMBING";
+    private static final String ADAPTIVE_HILL_CLIMBING = "ADAPTIVE_HILL_CLIMBING";
+    private static final String BREADTH_SEARCH = "BREADTH_SEARCH";
+    
     private final HashMap<String, Controller> controllers;
     private final ArrayList<Result> results;
     private final ArrayList<Integer> speciesCounts;
@@ -54,6 +81,38 @@ public class Experiment {
         this.speciesCounts.add(2);
         this.speciesCounts.add(4);
         this.results = new ArrayList<Result>();
+    }
+
+    /**
+     * Create a new experiment from a setup file
+     *
+     * @param setupFile the file containing the configuration
+     */
+    public Experiment(String setupFile) throws FileNotFoundException {
+        this.controllers = new HashMap<String, Controller>();
+        this.individualsCount = new ArrayList<Integer>();
+        this.speciesCounts = new ArrayList<Integer>();
+        this.results = new ArrayList<Result>();
+
+        // Load the configuration file
+        final Yaml yaml = new Yaml(new Constructor(Setup.class));
+        Setup setup = (Setup) yaml.load(new FileInputStream(setupFile));
+        this.setIndividualsCount(setup.getIndividualsCounts());
+        this.setSpeciesCounts(setup.getSpeciesCounts());
+        for (String strategy: setup.getStrategies()) {
+            final String escaped = strategy.replaceAll(" ", "_").toUpperCase();
+            if (escaped.equals(HILL_CLIMBING)) {
+                this.addController(strategy, new HillClimber(new TrueDiversity()));
+                
+            } else if (escaped.equals(ADAPTIVE_HILL_CLIMBING)) {
+                this.addController(strategy, new AdaptiveHillClimber(new TrueDiversity()));
+                
+            } else {
+                throw new IllegalArgumentException("Unknown control strategy '" + strategy + "'");
+
+            }
+        }
+
     }
 
     /**
@@ -78,7 +137,7 @@ public class Experiment {
      *
      * @param counts the list of individuals count used in this experiments
      */
-    public void setIndividualsCount(int[] counts) {
+    public void setIndividualsCount(List<Integer> counts) {
         this.individualsCount.clear();
         for (int c : counts) {
             this.individualsCount.add(c);
@@ -90,7 +149,7 @@ public class Experiment {
      *
      * @param counts an array of integer representing the species to be tested
      */
-    public void setSpeciesCounts(int[] counts) {
+    public void setSpeciesCounts(List<Integer> counts) {
         this.speciesCounts.clear();
         for (Integer i : counts) {
             this.speciesCounts.add(i);
@@ -124,7 +183,7 @@ public class Experiment {
                 for (int s = 1; s < speciesCounts.get(i); s++) {
                     population.addSpecie("sp" + (s + 1), 0);
                 }
- 
+
                 // Test the population
                 for (String key : this.controllers.keySet()) {
                     System.out.println(" - Testing '" + key + "' with s = " + this.speciesCounts.get(i) + " & n = " + this.individualsCount.get(j));

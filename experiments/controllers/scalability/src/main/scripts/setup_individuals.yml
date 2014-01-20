@@ -1,0 +1,19 @@
+#
+# Describe the parameters values of the scalability experiments.
+#
+# Franck Chauvel
+#
+
+# WARNING: Some configurations may significantly increase the time needed to run 
+# the experiment
+
+# Set the list of possible control strategies
+strategies:
+  - Hill Climbing
+  - Adaptive Hill Climbing
+  
+# The list of species count values to be testded during the experiment
+speciesCounts: [25]
+
+#The list of individuals counts to be tested during the experiment
+individualsCounts: [25, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800]

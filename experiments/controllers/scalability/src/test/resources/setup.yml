@@ -1,0 +1,16 @@
+#
+# Sample setup file
+#
+# Franck Chauvel
+#
+
+# Set the list of possible control strategies
+strategies:
+  - Hill Climbing
+  - Adaptive Hill Climbing
+  
+# The list of species count values to be testded during the experiment
+speciesCounts: [2, 4, 8, 16, 32, 64]
+
+#The list of individuals counts to be tested during the experiment
+individualsCounts: [100]
