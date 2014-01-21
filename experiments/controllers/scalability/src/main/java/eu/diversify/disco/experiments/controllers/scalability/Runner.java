@@ -36,8 +36,11 @@ package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.HillClimber;
+import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Run the various controllers and measure the number of step they use to
@@ -72,6 +75,9 @@ public class Runner {
 
         } catch (FileNotFoundException ex) {
             System.out.println("ERROR: " + ex.getMessage());
+        
+        } catch (ControllerInstantiationException ex) {
+            System.err.println("ERROR: Unable to instantiate strategy '" + ex.getClassName());
         }
 
 
@@ -83,6 +89,9 @@ public class Runner {
 
         } catch (FileNotFoundException ex) {
             System.out.println("ERROR: " + ex.getMessage());
+        
+        } catch (ControllerInstantiationException ex) {
+            System.err.println("ERROR: Unable to instantiate strategy '" + ex.getClassName());
         }
 
 

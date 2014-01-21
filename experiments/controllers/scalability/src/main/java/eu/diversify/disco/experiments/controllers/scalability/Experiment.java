@@ -35,9 +35,11 @@
 package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
-import eu.diversify.disco.controller.IterativeSearch;
+import eu.diversify.disco.controller.Controller;
+import eu.diversify.disco.controller.ControllerFactory;
 import eu.diversify.disco.controller.HillClimber;
 import eu.diversify.disco.controller.Problem;
+import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
@@ -61,11 +63,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
  */
 public class Experiment {
 
-    private static final String HILL_CLIMBING = "HILL_CLIMBING";
-    private static final String ADAPTIVE_HILL_CLIMBING = "ADAPTIVE_HILL_CLIMBING";
-    private static final String BREADTH_SEARCH = "BREADTH_SEARCH";
     
-    private final HashMap<String, IterativeSearch> controllers;
+    private final HashMap<String, Controller> controllers;
     private final ArrayList<Result> results;
     private final ArrayList<Integer> speciesCounts;
     private final ArrayList<Integer> individualsCount;
@@ -74,7 +73,7 @@ public class Experiment {
      * Create a new experiment
      */
     public Experiment() {
-        this.controllers = new HashMap<String, IterativeSearch>();
+        this.controllers = new HashMap<String, Controller>();
         this.individualsCount = new ArrayList<Integer>();
         this.individualsCount.add(25);
         this.individualsCount.add(50);
@@ -89,8 +88,8 @@ public class Experiment {
      *
      * @param setupFile the file containing the configuration
      */
-    public Experiment(String setupFile) throws FileNotFoundException {
-        this.controllers = new HashMap<String, IterativeSearch>();
+    public Experiment(String setupFile) throws FileNotFoundException, ControllerInstantiationException {
+        this.controllers = new HashMap<String, Controller>();
         this.individualsCount = new ArrayList<Integer>();
         this.speciesCounts = new ArrayList<Integer>();
         this.results = new ArrayList<Result>();
@@ -100,18 +99,9 @@ public class Experiment {
         Setup setup = (Setup) yaml.load(new FileInputStream(setupFile));
         this.setIndividualsCount(setup.getIndividualsCounts());
         this.setSpeciesCounts(setup.getSpeciesCounts());
+        final ControllerFactory factory = new ControllerFactory();
         for (String strategy: setup.getStrategies()) {
-            final String escaped = strategy.replaceAll(" ", "_").toUpperCase();
-            if (escaped.equals(HILL_CLIMBING)) {
-                this.addController(strategy, new HillClimber());
-                
-            } else if (escaped.equals(ADAPTIVE_HILL_CLIMBING)) {
-                this.addController(strategy, new AdaptiveHillClimber());
-                
-            } else {
-                throw new IllegalArgumentException("Unknown control strategy '" + strategy + "'");
-
-            }
+            this.addController(strategy, factory.instantiate(strategy));
         }
 
     }
@@ -122,7 +112,7 @@ public class Experiment {
      * @param key the name to identify the given controller
      * @param controller the controller to run during the experiment
      */
-    public void addController(String key, IterativeSearch controller) {
+    public void addController(String key, Controller controller) {
         this.controllers.put(key, controller);
     }
 
@@ -167,8 +157,8 @@ public class Experiment {
     /**
      * @return an unmodifiable list of the controller run during the experiments
      */
-    public List<IterativeSearch> getControllers() {
-        return Collections.unmodifiableList(new ArrayList<IterativeSearch>(this.controllers.values()));
+    public List<Controller> getControllers() {
+        return Collections.unmodifiableList(new ArrayList<Controller>(this.controllers.values()));
     }
 
     /**
@@ -188,7 +178,7 @@ public class Experiment {
                 // Test the population
                 for (String key : this.controllers.keySet()) {
                     System.out.println(" - Testing '" + key + "' with s = " + this.speciesCounts.get(i) + " & n = " + this.individualsCount.get(j));
-                    final IterativeSearch controller = this.controllers.get(key);
+                    final Controller controller = this.controllers.get(key);
                     final Problem problem = new Problem(population, 1.0, new TrueDiversity());
                     
                     final long start = System.currentTimeMillis();

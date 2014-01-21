@@ -36,7 +36,6 @@ package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.HillClimber;
-import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
