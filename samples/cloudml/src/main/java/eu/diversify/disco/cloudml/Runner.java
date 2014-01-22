@@ -59,16 +59,10 @@ import org.cloudml.core.Provider;
 public class Runner {
 
     public static void main(String[] args) {
-        CloudML model = null;
-        Transformation transformation = new Transformation();
-        Population population = transformation.forward(model);
-
-        IterativeSearch controller = new HillClimber();
-
-        final Problem problem = new Problem(population, 0.25, new TrueDiversity());
-        Solution result = controller.applyTo(problem);
-
-        transformation.backward(model, result.getPopulation());
+        final DiversityController controller = new DiversityController(0.25);        
+        CloudML model = new CloudML();
+        initFakeModel(model);
+        controller.applyTo(model);
     }
 
     public static void initFakeModel(CloudML model) {
