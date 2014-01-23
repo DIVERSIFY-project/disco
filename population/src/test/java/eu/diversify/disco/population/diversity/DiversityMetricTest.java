@@ -118,6 +118,35 @@ public abstract class DiversityMetricTest extends TestCase {
     }
 
     /**
+     * Test whether scaling population does preserve the diversity metric
+     */
+    @Test
+    public void testScaling() {
+        DiversityMetric metric = newMetricUnderTest();
+
+        Population p1 = new Population();
+        p1.addSpecie("Lion", 10);
+        p1.addSpecie("Elephant", 5);
+        p1.addSpecie("Tiger", 3);
+        final double d1 = metric.normalised(p1);
+
+        Population p2 = new Population();
+        p2.addSpecie("Lion", 20);
+        p2.addSpecie("Elephant", 10);
+        p2.addSpecie("Tiger", 6);
+        final double d2 = metric.normalised(p2);
+        
+        
+        assertEquals(
+                "Scaled population shall have the same diviersty",
+                d1,
+                d2,
+                1e-10
+                );
+        
+    }
+
+    /**
      * Check that the diversity is undefined for an empty population
      */
     @Test(expected = EmptyPopulation.class)
