@@ -19,14 +19,18 @@ package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.HillClimber;
+import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
+import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Run the various control strategies on a single case and collect their
@@ -37,45 +41,17 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class ExperimentTest extends TestCase {
-
+    
     @Test
-    public void testRunner() throws FileNotFoundException {
-        Experiment runner = new Experiment();
-
-        // Set the runners
-        runner.addController("Hill Climbing", new HillClimber());
-        runner.addController("Adaptive Hill Climbing", new AdaptiveHillClimber());
-        assertEquals(
-                "Wrong set of controllers",
-                2,
-                runner.getControllers().size());
-
-        // Set the reference
-        runner.setReference(0.23);
-        assertEquals(
-                "Wrong reference",
-                0.23,
-                runner.getReference());
-
-        Population population = new Population();
-        population.addSpecie("Hippos", 10);
-        population.addSpecie("Snails", 14);
-        population.addSpecie("Sludges", 32);
-        population.addSpecie("Crocodiles", 5);
-        runner.setInitialPopulation(population);
-        assertEquals(
-                "Wrong population",
-                population,
-                runner.getInitialPopulation());
-
-        runner.run();
-
-        runner.saveResultsAs("results.csv");
-        File results = new File("results.csv");
-        assertTrue(
-                "No file were created",
-                results.exists());
-
-
+    public void testLoadingSetup() throws FileNotFoundException, ControllerInstantiationException {
+        final String testSetup = "../src/test/resources/setup.yml";
+                
+        Yaml yaml = new Yaml();
+        SingleRunSetup setup = (SingleRunSetup) yaml.loadAs(new FileInputStream(testSetup), SingleRunSetup.class);
+        
+        SingleRunExperiment experiment = new SingleRunExperiment(setup);
+        List<DataSet> results = experiment.run(); 
+        assertTrue("Wrong number of results", results.get(0).getSize() > 0);
     }
+
 }

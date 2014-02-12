@@ -1,0 +1,9 @@
+#
+# Sample setup of the single run experiment
+#
+
+reference: 0.25
+population: [12, 8, 5]
+strategies:
+  - Hill Climbing
+  - Adaptive Hill Climbing
