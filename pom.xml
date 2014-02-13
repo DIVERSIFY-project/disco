@@ -61,7 +61,7 @@
                 <version>1.9.0</version>
                 <configuration>
                     <strictCheck>true</strictCheck>
-                    <header>${project.basedir}/main/resources/header.txt</header>
+                    <header>${project.basedir}/src/main/resources/header.txt</header>
                     <failIfMissing>true</failIfMissing>
                     <aggregate>true</aggregate>
                     <properties>
@@ -85,7 +85,7 @@
                         <exclude>*.txt</exclude>
                         <exclude>*.json</exclude>
                         <exclude>.idea/**</exclude>
-                        <exclude>**/src/main/resources/lgpl_header.txt</exclude>
+                        <exclude>**/src/main/resources/header.txt</exclude>
                         <exclude>**/src/test/resources/**</exclude>
                         <exclude>**/src/test/data/**</exclude>
                     </excludes>

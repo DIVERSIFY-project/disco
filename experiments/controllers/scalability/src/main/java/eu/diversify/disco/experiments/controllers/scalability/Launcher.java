@@ -32,7 +32,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.experiments.controllers.singlerun;
+package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.experiments.commons.Runner;
 
@@ -52,7 +52,6 @@ public class Launcher {
      */
     public static void main(String[] args) {
         Runner runner = new Runner();
-        runner.run(SingleRunSetup.class, DEFAULT_CONFIG_FILE);
+        runner.run(ScalabilitySetup.class, DEFAULT_CONFIG_FILE);
     }
-
 }

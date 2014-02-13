@@ -10,7 +10,7 @@ strategies:
   - Adaptive Hill Climbing
   
 # The list of species count values to be testded during the experiment
-speciesCounts: [2, 4, 8, 16, 32, 64]
+speciesCounts: [2, 4, 8, 16]
 
 #The list of individuals counts to be tested during the experiment
-individualsCounts: [100]
+individualsCounts: [25, 50, 75]

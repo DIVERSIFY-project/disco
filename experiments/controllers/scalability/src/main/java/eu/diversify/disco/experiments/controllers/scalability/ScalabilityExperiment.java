@@ -34,24 +34,23 @@
  */
 package eu.diversify.disco.experiments.controllers.scalability;
 
-import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.Controller;
 import eu.diversify.disco.controller.ControllerFactory;
-import eu.diversify.disco.controller.HillClimber;
 import eu.diversify.disco.controller.Problem;
+import eu.diversify.disco.controller.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
+import eu.diversify.disco.experiments.commons.Experiment;
+import eu.diversify.disco.experiments.commons.data.Data;
+import eu.diversify.disco.experiments.commons.data.DataSet;
+import eu.diversify.disco.experiments.commons.data.Field;
+import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.TrueDiversity;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import javax.naming.spi.DirStateFactory.Result;
 
 /**
  * Evaluate the sensitivity of the response time against an increase of the
@@ -61,49 +60,38 @@ import org.yaml.snakeyaml.constructor.Constructor;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Experiment {
+public class ScalabilityExperiment implements Experiment {
 
-    
+    private static final Field STRATEGY = new Field("strategy", String.class);
+    private static final Field INDIVIDUALS_COUNT = new Field("individual count", Integer.class);
+    private static final Field SPECIES_COUNT = new Field("species count", Integer.class);
+    private static final Field DURATION = new Field("duration", Long.class);
+    private static final Field ERROR = new Field("error", Double.class);
+    private static final Schema SCHEMA = new Schema(Arrays.asList(new Field[]{STRATEGY, INDIVIDUALS_COUNT, SPECIES_COUNT, DURATION, ERROR}), "n/a");
+
     private final HashMap<String, Controller> controllers;
     private final ArrayList<Result> results;
     private final ArrayList<Integer> speciesCounts;
     private final ArrayList<Integer> individualsCount;
 
     /**
-     * Create a new experiment
-     */
-    public Experiment() {
-        this.controllers = new HashMap<String, Controller>();
-        this.individualsCount = new ArrayList<Integer>();
-        this.individualsCount.add(25);
-        this.individualsCount.add(50);
-        this.speciesCounts = new ArrayList<Integer>();
-        this.speciesCounts.add(2);
-        this.speciesCounts.add(4);
-        this.results = new ArrayList<Result>();
-    }
-
-    /**
      * Create a new experiment from a setup file
      *
      * @param setupFile the file containing the configuration
      */
-    public Experiment(String setupFile) throws FileNotFoundException, ControllerInstantiationException {
+    public ScalabilityExperiment(ScalabilitySetup setup) throws ControllerInstantiationException {
         this.controllers = new HashMap<String, Controller>();
         this.individualsCount = new ArrayList<Integer>();
         this.speciesCounts = new ArrayList<Integer>();
         this.results = new ArrayList<Result>();
 
         // Load the configuration file
-        final Yaml yaml = new Yaml(new Constructor(Setup.class));
-        Setup setup = (Setup) yaml.load(new FileInputStream(setupFile));
         this.setIndividualsCount(setup.getIndividualsCounts());
         this.setSpeciesCounts(setup.getSpeciesCounts());
         final ControllerFactory factory = new ControllerFactory();
-        for (String strategy: setup.getStrategies()) {
+        for (String strategy : setup.getStrategies()) {
             this.addController(strategy, factory.instantiate(strategy));
         }
-
     }
 
     /**
@@ -112,15 +100,8 @@ public class Experiment {
      * @param key the name to identify the given controller
      * @param controller the controller to run during the experiment
      */
-    public void addController(String key, Controller controller) {
+    private void addController(String key, Controller controller) {
         this.controllers.put(key, controller);
-    }
-
-    /**
-     * @return the number of individual used in this experiment
-     */
-    public List<Integer> getIndividualCounts() {
-        return Collections.unmodifiableList(this.individualsCount);
     }
 
     /**
@@ -128,7 +109,7 @@ public class Experiment {
      *
      * @param counts the list of individuals count used in this experiments
      */
-    public void setIndividualsCount(List<Integer> counts) {
+    private void setIndividualsCount(List<Integer> counts) {
         this.individualsCount.clear();
         for (int c : counts) {
             this.individualsCount.add(c);
@@ -140,7 +121,7 @@ public class Experiment {
      *
      * @param counts an array of integer representing the species to be tested
      */
-    public void setSpeciesCounts(List<Integer> counts) {
+    private void setSpeciesCounts(List<Integer> counts) {
         this.speciesCounts.clear();
         for (Integer i : counts) {
             this.speciesCounts.add(i);
@@ -148,26 +129,21 @@ public class Experiment {
     }
 
     /**
-     * @return the list of species size to be tested
-     */
-    public List<Integer> getSpeciesCounts() {
-        return Collections.unmodifiableList(this.speciesCounts);
-    }
-
-    /**
-     * @return an unmodifiable list of the controller run during the experiments
-     */
-    public List<Controller> getControllers() {
-        return Collections.unmodifiableList(new ArrayList<Controller>(this.controllers.values()));
-    }
-
-    /**
      * Run the experiment
      */
-    public void run() {
+    @Override
+    public List<DataSet> run() {
+        DataSet dataset = new DataSet(SCHEMA);
+
+        int total = this.speciesCounts.size() * this.individualsCount.size() * this.controllers.size();
+        System.out.println("Preparing for " + total + " run(s).");
+        System.out.println("This may take several minutes ... ");
 
         for (int i = 0; i < this.speciesCounts.size(); i++) {
             for (int j = 0; j < this.individualsCount.size(); j++) {
+
+                System.out.println("Scale [" + this.speciesCounts.get(i) + " x " + this.individualsCount.get(j) + "]: ");
+
                 // Initialise the population to be tested
                 final Population population = new Population();
                 population.addSpecie("sp1", this.individualsCount.get(j));
@@ -175,73 +151,30 @@ public class Experiment {
                     population.addSpecie("sp" + (s + 1), 0);
                 }
 
-                // Test the population
+                // Test the population with all selected control strategies
                 for (String key : this.controllers.keySet()) {
-                    System.out.println(" - Testing '" + key + "' with s = " + this.speciesCounts.get(i) + " & n = " + this.individualsCount.get(j));
                     final Controller controller = this.controllers.get(key);
                     final Problem problem = new Problem(population, 1.0, new TrueDiversity());
-                    
+
                     final long start = System.currentTimeMillis();
-                    controller.applyTo(problem);
+                    final Solution solution = controller.applyTo(problem);
                     final long duration = System.currentTimeMillis() - start;
-                    this.results.add(new Result(key, individualsCount.get(j), speciesCounts.get(i), duration));
+
+                    Data data = SCHEMA.newData();
+                    data.set(STRATEGY, key);
+                    data.set(SPECIES_COUNT, population.getSpecies().size());
+                    data.set(INDIVIDUALS_COUNT, population.getIndividualCount());
+                    data.set(ERROR, solution.getError());
+                    data.set(DURATION, duration);
+                    dataset.add(data);
+                    System.out.println("\t - " + key + " in " + duration + " ms");
                 }
+
             }
         }
-    }
 
-    /**
-     * Write the result of the experiment in the given file
-     *
-     * @param file the path to the file where the experiment result must be
-     * stored
-     */
-    public void saveResultsAs(String file) throws FileNotFoundException {
-        PrintStream out = new PrintStream(new File(file));
-        out.println("controller, individuals, species, duration");
-
-        for (Result r : this.results) {
-            out.println(r.toString());
-        }
-        out.close();
-    }
-
-    /**
-     * Hold a single value generated by the experiment
-     */
-    public static class Result {
-
-        private final String controller;
-        private final int individualsCount;
-        private final int speciesCount;
-        private final long duration;
-
-        public Result(String key, int individualCount, int speciesCount, long duration) {
-            this.controller = key;
-            this.individualsCount = individualCount;
-            this.speciesCount = speciesCount;
-            this.duration = duration;
-        }
-
-        public String getController() {
-            return controller;
-        }
-
-        public int getIndividualsCount() {
-            return individualsCount;
-        }
-
-        public int getSpeciesCount() {
-            return speciesCount;
-        }
-
-        public long getDuration() {
-            return duration;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s,%d,%d,%d", controller, individualsCount, speciesCount, duration);
-        }
+        ArrayList<DataSet> results = new ArrayList<DataSet>();
+        results.add(dataset);
+        return results;
     }
 }

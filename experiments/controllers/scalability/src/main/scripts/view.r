@@ -1,6 +1,6 @@
 #
 #
-# Plot the result of the sensitivity analyses of the diversity controllers
+# Plot the result of the scalability analyses of the diversity controllers
 #
 # Franck Chauvel
 #
@@ -9,54 +9,47 @@ goldenRatio <- function(height) {
 	return (height * ((1 + sqrt(5)) /2));
 }
 
+data <- read.csv("results.csv")
+
+strategies <- levels(data$strategy);
+cs <- 1 + seq(1, length(strategies));
+
 #
 # Generate the sensitivity to species count increase
 #
-pdf("species_scalability.pdf", height=6, width=goldenRatio(5))
-data <- read.csv("species-scalability.csv");
-strategies <- levels(data$controller);
-plot(	data$species,
-	data$duration,
-	xlab="Species count",
-	ylab="Time (in ms.)",
-	type="n",
-	frame=FALSE,
-	log="xy",
-	las=1);
-ranges <- seq(1, length(strategies));
-for (i in ranges) {
-	d <- subset(data, controller == strategies[i]);
-	lines(d$species, 
-		d$duration,
-		type="b",
-		pch=i,
-		lty=i);
-}
-legend("bottomright", legend=strategies, pch=ranges, lty=ranges, bty="n");
+pdf("individuals.pdf", height=6, width=goldenRatio(5))
+
+boxplot(data$duration ~ data$strategy + data$individual.count, 
+        col=cs, 
+        xlab="Total number of individuals",
+        ylab="Duration (ms.)",
+        axes=FALSE);
+
+gn <- length(unique(data$individual.count));
+bn <- length(strategies);       
+axis(1, at=seq(1.5, gn * bn, bn), labels=unique(data$individual.count));
+axis(2, las=1);
+
+legend("topleft", legend=strategies, fill=cs, bty="n");
+
 dev.off();
 
 #
 # Generate the sensitivity to individuals
 #
-pdf("individuals_scalability.pdf", height=6, width=goldenRatio(5))
-data <- read.csv("individuals-scalability.csv");
-strategies <- levels(data$controller);
-plot(	data$individuals,
-	data$duration,
-	xlab="individuals count",
-	ylab="Time (in ms.)",
-	type="n",
-	frame=FALSE,
-	log="xy",
-	las=1);
-ranges <- seq(1, length(strategies));
-for (i in ranges) {
-	d <- subset(data, controller == strategies[i]);
-	lines(d$individuals, 
-		d$duration,
-		type="b",
-		pch=i,
-		lty=i);
-}
-legend("topleft", legend=strategies, pch=ranges, lty=ranges, bty="n");
+pdf("species.pdf", height=6, width=goldenRatio(5))
+
+boxplot(data$duration ~ data$strategy + data$species.count, 
+        col=cs, 
+        xlab="Total number of species",
+        ylab="Duration (ms.)",
+        axes=FALSE);
+
+gn <- length(unique(data$species.count));
+bn <- length(strategies);       
+axis(1, at=seq(1.5, gn * bn, bn), labels=unique(data$species.count));
+axis(2, las=1);
+
+legend("topleft", legend=strategies, fill=cs, bty="n");
+
 dev.off();

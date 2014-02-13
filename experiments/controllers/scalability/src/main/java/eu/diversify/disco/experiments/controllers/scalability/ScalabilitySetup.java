@@ -17,8 +17,13 @@
  */
 package eu.diversify.disco.experiments.controllers.scalability;
 
+import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
+import eu.diversify.disco.experiments.commons.Experiment;
+import eu.diversify.disco.experiments.commons.Setup;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Store the parameters for the scalability experiment
@@ -26,7 +31,7 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Setup {
+public class ScalabilitySetup implements Setup {
 
     private final ArrayList<Integer> speciesCounts;
     private final ArrayList<Integer> individualsCounts;
@@ -35,7 +40,7 @@ public class Setup {
     /**
      * Create a new setup for this experiment
      */
-    public Setup() {
+    public ScalabilitySetup() {
         this.strategies = new ArrayList<String>();
         this.speciesCounts = new ArrayList<Integer>();
         this.individualsCounts = new ArrayList<Integer>();
@@ -99,4 +104,15 @@ public class Setup {
             this.strategies.add(strategy);
         }
     }
+
+    @Override
+    public Experiment buildExperiment() {
+        try { 
+            return new ScalabilityExperiment(this);
+        
+        } catch (ControllerInstantiationException ex) {
+           throw new IllegalArgumentException(ex);
+        }
+    }
+    
 }

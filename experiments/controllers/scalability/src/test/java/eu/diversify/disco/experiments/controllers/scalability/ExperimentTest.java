@@ -36,11 +36,15 @@ package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.HillClimber;
+import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
+import eu.diversify.disco.experiments.commons.data.DataSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.List;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -57,57 +61,32 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @RunWith(JUnit4.class)
 public class ExperimentTest extends TestCase {
 
+
     @Test
-    public void testParameter() throws FileNotFoundException {
+    public void testRunner() throws FileNotFoundException, ControllerInstantiationException {
         final String setupFile = "../src/test/resources/setup.yml";
-        final Yaml yaml = new Yaml(new Constructor(Setup.class));
-        final Setup setup = (Setup) yaml.load(new FileInputStream(setupFile));
+        final Yaml yaml = new Yaml(new Constructor(ScalabilitySetup.class));
+        final ScalabilitySetup setup = (ScalabilitySetup) yaml.load(new FileInputStream(setupFile));
         assertEquals(
                 "Wrong number of species counts",
-                6,
+                4,
                 setup.getSpeciesCounts().size());
         assertEquals(
                 "Wrong number of individual counts",
-                1,
+                3,
                 setup.getIndividualsCounts().size());
         assertEquals(
                 "Wrong number of strategies",
                 2,
                 setup.getStrategies().size());
-    }
 
-    @Test
-    public void testRunner() throws FileNotFoundException {
-        Experiment experiment = new Experiment();
+        ScalabilityExperiment experiment = new ScalabilityExperiment(setup);
+        List<DataSet> results = experiment.run();
 
-        // Set the runners
-        experiment.addController("Hill Climbing", new HillClimber());
-        experiment.addController("Adaptive Hill Climbing", new AdaptiveHillClimber());
+        assertEquals("Wrong number of results", 1, results.size());
         assertEquals(
-                "Wrong set of controllers",
-                2,
-                experiment.getControllers().size());
-
-        experiment.setIndividualsCount(Arrays.asList(new Integer[]{25, 50}));
-        assertEquals(
-                "Wrong number of individuals",
-                2,
-                experiment.getIndividualCounts().size());
-
-        experiment.setSpeciesCounts(Arrays.asList(new Integer[]{2, 4, 6, 8}));
-        assertEquals(
-                "Wrong species counts",
-                4,
-                experiment.getSpeciesCounts().size());
-
-        experiment.run();
-
-        experiment.saveResultsAs("results.csv");
-        File results = new File("results.csv");
-        assertTrue(
-                "No file were created",
-                results.exists());
-
-
+                "Wrong number of data point",
+                setup.getIndividualsCounts().size() * setup.getSpeciesCounts().size() * setup.getStrategies().size(),
+                results.get(0).getSize());
     }
 }

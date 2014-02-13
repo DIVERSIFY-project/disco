@@ -14,6 +14,7 @@
     <name>Disco :: Experiments</name>
   
     <modules>
+        <module>commons</module>
         <module>controllers</module>
         <module>population</module>
     </modules>
