@@ -1,0 +1,11 @@
+#
+# Configuration of the sensitivity experiment
+#
+# Franck Chauvel
+#
+size: 100
+metrics:
+  - true diversity (theta = 2)
+  - true diversity (theta = 5)
+  - shannon index  
+  - gini simpson index

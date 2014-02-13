@@ -11,33 +11,28 @@ goldenRatio <- function(height) {
 
 # Generate the sensitivity to distribution
 
-pdf("individuals.pdf", height=6, width=goldenRatio(5))
+pdf("distribution.pdf", height=6, width=goldenRatio(5))
 
-
-individuals <- read.csv(file="individuals.csv", sep=",", header=TRUE); 
-
-
-data <- subset(individuals, kind == " normalised");
-
+distribution <- read.csv(file="distribution.csv", sep=",", header=TRUE); 
 
 plot(x=NULL,
      y=NULL,
      xlab="Percentage of the population in specie no. 1",
      ylab="Diversity Level",
-     xlim=range(0, 50),
+     xlim=range(50, 100),
      ylim=range(0, 1),
      las=1,
      frame=FALSE
 );
 
-names <- levels(data$metric);
+names <- levels(distribution$metric);
 
 for (i in seq(1, length(names))) {
-	d <- subset(data, metric == names[i]);
-	lines(d$specie..1, d$value, type="l", lty=i);
+	d <- subset(distribution, metric == names[i]);
+	lines(d$Specie.no.1, d$normalised, type="l", lty=i);
 }
 
-legend("bottomright", legend=levels(data$metric), lty=seq(1, length(names)), bty="n");
+legend("bottomleft", legend=levels(distribution$metric), lty=seq(1, length(names)), bty="n");
 
 dev.off();
 
@@ -52,7 +47,7 @@ pdf("species.pdf", height=6, width=goldenRatio(5))
 species <- read.csv(file="species.csv", sep=",", header=TRUE);
 
 
-data <- subset(species, kind == " normalised");
+#data <- subset(species, kind == "normalised");
 
 plot(x=NULL,
      y=NULL,
@@ -64,13 +59,41 @@ plot(x=NULL,
      frame=FALSE
 );
 
-names <- levels(data$metric);
+names <- levels(species$metric);
 for (i in seq(1, length(names))) {
-	d <- subset(data, metric == names[i]);
-	lines(d$species.count, d$value, type="l", lty=i);
+	d <- subset(species, metric == names[i]);
+	lines(d$species.count, d$normalised, type="l", lty=i);
 }
 
-legend("topleft", legend=levels(data$metric), lty=seq(length(names)), bty="n");
+legend("topleft", legend=levels(species$metric), lty=seq(length(names)), bty="n");
 
 
 dev.off(); 
+
+
+# Generate the sensitivity to individuals
+
+pdf("individuals.pdf", height=6, width=goldenRatio(5))
+
+individuals <- read.csv(file="individuals.csv", sep=",", header=TRUE); 
+
+plot(x=NULL,
+     y=NULL,
+     xlab="Total number of individuals",
+     ylab="Diversity Level",
+     xlim=range(100, 200),
+     ylim=range(0, 1),
+     las=1,
+     frame=FALSE
+);
+
+names <- levels(individuals$metric);
+
+for (i in seq(1, length(names))) {
+	d <- subset(individuals, metric == names[i]);
+	lines(d$individuals.count, d$normalised, type="l", lty=i);
+}
+
+legend("bottomright", legend=levels(individuals$metric), lty=seq(1, length(names)), bty="n");
+
+dev.off();
