@@ -40,7 +40,7 @@ public class MetricFactory {
         this.metrics.put("GINI SIMPSON INDEX", "eu.diversify.disco.population.diversity.GiniSimpsonIndex");
         this.metrics.put("SHANNON INDEX", "eu.diversify.disco.population.diversity.ShannonIndex");
         this.metrics.put("TRUE DIVERSITY", "eu.diversify.disco.population.diversity.TrueDiversity");
-
+        this.metrics.put("STANDARD DEVIATION", "eu.diversify.disco.population.diversity.StandardDeviation");
     }
 
     /**
