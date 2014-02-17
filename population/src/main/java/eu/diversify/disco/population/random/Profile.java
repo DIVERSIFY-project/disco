@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population.random;
 
 import eu.diversify.disco.population.Population;
@@ -37,13 +54,11 @@ public class Profile {
     }
 
     public void setSpeciesCount(int min, int max) {
-        this.speciesCount.setMin(min);
-        this.speciesCount.setMax(max);
+        this.speciesCount.reset(min, max);
     }
 
     public void setIndividualsCount(int min, int max) {
-        this.individualsCount.setMin(min);
-        this.individualsCount.setMax(max);
+        this.individualsCount.reset(min, max);
     }
 
     public Range getIndividualsCount() {
@@ -60,14 +75,23 @@ public class Profile {
     }
 
     /**
-     * Simple class to capture ranges of values
+     * Simple class to capture ranges of values, such as [min, max[.
      */
     public static class Range {
 
         private int min;
         private int max;
 
+        /**
+         * Build a new closed range of values.
+         *
+         * @param min the lower bound of the range
+         * @param max the upper bound of the range
+         */
         public Range(int min, int max) {
+            if (max - min < 1) {
+                throw new IllegalArgumentException("The range must contain at least one element");
+            }
             this.min = min;
             this.max = max;
         }
@@ -77,6 +101,9 @@ public class Profile {
         }
 
         public void setMin(int min) {
+            if (max - min < 1) {
+                throw new IllegalArgumentException("The range must contain at least one element");
+            }
             this.min = min;
         }
 
@@ -85,11 +112,22 @@ public class Profile {
         }
 
         public void setMax(int max) {
+            if (max - min < 1) {
+                throw new IllegalArgumentException("The range must contain at least one element");
+            }
             this.max = max;
         }
 
+         public void reset(int min, int max) {
+            if (max - min < 1) {
+                throw new IllegalArgumentException("The range must contain at least one element");
+            }
+            this.min = min;
+            this.max = max;
+        }
+        
         public boolean contains(int value) {
-            return value >= min && value <= max;
+            return value >= min && value < max;
         }
 
         public int sample() {

@@ -15,8 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
@@ -46,6 +61,31 @@ public class Population {
      */
     public Population() {
         this.species = new LinkedHashMap<String, Specie>();
+    }
+    
+    
+    /**
+     * Build a new specie from the distribution of its individual into species
+     *
+     * @param distribution an array of integers representing how many
+     * individuals belong to each specie
+     */
+    public static Population fromDistribution(int[] distribution) {
+        return new Population(distribution);
+    }
+
+    /**
+     * Build a new specie from the distribution of its individual into species
+     *
+     * @param distribution an array of integers representing how many
+     * individuals belong to each specie
+     */
+    private Population(int[] distribution) {
+        this.species = new LinkedHashMap<String, Specie>();
+        for (int s = 0; s < distribution.length; s++) {
+            final String name = "s" + s;
+            this.species.put(name, new Specie(name, distribution[s]));
+        }
     }
 
     /**
@@ -176,13 +216,13 @@ public class Population {
         }
         return result;
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder result = new StringBuilder();
         result.append("{");
         final List<Specie> species = this.getSpecies();
-        for(int i=0 ; i<species.size() ; i++) {
+        for (int i = 0; i < species.size(); i++) {
             final Specie specie = species.get(i);
             result.append(specie.getName());
             result.append(": ");
@@ -194,5 +234,4 @@ public class Population {
         result.append("}");
         return result.toString();
     }
-    
 }
