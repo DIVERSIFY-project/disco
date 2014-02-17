@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,7 @@ import org.junit.runners.JUnit4;
  * @since 0.1
  */
 @RunWith(JUnit4.class)
-public class TestRunner extends TestCase {
+public class RunnerIT extends TestCase {
   
     @Before
     public void setUp() throws IOException {
@@ -72,6 +73,12 @@ public class TestRunner extends TestCase {
                 pdfFile.exists()
                 );
         
+    }
+    
+    @After
+    public void removePdfAndCsvFiles() throws IOException {
+        Files.deleteIfExists(Paths.get("test.pdf"));
+        Files.deleteIfExists(Paths.get("test.csv"));
     }
     
 }
