@@ -66,8 +66,8 @@ public class Generator {
     public Population makeOne(Profile profile) {
         final Random random = new Random();
         
-        final int s = profile.getSpeciesCount().sample();
-        final int n = profile.getIndividualsCount().sample();
+        final int s = profile.getNumberOfSpecies().sample();
+        final int n = profile.getNumberOfIndividuals().sample();
 
         final int[] distribution  = new int[s];
         for(int i=0 ; i<n ; i++) {

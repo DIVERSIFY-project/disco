@@ -11,3 +11,5 @@
 /experiments/commons/target/
 /experiments/controllers/target/
 /experiments/population/target/
+/experiments/population/random/target/
+/experiments/population/eda/target/

@@ -1,0 +1,13 @@
+##
+# Configuration of the Exploratory Data Analysis (EDA) on population and diversity
+#
+
+population:
+  numberOfSpecies:
+    min: 10
+    max: 100
+  numberOfIndividuals:
+    min: 50
+    max: 50000
+    
+sampleCount: 100
