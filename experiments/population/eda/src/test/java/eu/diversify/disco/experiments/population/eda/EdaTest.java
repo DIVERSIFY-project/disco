@@ -2,29 +2,34 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.diversify.disco.experiments.population.eda;
 
-import eu.diversify.disco.experiments.population.eda.EdaSetup;
 import eu.diversify.disco.experiments.commons.Experiment;
+import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
+import eu.diversify.disco.experiments.commons.data.Field;
+import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.Specie;
 import eu.diversify.disco.population.random.Profile;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -46,19 +51,33 @@ public class EdaTest extends TestCase {
     public static final int MAX_SPECIE_COUNT = 100;
 
     @Test
-    public void simpleRun() {
+    public void testRunningExperiment() {
+        Experiment experiment = makeEdaSetup().buildExperiment();
+        List<DataSet> results = experiment.run();
+        assertEquals("Wrong number of datasets", 1, results.size());
+        checkResultingDataSet(results.get(0));
+    }
+
+    private EdaSetup makeEdaSetup() {
         EdaSetup setup = new EdaSetup();
         Profile profile = new Profile();
         profile.setIndividualsCount(MIN_INDIVIDUAL_COUNT, MAX_INDIVIDUAL_COUNT);
         profile.setSpeciesCount(MIN_SPECIE_COUNT, MAX_SPECIE_COUNT);
         setup.setPopulation(profile);
         setup.setSampleCount(SAMPLE_COUNT);
+        return setup;
+    }
 
-        Experiment experiment = setup.buildExperiment();
-        List<DataSet> results = experiment.run();
-
-        assertEquals("Wrong number of datasets", 1, results.size());
-        assertEquals("Wrong number of data points", SAMPLE_COUNT, results.get(0).getSize());
+    private void checkResultingDataSet(DataSet result) {
+        assertEquals(
+                "Wrong number of data points",
+                SAMPLE_COUNT,
+                result.getSize());
+        for (int i = 0; i < result.getSize(); i++) {
+            for (Field field : Eda.RESULT_SCHEMA.getFields()) {
+                assertFalse(result.getData(i).isMissing(field));
+            }
+        }
     }
 
     @Test
@@ -85,5 +104,57 @@ public class EdaTest extends TestCase {
                 MAX_SPECIE_COUNT,
                 setup.getPopulation().getNumberOfSpecies().getMax());
 
+    }
+
+    @Test
+    public void testSampleDiversityImpact() {
+        Eda experiment = (Eda) makeEdaSetup().buildExperiment();
+        Population p = makeMinimalPopulation(1, 1);
+        Data data = Eda.RESULT_SCHEMA.newData();
+        experiment.sampleImpactOnDiversity(data, p);
+        assertEquals(
+                "Wrong diversity impact",
+                0D,
+                (Double) data.get(Eda.DIVERSITY_AFTER),
+                1e-6);
+    }
+
+    @Test
+    public void testNonEmptySpeciesWithEmptySpecies() {
+        Eda experiment = (Eda) makeEdaSetup().buildExperiment();
+        Population p = makeMinimalPopulation(1, 0);
+        List<Specie> nonEmptySpecies = experiment.nonEmptySpecies(p);
+        assertEquals("Wrong number of non empty species", 1, nonEmptySpecies.size());
+    }
+
+    @Test
+    public void testNonEmptySpeciesWithNoEmptySpecies() {
+        Eda experiment = (Eda) makeEdaSetup().buildExperiment();
+        Population p = makeMinimalPopulation(1, 1);
+        List<Specie> nonEmptySpecies = experiment.nonEmptySpecies(p);
+        assertEquals("Wrong number of non empty species", 2, nonEmptySpecies.size());
+    }
+
+    @Test
+    public void testChooseAnySpecieFrom() {
+        Eda experiment = (Eda) makeEdaSetup().buildExperiment();
+        Population p = makeMinimalPopulation(1, 1);
+        Specie specie = experiment.chooseAnySpecieFrom(p.getSpecies());
+        assertNotNull(specie);
+    }
+
+    @Test
+    public void testFilterOut() {
+        Eda experiment = (Eda) makeEdaSetup().buildExperiment();
+        Population p = makeMinimalPopulation(1, 1);
+        List<Specie> filtered = experiment.filterOut(p, p.getSpecies().get(0));
+        assertEquals("Wrong number of species", filtered.size(), 1);
+    }
+
+    private Population makeMinimalPopulation(int s1, int s2) {
+        Population minimalPopulation = new Population();
+        minimalPopulation.addSpecie("s1", s1);
+        minimalPopulation.addSpecie("s2", s2);
+        return minimalPopulation;
     }
 }

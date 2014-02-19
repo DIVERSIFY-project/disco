@@ -58,12 +58,12 @@ public class DataSet {
     }
 
     /**
-     * @param the index of the needed data point
+     * @param index index of the needed data point
      * @param field the field of interest
      * @return the value contained for the selected field of the selected data point
      */
-    public Object get(int i, Field field) {
-        return this.data.get(i).get(field);
+    public Object get(int index, Field field) {
+        return this.data.get(index).get(field);
     }
     
     /**
@@ -91,7 +91,17 @@ public class DataSet {
         }
         this.data.add(data);
     }
+    
+    
+    /**
+     * @param index the index of the data point to retrieve
+     * @return the data point at the given index, if it exists
+     */
+    public Data getData(int index) {
+        return this.data.get(index);
+    }
 
+    
     /**
      * @return the number of data point in the data set
      */

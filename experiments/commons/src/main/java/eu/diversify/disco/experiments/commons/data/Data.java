@@ -80,4 +80,12 @@ public class Data {
         return this.values.get(field);
     }
 
+    /**
+     * @param field the field whose value may be missing
+     * @return true if the value is missing, i.e., is there is no value
+     */
+    public boolean isMissing(Field field) {
+        return this.values.get(field) == null;
+    }
+
 }
