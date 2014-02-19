@@ -2,12 +2,13 @@ DISCO v0.1
 Sensitivity Experiment
 
 
-THE "SENSITIVITY" EXPERIMENT
+THE "EDA" EXPERIMENT
 ---------------------------
 
-This is one of the DIVERSIFY experiment, namely the "sensitivity"
-experiment. It aims at evaluating how diversity metrics react to changes in a
-population.
+This is one of the DIVERSIFY experiment, namely the "Exploratory Data
+Analysis" experiment. It aims at exploring the key features of
+population which, when modified, lead to large change in diviersity of
+the population.
 
 Contact: 
   Franck Chauvel
@@ -30,10 +31,10 @@ Please note that some configurations may lead to long execution times.
 The experiment is run using the following command:   
 
     On Windows:
-    C:\> java -jar scalability-final.jar  
+    C:\> java -jar eda-final.jar  
    
     On Unix/Linux:
-    $> java -jar scalability-final.jar  
+    $> java -jar eda-final.jar  
 
 PDF file, containing visualisations of the results will be generated and 
 available in the directory where the experiment is run.
