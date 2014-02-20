@@ -10,20 +10,29 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class PopulationValue {
+public class PopulationValue implements IPopulation {
 
     public static final String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
 
+    public static PopulationValue emptyPopulation() {
+        return new PopulationValue();
+    }
+    
     public static PopulationValue fromDistributionOfIndividuals(String specieNamePrefix, List<Integer> distribution) {
-        return new PopulationValue(specieNamePrefix, distribution);
+        ArrayList<String> names = new ArrayList<String>(distribution.size());
+        for(int i=0 ; i<distribution.size() ; i++) {
+            String name = String.format("%s%d", specieNamePrefix, i+1);
+            names.add(name);
+        }
+        return new PopulationValue(names, distribution);
     }
 
     public static PopulationValue fromDistributionOfIndividuals(String specieNamePrefix, Integer[] distribution) {
-        return new PopulationValue(specieNamePrefix, Arrays.asList(distribution));
+        return fromDistributionOfIndividuals(specieNamePrefix, Arrays.asList(distribution));
     }
 
     public static PopulationValue fromDistributionOfIndividuals(Integer[] distribution) {
-        return new PopulationValue(DEFAULT_SPECIE_NAME_PREFIX, Arrays.asList(distribution));
+        return fromDistributionOfIndividuals(DEFAULT_SPECIE_NAME_PREFIX, Arrays.asList(distribution));
     }
 
     public static PopulationValue fromDistributionOfIndividuals(List<String> speciesName, List<Integer> distribution) {
@@ -36,20 +45,11 @@ public class PopulationValue {
     private final ArrayList<String> speciesName;
     private final ArrayList<Integer> individuals;
 
-    public PopulationValue() {
+    private PopulationValue() {
         this.speciesName = new ArrayList<String>();
         this.individuals = new ArrayList<Integer>();
     }
 
-    private PopulationValue(String specieNamePrefix, List<Integer> distribution) {
-        this.speciesName = new ArrayList<String>();
-        this.individuals = new ArrayList<Integer>();
-        for (int i = 0; i < distribution.size(); i++) {
-            final String name = String.format("%s%d", specieNamePrefix, i + 1);
-            this.speciesName.add(name);
-            this.individuals.add(distribution.get(i));
-        }
-    }
 
     private PopulationValue(List<String> speciesName, List<Integer> distribution) {
         if (speciesName.size() < distribution.size()) {
@@ -58,8 +58,16 @@ public class PopulationValue {
         if (speciesName.size() > distribution.size()) {
             throw new IllegalArgumentException("Missing individual counts");
         }
-        this.speciesName = new ArrayList<String>(speciesName);
-        this.individuals = new ArrayList<Integer>(distribution);
+        this.speciesName = new ArrayList<String>();
+        for(String specieName: speciesName) {
+            checkIfSpecieNameIsValid(specieName);
+            this.speciesName.add(specieName);
+        }
+        this.individuals = new ArrayList<Integer>();
+        for(Integer count: distribution) {
+            checkIfIndividualCountIsValid(count);
+            this.individuals.add(count);
+        }
     }
 
     private PopulationValue(PopulationValue model) {
@@ -67,10 +75,12 @@ public class PopulationValue {
         this.individuals = new ArrayList<Integer>(model.individuals);
     }
 
+    @Override
     public boolean isEmpty() {
         return getTotalNumberOfIndividuals() == 0;
     }
 
+    @Override
     public int getTotalNumberOfIndividuals() {
         int total = 0;
         for (int count : this.individuals) {
@@ -79,30 +89,36 @@ public class PopulationValue {
         return total;
     }
 
+    @Override
     public int getNumberOfSpecies() {
         return this.speciesName.size();
     }
 
-    public PopulationValue addIndividualIn(int specieIndex) {
+    @Override
+    public PopulationValue shiftNumberOfIndividualsIn(int specieIndex, int offset) {
         int count = getNumberOfIndividualsIn(specieIndex);
-        return setNumberOfIndividualsIn(specieIndex, count + 1);
+        return setNumberOfIndividualsIn(specieIndex, count + offset);
     }
 
-    public PopulationValue addIndividualIn(String specieName) {
-        return addIndividualIn(getSpecieIndex(specieName));
+    @Override
+    public PopulationValue shiftNumberOfIndividualsIn(String specieName, int offset) {
+        return shiftNumberOfIndividualsIn(getSpecieIndex(specieName), offset);
     }
 
+    @Override
     public int getNumberOfIndividualsIn(int specieIndex) {
-        checkSpecieIndex(specieIndex);
+        checkSpecieIndexIsValid(specieIndex);
         return individuals.get(specieIndex - 1);
     }
 
+    @Override
     public int getNumberOfIndividualsIn(String specieName) {
-        return individuals.get(getSpecieIndex(specieName));
+        return getNumberOfIndividualsIn(getSpecieIndex(specieName));
     }
 
+    @Override
     public PopulationValue setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals) {
-        checkSpecieIndex(specieIndex);
+        checkSpecieIndexIsValid(specieIndex);
         PopulationValue result = new PopulationValue(this);
         if (numberOfIndividuals < 0) {
             throw new IllegalArgumentException("Specie " + specieIndex + " cannot have a negative number of individuals");
@@ -111,15 +127,7 @@ public class PopulationValue {
         return result;
     }
 
-    public PopulationValue removeIndividualFrom(int specieIndex) {
-        int count = getNumberOfIndividualsIn(specieIndex);
-        return setNumberOfIndividualsIn(specieIndex, count - 1);
-    }
-
-    public PopulationValue removeIndividualFrom(String specieName) {
-        return removeIndividualFrom(getSpecieIndex(specieName));
-    }
-
+    @Override
     public int getSpecieIndex(String specieName) {
         int index = speciesName.indexOf(specieName);
         if (index == -1) {
@@ -154,34 +162,59 @@ public class PopulationValue {
         return true;
     }
 
+    @Override
     public PopulationValue addSpecie(String specieName) {
-        if (hasAnySpecieNamed(specieName)) {
-            throw new IllegalArgumentException("Duplicated specie name '" + specieName + "'");
-        }
+        checkIfSpecieNameIsValid(specieName);
+
         PopulationValue result = new PopulationValue(this);
         result.speciesName.add(specieName);
         result.individuals.add(0);
         return result;
     }
 
+    @Override
     public boolean hasAnySpecieNamed(String specieName) {
         return speciesName.contains(specieName);
     }
 
+    @Override
     public PopulationValue removeSpecie(int specieIndex) {
-        checkSpecieIndex(specieIndex);
+        checkSpecieIndexIsValid(specieIndex);
         PopulationValue result = new PopulationValue(this);
         result.speciesName.remove(specieIndex - 1);
         result.individuals.remove(specieIndex - 1);
         return result;
     }
 
+    @Override
     public PopulationValue removeSpecie(String specieName) {
         return removeSpecie(getSpecieIndex(specieName));
     }
+    
+    
+    private void checkIfIndividualCountIsValid(Integer count) {
+        if (count == null) {
+           throw new IllegalArgumentException("Individual count shall not be null.");
+        }
+        if (count < 0) {
+            throw new IllegalArgumentException("Individual count shall not be negative");
+        }
+    }
 
-    private void checkSpecieIndex(int specieIndex) {
-        if (specieIndex > speciesName.size()) {
+    private void checkIfSpecieNameIsValid(String specieName) {
+        if (specieName == null) {
+            throw new IllegalArgumentException("Specie name shall not be null.");
+        }
+        if (specieName.equals("")) {
+            throw new IllegalArgumentException("The empty string '' is not a valid specie name.");
+        }
+        if (hasAnySpecieNamed(specieName)) {
+            throw new IllegalArgumentException("Duplicated specie name '" + specieName + "'");
+        }
+    }
+
+    private void checkSpecieIndexIsValid(int specieIndex) {
+        if (specieIndex < 1 || specieIndex > speciesName.size()) {
             throw new IllegalArgumentException("No specie with index '" + specieIndex + "'");
         }
     }
@@ -189,8 +222,8 @@ public class PopulationValue {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (int i = 0; i < this.individuals.size(); i++) {
+        builder.append("[ ");
+        for (int i = 0; i < individuals.size(); i++) {
             builder.append(speciesName.get(i));
             builder.append(": ");
             builder.append(individuals.get(i));
@@ -198,7 +231,7 @@ public class PopulationValue {
                 builder.append(", ");
             }
         }
-        builder.append("]");
+        builder.append(" ]");
         return builder.toString();
     }
 }

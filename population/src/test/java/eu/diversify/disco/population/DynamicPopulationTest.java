@@ -53,12 +53,12 @@ public class DynamicPopulationTest extends TestCase {
         DynamicPopulation population = makePopulation();
         
         Individual individual = new Animal(SPECIE_LION);
-        individual.join(population);
         
         final int ni = population.getTotalNumberOfIndividuals();
         final int ns = population.getNumberOfSpecies();
         final int nLions = population.getNumberOfIndividualsIn(SPECIE_LION);
-        
+      
+        individual.join(population);
         individual.leave(population);
         
         assertEquals(

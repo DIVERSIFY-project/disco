@@ -4,7 +4,6 @@ package eu.diversify.disco.population;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -15,20 +14,24 @@ import java.util.List;
  */
 public class Animal implements Individual {
 
-    private final ArrayList<DynamicPopulation> observers;
+    private final ArrayList<IPopulation> observers;
     private final ArrayList<String> species;
 
     public Animal(String specie) {
-        this.observers = new ArrayList<DynamicPopulation>();
+        this.observers = new ArrayList<IPopulation>();
         this.species = new ArrayList<String>();
         this.species.add(specie);
     }
 
-    public void join(DynamicPopulation population) {
+    @Override
+    public void join(IPopulation population) {
         if (!this.observers.contains(population)) {
             this.observers.add(population);
             for (String specie : this.species) {
-                population.addIndividualIn(specie);
+                if (!population.hasAnySpecieNamed(specie)) {
+                    population.addSpecie(specie);
+                }
+                population.shiftNumberOfIndividualsIn(specie, 1);
             }
         }
     }
@@ -42,31 +45,39 @@ public class Animal implements Individual {
     public void addSpecie(String specie) {
         if (!this.species.contains(specie)) {
             this.species.add(specie);
-            for (DynamicPopulation population : this.observers) {
-                population.addIndividualIn(specie);
+            for (IPopulation population : this.observers) {
+                if (!population.hasAnySpecieNamed(specie)) {
+                    population.addSpecie(specie);
+                }
+                population.shiftNumberOfIndividualsIn(specie, 1);
             }
         }
     }
 
     @Override
-    public void leave(DynamicPopulation population) {
+    public void leave(IPopulation population) {
         if (!this.observers.contains(population)) {
             this.observers.remove(population);
             for (String specie : this.species) {
-                population.removeIndividualFrom(specie);
+                population.shiftNumberOfIndividualsIn(specie, -1);
             }
         }
     }
 
     @Override
     public void setSpecies(List<String> species) {
-        for (DynamicPopulation population : this.observers) {
-            population.removeIndividualFrom(new HashSet<String>(this.species));
+        for (IPopulation population : this.observers) {
+            for (String specie: this.species) {
+                population.shiftNumberOfIndividualsIn(specie, -1);                
+            }
         }
         this.species.clear();
         this.species.addAll(species);
-        for (DynamicPopulation population : this.observers) {
-            population.addIndividualIn(new HashSet<String>(this.species));
+        for (IPopulation population : this.observers) {
+            for (String specie: this.species) {
+                population.shiftNumberOfIndividualsIn(specie, +1);
+            }
         }
     }
+
 }

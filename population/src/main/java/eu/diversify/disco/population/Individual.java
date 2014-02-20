@@ -10,13 +10,13 @@ import java.util.List;
  */
 public interface Individual {
 
-    public void join(DynamicPopulation p);
+    public void join(IPopulation p);
 
     public List<String> getSpecies();
 
     public void addSpecie(String specie);
 
-    public void leave(DynamicPopulation population);
+    public void leave(IPopulation population);
 
     public void setSpecies(List<String> asList);
     
