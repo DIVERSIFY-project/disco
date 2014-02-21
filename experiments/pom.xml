@@ -17,6 +17,7 @@
         <module>commons</module>
         <module>controllers</module>
         <module>population</module>
+        <module>cba</module>
     </modules>
  
     <dependencies> 

@@ -17,16 +17,23 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml.indicators.cost;
 
-import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
+package eu.diversify.disco.experiments.cba;
+
+import eu.diversify.disco.experiments.commons.Runner;
 
 /**
- * General interface for cost calculations on a CloudML deployment model.
+ * Launch the Cost-Benefits Analysis (CBA)
  * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public abstract class CostCalculator extends DeploymentIndicator {
+public class Launcher {
+    public static final String DEFAULT_SETUP_FILE = "setup.yml";
     
+    public static void main(String args[]) {
+        Runner runner = new Runner();
+        runner.run(CbaSetup.class, DEFAULT_SETUP_FILE);
+    }
+
 }

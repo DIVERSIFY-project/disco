@@ -8,7 +8,7 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <groupId>eu.diversify.disco</groupId>
-    <artifactId>cloudml</artifactId>
+    <artifactId>samples.cloudml</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>Disco :: Samples :: CloudML</name>
     <url>http://maven.apache.org</url>

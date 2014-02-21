@@ -30,7 +30,6 @@ import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.Specie;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import static java.util.Collections.shuffle;
 import java.util.List;
 import java.util.Random;
