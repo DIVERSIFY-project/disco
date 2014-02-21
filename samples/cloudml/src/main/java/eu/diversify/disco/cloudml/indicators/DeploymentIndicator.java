@@ -27,10 +27,10 @@ public abstract class DeploymentIndicator {
 
     private void checkThatDeploymentIsValid(DeploymentModel deployment) {
         if (deployment == null) {
-            throw new IllegalArgumentException("Unable to evaluate robustness of a 'null' deployment model.");
+            throw new IllegalArgumentException("Unable to evaluate indicator of a 'null' deployment model.");
         }
         if (isEmpty(deployment)) {
-            throw new IllegalArgumentException("Unable to evaluate the robustness of an empty deployment model.");
+            throw new IllegalArgumentException("Unable to evaluate the indicator of an empty deployment model.");
         }
     }
     

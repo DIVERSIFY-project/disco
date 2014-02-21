@@ -1,41 +1,44 @@
-package eu.diversify.disco.cloudml.indicators.robustness;
+/*
+ */
+package eu.diversify.disco.cloudml.indicators.diversity;
 
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicatorTest;
+import eu.diversify.disco.cloudml.indicators.robustness.RobustnessCalculator;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import static junit.framework.Assert.assertTrue;
 import org.cloudml.codecs.JsonCodec;
 import org.cloudml.core.DeploymentModel;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
- * Generic test suite for robustness calculations
  *
  * @author Franck Chauvel
  * @since 0.1
  */
-@RunWith(JUnit4.class)
-public abstract class RobustnessCalculatorTest extends DeploymentIndicatorTest {
+public class DiversityCalculatorTest extends DeploymentIndicatorTest {
 
     @Test
     public void testOrderingRobustness() throws FileNotFoundException, IOException {
-        RobustnessCalculator robustness = makeRobustnessCalculator();
-        DeploymentModel fragileDeployment = makeFragileDeployment();
+        DiversityCalculator robustness = makeDiversityCalculator();
+        DeploymentModel fragileDeployment = makeHomogeneousDeployment();
         double r1 = robustness.evaluateOn(fragileDeployment);
-        DeploymentModel robustDeployment = makeRobustDeployment();
+        DeploymentModel robustDeployment = makeDiverseDeployment();
         double r2 = robustness.evaluateOn(robustDeployment);
         assertTrue(
                 "Robust model shall have greater or equal robustness than fragile ones",
                 r1 <= r2);
     }
 
-    protected abstract RobustnessCalculator makeRobustnessCalculator();
+    protected DiversityCalculator makeDiversityCalculator() {
+        return new DiversityCalculator(new TrueDiversity());
+    }
 
-    private DeploymentModel makeFragileDeployment() throws FileNotFoundException, IOException {
+    private DeploymentModel makeHomogeneousDeployment() throws FileNotFoundException, IOException {
         JsonCodec codec = new JsonCodec();
         InputStream stream = new FileInputStream("../src/test/resources/sensappAdmin.json");
         DeploymentModel model = (DeploymentModel) codec.load(stream);
@@ -43,12 +46,13 @@ public abstract class RobustnessCalculatorTest extends DeploymentIndicatorTest {
         return model;
     }
 
-    private DeploymentModel makeRobustDeployment() throws FileNotFoundException, IOException {
-        return makeFragileDeployment();
+    private DeploymentModel makeDiverseDeployment() throws FileNotFoundException, IOException {
+        return makeHomogeneousDeployment();
     }
 
     @Override
     protected DeploymentIndicator makeDeploymentIndicator() {
-        return new DummyRobustnessCalculator();
+        return makeDiversityCalculator();
     }
+
 }
