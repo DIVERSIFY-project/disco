@@ -15,14 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller;
 
-import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.Specie;
-import java.util.ArrayList;
+import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
+import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.population.actions.Action;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Implementation of a breadth-first search strategy.
@@ -41,12 +57,13 @@ public class BreadthFirstExplorer extends IterativeSearch {
     private final HashSet<Solution> frontier;
     private Solution best = null;
 
-    
     /**
      * Create a new BreadthFirstExplorer tailored for a given diversity metric
+     *
      * @param metric the metric of interest
      */
     public BreadthFirstExplorer() {
+        super(new IndividualPermutationExplorer());
         this.explored = new HashSet<Solution>();
         this.frontier = new HashSet<Solution>();
     }
@@ -68,23 +85,29 @@ public class BreadthFirstExplorer extends IterativeSearch {
      */
     public void pushback() {
         final HashSet<Solution> newFrontier = new HashSet<Solution>();
-        for (Solution fp : frontier) {
-            for (Update update : getLegalUpdates(fp.getPopulation())) {
-                final Solution next = fp.refineWith(update);
-                if (next.getError() < fp.getError()) {
-                    if (!this.explored.contains(next)
-                            && !this.frontier.contains(next)) {
-                        if (next.getError() < best.getError()) {
-                            this.best = next;
-                        }
-                        newFrontier.add(next);
-                    }
+        for (Solution from : frontier) {
+            for (Action action : getActionFinder().search(from, 1)) {
+                Solution next = from.refineWith(action);
+                if (next.isImprovement() && neverExplored(next)) {
+                    updateBestSolutionIfNeeded(next);
+                    newFrontier.add(next);
                 }
             }
-            this.explored.add(fp);
+            this.explored.add(from);
         }
         this.frontier.clear();
         this.frontier.addAll(newFrontier);
+    }
+
+    private boolean neverExplored(Solution solution) {
+        return !this.explored.contains(solution)
+                && !this.frontier.contains(solution);
+    }
+
+    private void updateBestSolutionIfNeeded(Solution next) {
+        if (next.getError() < best.getError()) {
+            this.best = next;
+        }
     }
 
     /**
@@ -114,23 +137,5 @@ public class BreadthFirstExplorer extends IterativeSearch {
      */
     HashSet<Solution> getFrontier() {
         return this.frontier;
-    }
-
-    @Override
-    protected List<Update> getLegalUpdates(Population population) {
-        final ArrayList<Update> updates = new ArrayList<Update>();
-        for (Specie s1 : population.getSpecies()) {
-            if (s1.getIndividualCount() > 0) {
-                for (Specie s2 : population.getSpecies()) {
-                    if (!s1.getName().equals(s2.getName())) {
-                        final Update u = new Update();
-                        u.setUpdate(s1.getName(), -1);
-                        u.setUpdate(s2.getName(), +1);
-                        updates.add(u);
-                    }
-                }
-            }
-        }
-        return updates;
     }
 }

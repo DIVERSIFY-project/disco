@@ -15,33 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+package eu.diversify.disco.population.decorators;
 
-
-
-package eu.diversify.disco.population.exceptions;
-
-import eu.diversify.disco.population.Specie;
+import eu.diversify.disco.population.Population;
 
 /**
- * Raised when a specie has a negative individual count
+ * A decorator which permits that a population is updated by the individuals
+ * which compose it.
  *
  * @author Franck Chauvel
  * @since 0.1
  */
-public class NegativeIndividualCount extends RuntimeException {
+public class DynamicPopulation extends AbstractPopulationDecorator {
 
-    private final Specie specie;
-    private final int count;
-    /**
-     * Create a new NegativeIndividualCount exception pointing to the faulty
-     * specie.
-     *
-     * @param specie the faulty specie
-     * @param count the negative individual count
-     */
-    public NegativeIndividualCount(Specie specie, int count) {
-        this.specie = specie;
-        this.count = count;
+    public DynamicPopulation(Population delegate) {
+        super(delegate);
     }
-
+    
 }

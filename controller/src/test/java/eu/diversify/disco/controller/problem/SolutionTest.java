@@ -32,14 +32,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.problem;
 
+import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
+import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.actions.Script;
+import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
+import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,33 +57,51 @@ import org.junit.runners.JUnit4;
  * @since 0.1
  */
 @RunWith(JUnit4.class)
-public class EvaluationTest extends TestCase {
+public class SolutionTest extends TestCase {
+
+    @Test
+    public void testRefinement() {
+        Problem problem = new ProblemBuilder()
+                .withInitialPopulation(new PopulationBuilder().withDistribution(3, 2, 1).make())
+                .withReferenceDiversity(2.0)
+                .withDiversityMetric(new TrueDiversity())
+                .make();
+
+        Solution initial = problem.getInitialEvaluation();
+
+        Action refinement = new ShiftNumberOfIndividualsIn(2, +3);
+        Solution next = initial.refineWith(refinement);
+
+        assertEquals(
+                "Solution shall be immutable!",
+                new PopulationBuilder().withDistribution(3, 2, 1).make(),
+                initial.getPopulation());
+
+        assertEquals(
+                "Solution shall take into account refinements!",
+                new PopulationBuilder().withDistribution(3, 5, 1).make(),
+                next.getPopulation());
+    }
 
     /**
      * Test the equality operator between two evaluations
      */
     @Test
     public void testEquality() {
-        final Population p = new Population();
-        p.addSpecie("Lion", 5);
-        p.addSpecie("Sludge", 4);
-
-        Problem c = new Problem(p, 0.5, new TrueDiversity());
-        final Solution e1 = c.evaluate(p);
+        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
+        Solution e1 = c.evaluate(p);
         assertTrue(
                 "An evaluation should equal itself",
-                e1.equals(e1)
-                );
-        
-        
+                e1.equals(e1));
+
+
         final Solution e2 = c.evaluate(p);
         assertTrue(
                 "Two evaluations of similar populations for a given case shall be equal",
                 e1.equals(e2));
 
-        final Population p2 = new Population();
-        p2.addSpecie("Lion", 6);
-        p2.addSpecie("Sludge", 3);
+        Population p2 = new PopulationBuilder().withDistribution(6, 3).make();
         final Solution e3 = c.evaluate(p2);
         assertFalse(
                 "Two evaluations of two different populations shall not be equal",
@@ -92,16 +115,10 @@ public class EvaluationTest extends TestCase {
     @Test
     public void testLinkage() {
 
-        final Population p = new Population();
-        p.addSpecie("Lion", 5);
-        p.addSpecie("Sludge", 4);
+        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        final Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
 
-        final Problem c = new Problem(p, 0.5, new TrueDiversity());
-
-        final Population p2 = new Population();
-        p2.addSpecie("Lion", 6);
-        p2.addSpecie("Sludge", 3);
-
+        Population p2 = new PopulationBuilder().withDistribution(6, 3).make();
         final Solution e1 = c.evaluate(p2);
         assertFalse(
                 "Shall not have a previous evaluation",
@@ -112,9 +129,10 @@ public class EvaluationTest extends TestCase {
                 e1.getIteration());
 
 
-        final Update u = new Update();
-        u.setUpdate("Lion", +1);
-        u.setUpdate("Sludge", -1);
+        final Action u = new Script(Arrays.asList(new Action[]{
+            new ShiftNumberOfIndividualsIn(1, +1),
+            new ShiftNumberOfIndividualsIn(2, -1)
+        }));
 
         final Solution e2 = e1.refineWith(u);
         assertTrue(
@@ -134,16 +152,14 @@ public class EvaluationTest extends TestCase {
      */
     @Test
     public void testFormatting() {
-        final Population p = new Population();
-        p.addSpecie("Lion", 5);
-        p.addSpecie("Sludge", 4);
-        final Problem c = new Problem(p, 0.5, new TrueDiversity());
+        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
 
-        final Solution result = c.evaluate(p);
-        final String text = result.toString();
+        Solution result = c.evaluate(p);
+        String text = result.toString();
         assertEquals(
                 "Wrong formatting of evaluation",
-                " - Iteration count: 1\n - Population: {Lion: 5, Sludge: 4}\n - Reference: 0.5\n - Diversity: 0.9791177639715973\n - Error: 0.22955383175314326\n",
+                " - Iteration count: 1\n - Population: [ sp. #1: 5, sp. #2: 4 ]\n - Reference: 1.65\n - Diversity: 1.9877674693472378\n - Error: 0.11408686334923729\n",
                 text);
     }
 
@@ -152,10 +168,8 @@ public class EvaluationTest extends TestCase {
      */
     @Test
     public void testCollectionUse() {
-        final Population p = new Population();
-        p.addSpecie("Lion", 5);
-        p.addSpecie("Sludge", 4);
-        final Problem c = new Problem(p, 0.5, new TrueDiversity());
+        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        final Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
 
         final Solution e = c.evaluate(p);
         final HashSet<Solution> set = new HashSet<Solution>();

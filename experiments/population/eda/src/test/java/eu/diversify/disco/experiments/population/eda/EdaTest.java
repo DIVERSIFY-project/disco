@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.experiments.population.eda;
 
 import eu.diversify.disco.experiments.commons.Experiment;
@@ -39,14 +23,12 @@ import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.Specie;
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.random.Profile;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -140,7 +122,7 @@ public class EdaTest extends TestCase {
     public void testNonEmptySpeciesWithEmptySpecies() {
         Eda experiment = (Eda) makeEdaSetup().buildExperiment();
         Population p = makeMinimalPopulation(1, 0);
-        List<Specie> nonEmptySpecies = experiment.nonEmptySpecies(p);
+        List<String> nonEmptySpecies = experiment.nonEmptySpecies(p);
         assertEquals("Wrong number of non empty species", 1, nonEmptySpecies.size());
     }
 
@@ -148,7 +130,7 @@ public class EdaTest extends TestCase {
     public void testNonEmptySpeciesWithNoEmptySpecies() {
         Eda experiment = (Eda) makeEdaSetup().buildExperiment();
         Population p = makeMinimalPopulation(1, 1);
-        List<Specie> nonEmptySpecies = experiment.nonEmptySpecies(p);
+        List<String> nonEmptySpecies = experiment.nonEmptySpecies(p);
         assertEquals("Wrong number of non empty species", 2, nonEmptySpecies.size());
     }
 
@@ -156,22 +138,26 @@ public class EdaTest extends TestCase {
     public void testChooseAnySpecieFrom() {
         Eda experiment = (Eda) makeEdaSetup().buildExperiment();
         Population p = makeMinimalPopulation(1, 1);
-        Specie specie = experiment.chooseAnySpecieFrom(p.getSpecies());
+        String specie = experiment.chooseAnySpecieFrom(p.getSpeciesNames());
         assertNotNull(specie);
     }
 
     @Test
-    public void testFilterOut() {
+    public void testExcludeSpecieNamed() {
         Eda experiment = (Eda) makeEdaSetup().buildExperiment();
         Population p = makeMinimalPopulation(1, 1);
-        List<Specie> filtered = experiment.filterOut(p, p.getSpecies().get(0));
-        assertEquals("Wrong number of species", filtered.size(), 1);
+        List<String> filtered = experiment.excludeSpecieNamed(p, p.getSpeciesNames().get(0));
+        assertEquals("Wrong number of species", 1, filtered.size());
     }
 
+    // FIXME: setNumberOfIndividualsIn should accepts a specie name as well
+    
     private Population makeMinimalPopulation(int s1, int s2) {
-        Population minimalPopulation = new Population();
-        minimalPopulation.addSpecie("s1", s1);
-        minimalPopulation.addSpecie("s2", s2);
+        Population minimalPopulation = new PopulationBuilder().make();
+        minimalPopulation.addSpecie("s1");
+        minimalPopulation.setNumberOfIndividualsIn(1, s1);
+        minimalPopulation.addSpecie("s2");
+        minimalPopulation.setNumberOfIndividualsIn(2, s2);
         return minimalPopulation;
     }
 }

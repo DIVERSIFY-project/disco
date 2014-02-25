@@ -15,10 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package eu.diversify.disco.controller;
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
+package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.actions.Action;
 
 /**
  * Encapsulate the various data outputted by the controller, including the
@@ -52,16 +69,41 @@ public class Solution {
     }
 
     /**
+     * Check whether the selected action applies in the context of the problem
+     * under resolution
+     *
+     * @param action the action to be evaluated
+     * @return true if the action is legal
+     */
+    public boolean canBeRefinedWith(Action action) {
+        return problem.isLegal(action);
+    }
+
+    /**
      * Refine this evaluation by applying the given update on the population
      *
      * @param update the update to apply to refine this evaluation
      * @return the evaluation (a newly created object) of the population
      * resulting from applying the given update on the population.
      */
-    public Solution refineWith(Update u) {
-        Solution evaluation = problem.evaluate(u.applyTo(population));
+    public Solution refineWith(Action action) {
+        Solution evaluation = problem.evaluate(action.applyTo(population));
         evaluation.previous = this;
         return evaluation;
+    }
+
+    /**
+     * Check whether this solution is an improvement with respect to its
+     * previous solution if any
+     *
+     * @return true, if this solution has a smaller error than the previous one
+     */
+    public boolean isImprovement() {
+        boolean result = false;
+        if (this.hasPrevious()) {
+            result = this.error < previous.getError();
+        }
+        return result;
     }
 
     /**

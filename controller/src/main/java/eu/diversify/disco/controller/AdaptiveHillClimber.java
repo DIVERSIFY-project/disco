@@ -17,11 +17,8 @@
  */
 package eu.diversify.disco.controller;
 
-import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.Specie;
-import eu.diversify.disco.population.diversity.DiversityMetric;
-import java.util.ArrayList;
-import java.util.List;
+import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
+import eu.diversify.disco.controller.problem.Solution;
 
 /**
  * Adaptive Hill-Climbing with a twiddling mechanism.
@@ -44,6 +41,7 @@ public class AdaptiveHillClimber extends IterativeSearch {
      * @param metric the diversity metric to use
      */
     public AdaptiveHillClimber() {
+        super(new IndividualPermutationExplorer());
         this.stepSize = 1;
     }
 
@@ -63,22 +61,13 @@ public class AdaptiveHillClimber extends IterativeSearch {
         return output;
     }
 
-    
     @Override
-    protected List<Update> getLegalUpdates(Population population) {
-        final ArrayList<Update> updates = new ArrayList<Update>();
-        for (Specie s1 : population.getSpecies()) {
-            if (s1.getIndividualCount() >= stepSize) {
-                for (Specie s2 : population.getSpecies()) {
-                    if (!s1.getName().equals(s2.getName())) {
-                        final Update u = new Update();
-                        u.setUpdate(s1.getName(), -stepSize);
-                        u.setUpdate(s2.getName(), +stepSize);
-                        updates.add(u);
-                    }
-                }
-            }
-        }
-        return updates;
+    protected int getScaleFactor() {
+        return stepSize;
     }
+    
+    
+    
+
+   
 }

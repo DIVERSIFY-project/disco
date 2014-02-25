@@ -20,8 +20,9 @@ package eu.diversify.disco.cloudml;
 import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.Controller;
-import eu.diversify.disco.controller.Problem;
-import eu.diversify.disco.controller.Solution;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.problem.ProblemBuilder;
+import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
@@ -63,7 +64,11 @@ public class DiversityController {
      */
     public CloudML applyTo(CloudML current) {
         Population population = transformation.forward(current);
-        final Problem problem = new Problem(population, this.reference, this.metric);
+        Problem problem = new ProblemBuilder()
+                .withInitialPopulation(population)
+                .withDiversityMetric(this.metric)
+                .withReferenceDiversity(this.reference)
+                .make();
         Solution result = this.controller.applyTo(problem);
         transformation.backward(current, result.getPopulation());
         return current;

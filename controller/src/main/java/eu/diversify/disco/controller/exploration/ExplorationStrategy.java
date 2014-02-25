@@ -15,36 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+package eu.diversify.disco.controller.exploration;
 
-
-
-package eu.diversify.disco.population.exceptions;
-
-import eu.diversify.disco.population.Population;
+import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.population.actions.Action;
+import java.util.List;
 
 /**
- * Exception raised if one tries to create to specie with the same unique ID.
- * 
+ * General interface for functions which select a subset of actions one can
+ * perform to refine a solution
+ *
  * @author Franck Chauvel
  * @since 0.1
  */
-public class DuplicateSpecieId extends RuntimeException {
-    
-    private Population population;
-    private String duplicateName;
-
+public interface ExplorationStrategy {
     
     /**
-     * Create a new DuplicateSpecieId exception with the population at sake and 
-     * ID which is already used.
-     * 
-     * @param population the erroneous population 
-     * @param duplicateName the specie name already used the given population
+     * @return the list of actions relevant for this finder
      */
-    public DuplicateSpecieId(Population population, String duplicateName) {
-        this.population = population;
-        this.duplicateName = duplicateName;
-    }
-        
-    
+    public List<Action> search(Solution solution, int scaleFactor);
 }

@@ -17,8 +17,6 @@
  */
 package eu.diversify.disco.controller;
 
-import eu.diversify.disco.population.diversity.TrueDiversity;
-
 /**
  *
  *

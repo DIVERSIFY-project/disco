@@ -49,8 +49,8 @@ public class MetricFactory {
      * @param text the textual description of the metric to instantiate
      * @return the related diversity metric
      */
-    public DiversityMetric instantiate(String text) {
-        DiversityMetric result = null;
+    public AbstractDiversityMetric instantiate(String text) {
+        AbstractDiversityMetric result = null;
         Parser parser = new Parser();
         Description description = parser.parse(text);
         final String escaped = description.getName().trim().replaceAll("\\s+", " ").toUpperCase();
@@ -81,7 +81,7 @@ public class MetricFactory {
             for (String key : description.getParameters().keySet()) {
                 actuals[index] = description.getParameters().get(key);
             }
-            result = (DiversityMetric) selected.newInstance(actuals);
+            result = (AbstractDiversityMetric) selected.newInstance(actuals);
 
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);

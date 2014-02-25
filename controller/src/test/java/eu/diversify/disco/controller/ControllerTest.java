@@ -15,11 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller;
 
+import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
+import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
+import java.util.ArrayList;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,23 +69,21 @@ public abstract class ControllerTest extends TestCase {
     public void testMinimizeDiversity() {
         IterativeSearch controller = factory();
 
-        Population population = new Population();
-        population.addSpecie("Tiger", 5);
-        population.addSpecie("Sludge", 5);
-    
+        Population population = new PopulationBuilder().withDistribution(5, 5).make();
+
         final double reference = 0.;
 
-        final Problem problem = new Problem(population, reference, new TrueDiversity());
+        final Problem problem = new Problem(population, reference, new NormalisedDiversityMetric(new TrueDiversity()), new ArrayList<Constraint>());
         Solution result = controller.applyTo(problem);
         assertEquals(
                 "Illegal update of the population size",
-                population.getIndividualCount(),
-                result.getPopulation().getIndividualCount());
+                population.getTotalNumberOfIndividuals(),
+                result.getPopulation().getTotalNumberOfIndividuals());
 
         assertEquals(
                 "Illegal update of the number of species",
-                population.getSpecies().size(),
-                result.getPopulation().getSpecies().size());
+                population.getNumberOfSpecies(),
+                result.getPopulation().getNumberOfSpecies());
 
         assertEquals(
                 "Unacceptable diversity error",
@@ -86,24 +106,22 @@ public abstract class ControllerTest extends TestCase {
     public void testMaximizeDiversity() {
         IterativeSearch controller = factory();
 
-        Population population = new Population();
-        population.addSpecie("Tiger", 20);
-        population.addSpecie("Sludge", 0);
-        
+        Population population = new PopulationBuilder().withDistribution(20, 0).make();
+
         final double reference = 1.;
-        
-        final Problem problem = new Problem(population, reference, new TrueDiversity());
+
+        final Problem problem = new Problem(population, reference, new NormalisedDiversityMetric(new TrueDiversity()), new ArrayList<Constraint>());
         Solution result = controller.applyTo(problem);
-        
+
         assertEquals(
                 "Illegal update of the population size",
-                population.getIndividualCount(),
-                result.getPopulation().getIndividualCount());
+                population.getTotalNumberOfIndividuals(),
+                result.getPopulation().getTotalNumberOfIndividuals());
 
         assertEquals(
                 "Illegal update of the number of species",
-                population.getSpecies().size(),
-                result.getPopulation().getSpecies().size());
+                population.getNumberOfSpecies(),
+                result.getPopulation().getNumberOfSpecies());
 
         assertEquals(
                 "Unacceptable diversity error",

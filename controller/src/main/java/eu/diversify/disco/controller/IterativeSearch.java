@@ -18,9 +18,14 @@
 
 package eu.diversify.disco.controller;
 
+import eu.diversify.disco.controller.exploration.ExplorationStrategy;
+import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.DiversityMetric;
-import java.util.List;
+import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.diversity.AbstractDiversityMetric;
+import java.util.ArrayList;
 
 /**
  * Abstract interface of the diversity controller
@@ -29,11 +34,30 @@ import java.util.List;
  * @since 0.1
  */
 public abstract class IterativeSearch implements Controller {
+    public static final int DEFAULT_SCALE_FACTOR = 1;
+   
+    private final ExplorationStrategy finder;
+
     
+    /**
+     * Create a new Iterative Search, applying a given exploration strategy
+     * @param finder the exploration strategy
+     */
+    public IterativeSearch(ExplorationStrategy finder) {
+        this.finder = finder;
+    }
+    
+    /**
+     * @return the exploration strategy
+     */
+    protected ExplorationStrategy getActionFinder() {
+        return this.finder;
+    }
     
     /**
      * @see eu.diversity.disco.controller.Controller#applyTo
      */
+    @Override
     public Solution applyTo(Problem problem) {
         return search(problem.getInitialEvaluation());
     }
@@ -41,8 +65,9 @@ public abstract class IterativeSearch implements Controller {
     /**
      * @see eu.diversity.disco.controller.Controller#applyTo
      */
-    public final Solution applyTo(DiversityMetric metric, Population population, double reference) {
-        return applyTo(new Problem(population, reference, metric));
+    @Override
+    public final Solution applyTo(AbstractDiversityMetric metric, Population population, double reference) {
+        return applyTo(new Problem(population, reference, metric, new ArrayList<Constraint>()));
     }
 
     /**
@@ -69,20 +94,17 @@ public abstract class IterativeSearch implements Controller {
      */
     protected Solution refine(Solution current) {
         Solution output = current;
-        for (Update update : getLegalUpdates(current.getPopulation())) {
-            Solution next = current.refineWith(update);
+        for (Action action : finder.search(current, getScaleFactor())) {
+            Solution next = current.refineWith(action);
             if (next.getError() < output.getError()) {
                 output = next;
             }
         }
         return output;
     }
+    
+    protected int getScaleFactor() {
+        return DEFAULT_SCALE_FACTOR;
+    }
 
-    /**
-     * Return the list of update operation which are legal on a given population
-     *
-     * @param population the population whose candidates update are needed
-     * @return the list of candidate updates
-     */
-    protected abstract List<Update> getLegalUpdates(Population population);
 }

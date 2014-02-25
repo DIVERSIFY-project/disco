@@ -15,272 +15,376 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
+/*
+ */
 package eu.diversify.disco.population;
 
-import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
-import eu.diversify.disco.population.exceptions.NegativeIndividualCount;
-import eu.diversify.disco.population.exceptions.UnknownSpecie;
+import java.util.Arrays;
+import java.util.List;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
- * Test the various features of a population model
+ * Test operation which update the population
  *
  * @author Franck Chauvel
  * @since 0.1
  */
-@RunWith(JUnit4.class)
-public class PopulationTest extends TestCase {
+public abstract class PopulationTest extends TestCase {
 
     @Rule
-    public ExpectedException exception = ExpectedException.none();
+    public final ExpectedException exception;
+    private Population initial;
+    private Population actual;
+    private Population expected;
 
-    /**
-     * Check the count of species, under specie addition and removal
-     */
+    public PopulationTest() {
+        exception = ExpectedException.none();
+    }
+
+    public abstract PopulationBuilder getBuilder();
+
+    public Population getInitial() {
+        return this.initial;
+    }
+
+    public Population getActual() {
+        return this.actual;
+    }
+
+    public Population getExpected() {
+        return this.expected;
+    }
+
+    // Construction from various data types
     @Test
-    public void testPopulationSpeciesCount() throws DuplicateSpecieId {
-        Population p = new Population();
-        assertTrue("Fresh population shall be empty", p.isEmpty());
-        assertEquals("Wrong initial species count",
-                0,
-                p.getSpecies().size());
-
-        p.addSpecie("Elephant");
-        assertEquals("Wrong initial species count after specie addition",
-                1,
-                p.getSpecies().size());
-
-        p.addSpecie("Hippopotamus");
-        assertEquals("Wrong initial species count after specie addition",
-                2,
-                p.getSpecies().size());
-
-        p.deleteSpecie("Elephant");
-        assertEquals("Wrong initial species count after specie deletion",
-                1,
-                p.getSpecies().size());
-
+    public void testCreatingPopulationFromArray() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        assertFalse(actual.isEmpty());
+        assertEquals(4, actual.getNumberOfSpecies());
+        assertEquals(3, actual.getNumberOfIndividualsIn(1));
+        assertEquals(2, actual.getNumberOfIndividualsIn(2));
+        assertEquals(0, actual.getNumberOfIndividualsIn(3));
+        assertEquals(1, actual.getNumberOfIndividualsIn(4));
     }
 
-    /**
-     * Check whether duplicate specie id are caught on specie creation, without
-     * individual count
-     *
-     * @throws DuplicateSpecieId
-     */
-    @Test(expected = DuplicateSpecieId.class)
-    public void testDuplicateSpecieIdDetection() throws DuplicateSpecieId {
-        Population p = new Population();
-        assertEquals("Wrong initial species count",
-                0,
-                p.getSpecies().size());
-
-        p.addSpecie("Elephant");
-        assertEquals("Wrong initial species count after specie addition",
-                1,
-                p.getSpecies().size());
-
-        p.addSpecie("Elephant");
-        assertEquals("Wrong initial species count after specie addition",
-                2,
-                p.getSpecies().size());
-    }
-    
-    /**
-     * Check whether duplicate specie id are caught on specie creation, without
-     * individual count
-     *
-     * @throws DuplicateSpecieId
-     */
-    @Test(expected = DuplicateSpecieId.class)
-    public void testDuplicateSpecieIdDetectionWithCount() throws DuplicateSpecieId {
-        Population p = new Population();
-        assertEquals("Wrong initial species count",
-                0,
-                p.getSpecies().size());
-
-        p.addSpecie("Elephant", 34);
-        assertEquals("Wrong initial species count after specie addition",
-                1,
-                p.getSpecies().size());
-
-        p.addSpecie("Elephant", 23);
-        assertEquals("Wrong initial species count after specie addition",
-                2,
-                p.getSpecies().size());
-    }
-    
-
-    /**
-     * Test incrementing the individual count of a given specie
-     */
+    // Getters test
     @Test
-    public void testIndividualCountIncrement() throws DuplicateSpecieId, UnknownSpecie, NegativeIndividualCount {
-        Population p = new Population();
-
-        Specie s = p.addSpecie("Hippopotamus");
-
-        assertEquals("Wrong individual count",
-                s.getIndividualCount(),
-                0);
-
-        s.setIndividualCount(3);
-
-        assertEquals("Wrong individual count",
-                p.getSpecie("Hippopotamus").getIndividualCount(),
-                3);
-
+    public void testGetDistribution() {
+        initial = new PopulationBuilder()
+                .withDistribution(3, 2, 0, 1)
+                .make();
+        List<Integer> actual = initial.getDistribution();
+        List<Integer> expected = Arrays.asList(new Integer[]{3, 2, 0, 1});
+        assertEquals(actual, expected);
     }
 
-    /**
-     * Test whether the unknown specie are properly detected
-     */
-    @Test(expected = UnknownSpecie.class)
-    public void testUnknownSpecieDetection() throws UnknownSpecie {
-        Population p = new Population();
-        p.getSpecie("Tiger");
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDistributionIsImmutable() {
+        initial = new PopulationBuilder()
+                .withDistribution(3, 2, 0, 1)
+                .make();
+        initial.getDistribution().set(3, 2);
     }
 
-    /**
-     * Check whether the negative individual count are properly caught
-     */
-    @Test(expected = NegativeIndividualCount.class)
-    public void testNegativeIndividualCountDetection() throws NegativeIndividualCount, DuplicateSpecieId {
-        Population p = new Population();
-        Specie tigers = p.addSpecie("Tigers");
-        tigers.setIndividualCount(-23);
-    }
-
-    /**
-     * Check whether the negative individual count are properly caught, during
-     * the construction of new specie
-     */
-    @Test(expected = NegativeIndividualCount.class)
-    public void testInitialNegativeIndividualCountDetection() throws NegativeIndividualCount, DuplicateSpecieId {
-        Population p = new Population();
-        p.addSpecie("Tigers", -23);
-    }
-
-    /**
-     * Test the calculation of the total number of individual in the population
-     */
     @Test
-    public void testIndividualCount() {
-        Population p = new Population();
-        p.addSpecie("Hippopotamus", 34);
-        p.addSpecie("Tigers", 56);
-        assertEquals(
-                "Wrong population individual count",
-                90,
-                p.getIndividualCount());
+    public void testGetSpeciesNames() {
+        initial = new PopulationBuilder()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .make();
+        List<String> actual = initial.getSpeciesNames();
+        List<String> expected = Arrays.asList(new String[]{"s1", "s2", "s3", "s4"});
+        assertEquals(actual, expected);
     }
 
-    /**
-     * Test the species equality
-     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetSpeciesNamesIsImmutable() {
+        initial = new PopulationBuilder()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .make();
+        initial.getSpeciesNames().set(2, "xxxx");
+    }
+
     @Test
-    public void testSpecieEquality() {
-        Specie s1 = new Specie("lion", 23);
-        assertTrue(
-                "A specie shall be equal to itself",
-                s1.equals(s1));
-
-        Specie s2 = new Specie("lion", 23);
-        assertTrue(
-                "A specie shall be equal to any other equivalent specie",
-                s1.equals(s2));
-
-        Specie s3 = new Specie("lion", 34);
-        assertFalse(
-                "Individual count must distinguish two species",
-                s1.equals(s3));
-
-        Specie s4 = new Specie("sludge", 23);
-        assertFalse(
-                "Specie name must distinguish two species",
-                s1.equals(s4));
+    public void testGetPercentagePerSpecieOnTheFullSpecie() {
+        initial = getBuilder().withDistribution(3, 0, 0).make();
+        expected = getBuilder().clonedFrom(initial).make();
+        double percentage = initial.getFractionIn(1);
+        assertEquals(initial, expected);
+        assertEquals(1D, percentage, 1e-9);
     }
 
-    /**
-     * Test the equality of two populations
-     */
     @Test
-    public void testPopulationEquality() {
-        Population p1 = new Population();
-        p1.addSpecie("lion", 23);
-        p1.addSpecie("tiger", 12);
-        p1.addSpecie("horse", 17);
-
-        Population p2 = new Population();
-        p2.addSpecie("lion", 23);
-        p2.addSpecie("tiger", 12);
-        p2.addSpecie("horse", 17);
-
-        assertTrue(
-                "Two equal populations shall be equal",
-                p1.equals(p2));
-
-        assertTrue(
-                "Two equal populations shall be equal",
-                p2.equals(p1));
-
-        assertTrue(
-                "Two equal populations shall be equal",
-                p1.equals(p1));
-
-
-        // Check the detection of a missing specie
-        Population p3 = new Population();
-        p3.addSpecie("lion", 23);
-        p3.addSpecie("horse", 17);
-
-        assertFalse(
-                "A missing specie shall make two populations different",
-                p1.equals(p3));
-
-        // Check the detection of different individual count
-        Population p4 = new Population();
-        p4.addSpecie("lion", 25); // Update: +1!
-        p4.addSpecie("tiger", 12);
-        p4.addSpecie("horse", 17);
-
-        assertFalse(
-                "Different individual count shall make two populations different",
-                p1.equals(p4));
-
+    public void testGetPercentagePerSpecieOnEmptySpecie() {
+        initial = getBuilder().withDistribution(3, 0, 0).make();
+        expected = getBuilder().clonedFrom(initial).make();
+        double percentage = initial.getFractionIn(2);
+        assertEquals(initial, expected);
+        assertEquals(0D, percentage, 1e-9);
     }
-    
-    /**
-     * Test the default formatting of a population
-     */
+
     @Test
-    public void testPopulationFormatting() {
-        Population p = new Population();
-        String text = p.toString();
-        assertEquals(
-                "Empty population shall be properly formatted",
-                "{}",
-                text
-                );
-        
-        Population p2 = new Population();
-        p2.addSpecie("Elephant");
-        p2.addSpecie("Lion", 30);
-        p2.addSpecie("Hippopotamus", 4);
-        String text2 = p2.toString();
-        assertEquals(
-                "population shall be properly formatted",
-                "{Elephant: 0, Lion: 30, Hippopotamus: 4}",
-                text2
-                );
-      
+    public void testGetPercentagePerSpecieOnRegularSpecie() {
+        initial = getBuilder().withDistribution(1, 1, 1).make();
+        expected = getBuilder().clonedFrom(initial).make();
+        double percentage = initial.getFractionIn(2);
+        assertEquals(initial, expected);
+        assertEquals(1D / 3D, percentage, 1e-9);
     }
-    
+
+    @Test
+    public void testGetPercentagePerSpecieOnRegularSpecieBySpecieName() {
+        initial = getBuilder().withDistribution(1, 1, 1).make();
+        expected = getBuilder().clonedFrom(initial).make();
+        double percentage = initial.getFractionIn("sp. #2");
+        assertEquals(initial, expected);
+        assertEquals(1D / 3D, percentage, 1e-9);
+    }
+
+    @Test
+    public void testGetMeanNumberOfIndividuals() {
+        initial = new PopulationBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(10, 2, 3)
+                .make();
+        double actual = initial.getMeanNumberOfIndividuals();
+        double expected = 5D;
+        assertEquals(expected, actual);
+    }
+
+    // Mutator tests
+    @Test
+    public void testShiftNumberOfIndividualsInByIndex() {
+        initial = getBuilder().withDistribution(1, 2, 3).make();
+        actual = initial.shiftNumberOfIndividualsIn(1, +1);
+        expected = getBuilder().withDistribution(2, 2, 3).make();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testShiftNumberOfIndividualsInBySpecieName() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1")
+                .withDistribution(0)
+                .make();
+        actual = initial.shiftNumberOfIndividualsIn("s1", 1);
+        expected = getBuilder()
+                .withSpeciesNamed("s1")
+                .withDistribution(1)
+                .make();
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testShiftNumberOfIndividualsByIndexThatDoesNotExists() {
+        initial = getBuilder().withDistribution(0).make();
+        actual = initial.shiftNumberOfIndividualsIn(77, 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testShiftNumberOfIndividualBySpecieNameThatDoesNotExist() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1")
+                .withDistribution(0)
+                .make();
+        actual = initial.shiftNumberOfIndividualsIn("s877", 1);
+    }
+
+    @Test
+    public void testAddSpecie() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.addSpecie("s4");
+        expected = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .withDistribution(3, 2, 1, 0)
+                .make();
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddSpecieWithNullName() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.addSpecie(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddSpecieWithEmptyName() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.addSpecie("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddDuplicatedSpecie() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.addSpecie("s3");
+    }
+
+    // TODO: check that there are no more occurence of "new PopualtionBuilder()"
+    @Test
+    public void testRemoveSpecieByIndex() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.removeSpecie(2);
+        expected = getBuilder()
+                .withSpeciesNamed("s1", "s3")
+                .withDistribution(3, 1)
+                .make();
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveSpecieByIndexTooLarge() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .make();
+        actual = initial.removeSpecie(77);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveSpecieByNegativeIndex() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.removeSpecie(-4);
+    }
+
+    @Test
+    public void testRemoveSpecieByName() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.removeSpecie("s2");
+        expected = getBuilder()
+                .withSpeciesNamed("s1", "s3")
+                .withDistribution(3, 1)
+                .make();
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveSpecieByNameThatDoesNotExist() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        actual = initial.removeSpecie("s77");
+    }
+
+    @Test
+    public void testRenameSpecieByIndex() {
+        initial = getBuilder().withSpeciesNamed("s1", "s2").make();
+        actual = initial.renameSpecie(2, "sXX");
+        expected = getBuilder().withSpeciesNamed("s1", "sXX").make();
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testRenameSpecieByName() {
+        initial = getBuilder().withSpeciesNamed("s1", "s2").make();
+        actual = initial.renameSpecie("s2", "sXX");
+        expected = getBuilder().withSpeciesNamed("s1", "sXX").make();
+        assertEquals(actual, expected);
+    }
+
+    // Test conversions to other data representation
+    @Test
+    public void testToString() {
+        Population p = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        String actual = p.toString();
+        String expected = "[ s1: 3, s2: 2, s3: 1 ]";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testToArrayOfFraction() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        double[] actual = initial.toArrayOfFractions();
+        double[] expected = new double[]{0.5D, 1D / 3, 1D / 6};
+        assertTrue(Arrays.equals(expected, actual));
+    }
+
+    // Test populations equality
+    @Test
+    public void testEqualsWhenEquals() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        expected = getBuilder().withDistribution(3, 2, 0, 1).make();
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testEqualsWithNull() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        assertFalse(actual.equals(null));
+    }
+
+    @Test
+    public void testEqualsWithWrongType() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        assertFalse(actual.equals(23));
+    }
+
+    @Test
+    public void testEqualsWhenIndividualCountAreDifferent() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        expected = getBuilder().withDistribution(3, 3, 0, 1).make();
+        assertFalse(actual.equals(expected));
+    }
+
+    @Test
+    public void testEqualsWhenSpecieNameAreDifferent() {
+        actual = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        expected = getBuilder()
+                .withSpeciesNamed("sp1", "s2", "s3")
+                .withDistribution(3, 2, 1)
+                .make();
+        assertFalse(actual.equals(expected));
+    }
+
+    @Test
+    public void testEqualsWhenSpeciesCountAreDifferent() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        expected = getBuilder().withDistribution(3, 2, 0, 1, 5).make();
+        assertFalse(actual.equals(expected));
+    }
+
+    @Test
+    public void testEqualsWhenSame() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        assertTrue(actual.equals(actual));
+    }
+
+    @Test
+    public void testSameHashCodeImpliesEquals() {
+        actual = getBuilder().withDistribution(3, 2, 0, 1).make();
+        expected = getBuilder().withDistribution(3, 2, 0, 1).make();
+        assertEquals(actual.hashCode(), expected.hashCode());
+    }
 }

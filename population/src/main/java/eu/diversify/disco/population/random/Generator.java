@@ -35,6 +35,8 @@
 package eu.diversify.disco.population.random;
 
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.ConcretePopulation;
+import eu.diversify.disco.population.PopulationBuilder;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -65,16 +67,21 @@ public class Generator {
      */
     public Population makeOne(Profile profile) {
         final Random random = new Random();
-        
+
         final int s = profile.getNumberOfSpecies().sample();
         final int n = profile.getNumberOfIndividuals().sample();
 
-        final int[] distribution  = new int[s];
-        for(int i=0 ; i<n ; i++) {
-            distribution[random.nextInt(s)] += 1;
+        final Integer[] distribution = new Integer[s];
+        for (int i = 0; i < s; i++) {
+            distribution[i] = 0;
         }
-        
-        return Population.fromDistribution(distribution);
+
+        for (int i = 0; i < n; i++) {
+            int draw = random.nextInt(s);
+            distribution[draw] += 1;
+        }
+
+        return new PopulationBuilder().withDistribution(distribution).make();
     }
 
     /**

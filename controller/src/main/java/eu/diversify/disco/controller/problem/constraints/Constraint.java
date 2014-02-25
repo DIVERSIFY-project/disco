@@ -15,30 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
+package eu.diversify.disco.controller.problem.constraints;
 
-package eu.diversify.disco.population.diversity.exceptions;
-
-
-import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.actions.Action;
 
 /**
- * Exception raised when the diversity is evaluated on an empty population.
+ * Interface of constraint which can be added to a given problem
  * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public class EmptyPopulation extends RuntimeException {
-
-    private final Population population;
+public interface Constraint {
     
-    /**
-     * Create a new EmptyPopulation exception.
-     * 
-     * @param population the faulty population
-     */
-    public EmptyPopulation(Population population) {
-        this.population = population;
-    }
-    
+    public boolean isLegal(Action action);
     
 }

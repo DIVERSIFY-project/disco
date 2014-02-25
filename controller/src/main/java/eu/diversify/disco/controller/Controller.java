@@ -17,8 +17,10 @@
  */
 package eu.diversify.disco.controller;
 
+import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.DiversityMetric;
+import eu.diversify.disco.population.diversity.AbstractDiversityMetric;
 
 /**
  * General Interface for any kind of diversity controller, including iterative
@@ -38,7 +40,7 @@ public interface Controller {
      *
      * @return the evaluation of the best/first solution found
      */
-    public Solution applyTo(DiversityMetric metric, Population population, double reference);
+    public Solution applyTo(AbstractDiversityMetric metric, Population population, double reference);
 
     /**
      * Solve the given problem if possible.

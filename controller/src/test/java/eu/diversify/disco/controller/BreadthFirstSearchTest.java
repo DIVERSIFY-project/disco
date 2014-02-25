@@ -18,9 +18,12 @@
 
 package eu.diversify.disco.controller;
 
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
+import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
-import java.util.HashSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -46,15 +49,14 @@ public class BreadthFirstSearchTest extends ControllerTest {
     @Test
     public void testPushback() {
         final BreadthFirstExplorer explorer = new BreadthFirstExplorer();
+        Population source = new PopulationBuilder().withDistribution(5, 5).make();
+        Problem problem = new ProblemBuilder()
+                .withInitialPopulation(source)
+                .withDiversityMetric(new NormalisedDiversityMetric(new TrueDiversity()))
+                .withReferenceDiversity(0.)
+                .make();
         
-        final Population p1 = new Population();
-        p1.addSpecie("sp1", 5);
-        p1.addSpecie("sp2", 5);
-                
-        Problem c1 = new Problem(p1, 0.25, new TrueDiversity());
-
-        
-        explorer.reset(c1.evaluate(p1));
+        explorer.reset(problem.getInitialEvaluation());
         assertTrue(
                 "Frontier not set up properly",
                 !explorer.getFrontier().isEmpty()
@@ -73,7 +75,7 @@ public class BreadthFirstSearchTest extends ControllerTest {
         
         assertTrue(
                 "Pushback did not augment the set of explored populations",
-                explorer.getExplored().contains(c1.evaluate(p1)));
+                explorer.getExplored().contains(problem.evaluate(source)));
         
         assertEquals(
                 "Pushback did not compute enough new state to add in the frontier",

@@ -15,31 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
 
-package eu.diversify.disco.population.exceptions;
+package eu.diversify.disco.controller.problem.constraints;
 
-import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.actions.Action;
 
 /**
- * Exception thrown when one searches for a species that does not exist.
- *
+ * The constraint that prevent any changes to the total number of individuals
+ * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public class UnknownSpecie extends RuntimeException {
+public class FixedTotalNumberOfIndividuals implements Constraint {
 
-    private final Population population;
-    private final String specieName;
-
-    /**
-     * Create a new UnknownSpecie exception pointing to the population of
-     * interest and the faulty specie name.
-     *
-     * @param population the population of interest
-     * @param specieName the name of the unknown specie
-     */
-    public UnknownSpecie(Population population, String specieName) {
-        this.population = population;
-        this.specieName = specieName;
+    @Override
+    public boolean isLegal(Action action) {
+        return action.preserveTheTotalNumberOfIndividuals();
     }
+
+       
 }

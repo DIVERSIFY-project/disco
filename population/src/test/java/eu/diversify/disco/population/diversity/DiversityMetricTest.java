@@ -15,11 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population.diversity;
 
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.exceptions.EmptyPopulation;
+import eu.diversify.disco.population.PopulationBuilder;
 import junit.framework.TestCase;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,13 +65,10 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testMaximumDiversity() {
-        Population population = new Population();
-        population.addSpecie("Lion", 10);
-        population.addSpecie("Tiger", 10);
-        population.addSpecie("Elephant", 10);
+        Population population = new PopulationBuilder().withDistribution(10, 10, 10).make();
 
         DiversityMetric metric = newMetricUnderTest();
-        final double diversity = metric.normalised(population);
+        final double diversity = metric.applyTo(population);
         assertEquals(
                 "Wrong diversity metric",
                 1.,
@@ -70,13 +83,10 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testMinimumDiversity() {
-        Population population = new Population();
-        population.addSpecie("Lion", 30);
-        population.addSpecie("Tiger", 0);
-        population.addSpecie("Elephant", 0);
+        Population population = new PopulationBuilder().withDistribution(30, 0, 0).make();
 
         DiversityMetric metric = newMetricUnderTest();
-        final double diversity = metric.normalised(population);
+        final double diversity = metric.applyTo(population);
         assertEquals(
                 "Wrong diversity metric",
                 0.,
@@ -89,13 +99,10 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testMediumDiversity() {
-        Population population = new Population();
-        population.addSpecie("Lion", 10);
-        population.addSpecie("Tiger", 13);
-        population.addSpecie("Elephant", 6);
+        Population population = new PopulationBuilder().withDistribution(10, 13, 6).make();
 
         DiversityMetric metric = newMetricUnderTest();
-        final double diversity = metric.normalised(population);
+        final double diversity = metric.applyTo(population);
         assertTrue(
                 "Wrong diversity metric",
                 diversity < 1. && diversity > 0.);
@@ -107,38 +114,26 @@ public abstract class DiversityMetricTest extends TestCase {
     @Test
     public void testScaling() {
         DiversityMetric metric = newMetricUnderTest();
-
-        Population p1 = new Population();
-        p1.addSpecie("Lion", 10);
-        p1.addSpecie("Elephant", 5);
-        p1.addSpecie("Tiger", 3);
-        final double d1 = metric.normalised(p1);
-
-        Population p2 = new Population();
-        p2.addSpecie("Lion", 20);
-        p2.addSpecie("Elephant", 10);
-        p2.addSpecie("Tiger", 6);
-        final double d2 = metric.normalised(p2);
-        
-        
+        Population population = new PopulationBuilder().withDistribution(15, 5, 3).make();
+        final double d1 = metric.applyTo(population);
+        Population populationX2 = new PopulationBuilder().withDistribution(30, 10, 6).make();
+        final double d2 = metric.applyTo(populationX2);
         assertEquals(
                 "Scaled population shall have the same diviersty",
                 d1,
                 d2,
-                1e-10
-                );
-        
+                1e-10);
+
     }
 
     /**
      * Check that the diversity is undefined for an empty population
      */
-    @Test(expected = EmptyPopulation.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testUndefinedDiversity() {
-        Population population = new Population();
-
+        Population population = new PopulationBuilder().make();
         DiversityMetric metric = newMetricUnderTest();
-        metric.absolute(population);
+        metric.applyTo(population);
     }
 
     /**

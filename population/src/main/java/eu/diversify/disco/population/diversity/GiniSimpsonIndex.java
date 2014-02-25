@@ -18,39 +18,21 @@
 
 package eu.diversify.disco.population.diversity;
 
-import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.Specie;
-import eu.diversify.disco.population.diversity.exceptions.EmptyPopulation;
-
 /**
  * Implementation of the Gini-Simpson index
  * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public class GiniSimpsonIndex extends DiversityMetric {
+public class GiniSimpsonIndex extends AbstractDiversityMetric {
 
     @Override
-    public double absolute(Population population) throws EmptyPopulation {
-        if (population.isEmpty()) {
-            throw new EmptyPopulation(population);
+    protected double computeAbsolute(int n, double[] fractions) {
+        double sum = 0.;
+        for (int i=0 ; i<fractions.length ; i++) {
+            sum += Math.pow(fractions[i], 2);
         }
-        double result = 0.;
-        final double n = population.getIndividualCount();
-        for (Specie specie: population.getSpecies()) {
-            result += Math.pow(specie.getIndividualCount() / n, 2);
-        }
-        return 1 - result;
-    }
-
-    @Override
-    public double maximum(Population population) {
-        return 1 - 1. / population.getSpecies().size();
-    }
-
-    @Override
-    public double minimum(Population population) {
-        return 0;
+        return 1 - sum;
     }
     
 }
