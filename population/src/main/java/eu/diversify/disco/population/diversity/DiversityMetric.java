@@ -15,74 +15,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/*
+ */
 package eu.diversify.disco.population.diversity;
 
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.exceptions.EmptyPopulation;
 
 /**
- * General interface of diversity metrics, modelled as a function from
- * population to Real values.
+ * The general interface of diversity metrics
  *
  * @author Franck Chauvel
  * @since 0.1
  */
-public abstract class DiversityMetric {
+public interface DiversityMetric {
 
     /**
-     * Measure the diversity level of a given population. A diversity of 1 means
-     * that all species share the same number of individuals whereas a diversity
-     * of 0 mean that all individuals are in a single species.
+     * Compute the upper bound of diversity for this metric and the given
+     * population profile
+     *
+     * @param population the population profile
+     * @return the diversity as a scalar value
+     */
+    public double minimum(Population population);
+
+    /**
+     * Compute the diversity level of the given population
      *
      * @param population the population whose diversity level is needed
-     *
-     * @return a real value on the unit interval representing the diversity
-     * level.
+     * @return the diversity as a scalar value
      */
-    public abstract double absolute(Population population) throws EmptyPopulation;
+    public double applyTo(Population population);
 
     /**
-     * Compute the maximum diversity level for a population with characteristic
-     * similar to the given one.
+     * Compute the lower bound of diversity for this metric and the given
+     * population profile
      *
-     * @param population the prototype population, with the characteristic of
-     * interest
-     * 
-     * @return the maximum diversity level
+     * @param population the population profile
+     * @return the diversity as a scalar value
      */
-    public abstract double maximum(Population population);
-
+    public double maximum(Population population);
+    
     
     /**
-     * Compute the minimum diversity level for a population with characteristic
-     * similar to the given one.
-     *
-     * @param population the prototype population, with the characteristic of
-     * interest
-     * 
-     * @return the minimum diversity level
+     * @return this diversity metric but normalised onto the unit interval [0, 1]
      */
-    public abstract double minimum(Population population);
-
-    /**
-     * Normalise the metric over the unit interval [0, 1].
-     *
-     * @param population the population of interest
-     *
-     * @return the normalised diversity as a value between 0 and 1.
-     */
-    public double normalised(Population population) throws EmptyPopulation {
-        final double diversity = absolute(population);
-        final double min = minimum(population);
-        final double max = maximum(population);
-        return (diversity - min) / (max - min);
-    }
-    
-   @Override 
-   public boolean equals(Object o) {
-       return this.getClass().equals(o.getClass());
-   }
-   
-   
+    public DiversityMetric normalise();
 }

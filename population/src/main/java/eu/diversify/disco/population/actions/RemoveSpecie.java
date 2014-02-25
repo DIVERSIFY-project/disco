@@ -16,29 +16,39 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.population.diversity.exceptions;
-
+package eu.diversify.disco.population.actions;
 
 import eu.diversify.disco.population.Population;
 
 /**
- * Exception raised when the diversity is evaluated on an empty population.
- * 
+ * Remove a given specie, identified either by its index or by its name
+ *
  * @author Franck Chauvel
  * @since 0.1
  */
-public class EmptyPopulation extends RuntimeException {
+public class RemoveSpecie extends SpecieAccess {
 
-    private final Population population;
-    
-    /**
-     * Create a new EmptyPopulation exception.
-     * 
-     * @param population the faulty population
-     */
-    public EmptyPopulation(Population population) {
-        this.population = population;
+    public RemoveSpecie(int specieIndex) {
+        super(specieIndex);
     }
-    
+
+    public RemoveSpecie(String specieName) {
+        super(specieName);
+    }
+
+    @Override
+    public Population applyTo(Population subject) {
+        return subject.removeSpecie(getSpecieIndex(subject));
+    }
+
+    @Override
+    public boolean preserveTheNumberOfSpecies() {
+        return false;
+    }
+
+    @Override
+    public boolean preserveTheTotalNumberOfIndividuals() {
+        return true;
+    }
     
 }

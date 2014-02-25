@@ -72,8 +72,8 @@ public class ForwardTransformTest
         
         Population population = transformation.forward(model);
         
-        assertEquals(3, population.getSpecies().size());        
-        assertEquals(5,population.getSpecie("huge").getIndividualCount());
+        assertEquals(3, population.getNumberOfSpecies());        
+        assertEquals(5,population.getNumberOfIndividualsIn("huge"));
     }
     
     public void testLoadSenseApp(){
@@ -85,7 +85,7 @@ public class ForwardTransformTest
         
         Population population = transformation.forward(model);
         
-        assertEquals(6, population.getSpecies().size());
+        assertEquals(6, population.getNumberOfSpecies());
     }
     
     public void testProvision(){
@@ -118,7 +118,8 @@ public class ForwardTransformTest
         Transformation transformation = new Transformation();
         
         Population population = transformation.forward(model);
-        population.getSpecie("RingoJS").setIndividualCount(3);
+        int index = population.getSpecieIndex("RingoJS");
+        population.setNumberOfIndividualsIn(index, 3);
         
         transformation.backward(model, population);
         

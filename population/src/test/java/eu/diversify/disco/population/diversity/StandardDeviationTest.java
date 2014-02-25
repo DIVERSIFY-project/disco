@@ -27,7 +27,7 @@ public class StandardDeviationTest extends DiversityMetricTest {
 
     @Override
     public DiversityMetric newMetricUnderTest() {
-        return new StandardDeviation();
+        return new NormalisedDiversityMetric(new StandardDeviation());
     }
     
     

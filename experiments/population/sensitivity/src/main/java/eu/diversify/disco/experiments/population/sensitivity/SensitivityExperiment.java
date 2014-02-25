@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.population.sensitivity;
 
 import eu.diversify.disco.experiments.commons.Experiment;
@@ -23,6 +40,7 @@ import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.MetricFactory;
 import java.util.ArrayList;
@@ -47,7 +65,8 @@ public class SensitivityExperiment implements Experiment {
     private static final Field METRIC = new Field("metric", String.class);
     private static final Field NORMALISED = new Field("normalised", Double.class);
     private static final Field ABSOLUTE = new Field("absolute", Double.class);
-    private static final Schema SCHEMA = new Schema(Arrays.asList(new Field[]{SPECIE_1, SPECIES_COUNT, INDIVIDUALS_COUNT, METRIC, NORMALISED, ABSOLUTE}), "n/a");
+    private static final Schema SCHEMA = new Schema(Arrays.asList(new Field[]{
+        SPECIE_1, SPECIES_COUNT, INDIVIDUALS_COUNT, METRIC, NORMALISED, ABSOLUTE}), "n/a");
     private int size;
     private final HashMap<String, DiversityMetric> metrics;
 
@@ -86,13 +105,13 @@ public class SensitivityExperiment implements Experiment {
     private void evaluate(DataSet ds, Population p) {
         for (String key : this.metrics.keySet()) {
             Data d = ds.getSchema().newData();
-            d.set(SPECIE_1, p.getSpecie(SPECIE_1.getName()).getIndividualCount());
-            d.set(SPECIES_COUNT, p.getSpecies().size());
-            d.set(INDIVIDUALS_COUNT, p.getIndividualCount());
+            d.set(SPECIE_1, p.getNumberOfIndividualsIn(SPECIE_1.getName()));
+            d.set(SPECIES_COUNT, p.getNumberOfSpecies());
+            d.set(INDIVIDUALS_COUNT, p.getTotalNumberOfIndividuals());
             DiversityMetric metric = this.metrics.get(key);
             d.set(METRIC, key);
-            d.set(ABSOLUTE, metric.absolute(p));
-            d.set(NORMALISED, metric.normalised(p));
+            d.set(ABSOLUTE, metric.applyTo(p));
+            d.set(NORMALISED, metric.applyTo(p));
             ds.add(d);
         }
     }
@@ -106,16 +125,20 @@ public class SensitivityExperiment implements Experiment {
         DataSet dataset = new DataSet(SCHEMA, "distribution");
 
         // Initial population: p = [x, 0] 
-        Population p = new Population();
-        p.addSpecie(SPECIE_NAME + 1, this.size);
-        p.addSpecie(SPECIE_NAME + 2, 0);
-        evaluate(dataset, p);
+        Population population = new PopulationBuilder()
+                .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
+                .withDistribution(this.size, 0)
+                .make();
+        evaluate(dataset, population);
 
-        // Iterate until we reach a balanced population p = [x/2, x/2]
+        /*
+         * FIXME: refactor the loop below so that it reflects the following
+         * intent: "Iterate until we reach a balanced population p = [x/2, x/2]"
+         */
         for (int i = 1; i < this.size / 2; i++) {
-            p.getSpecie(SPECIE_NAME + 1).setIndividualCount(this.size - i);
-            p.getSpecie(SPECIE_NAME + 2).setIndividualCount(i);
-            evaluate(dataset, p);
+            population.setNumberOfIndividualsIn(1, this.size - i);
+            population.setNumberOfIndividualsIn(2, i);
+            evaluate(dataset, population);
         }
 
         return dataset;
@@ -130,16 +153,21 @@ public class SensitivityExperiment implements Experiment {
         DataSet dataset = new DataSet(SCHEMA, "species");
 
         // Initial population, p = [x-1, 1]
-        Population p = new Population();
-        p.addSpecie(SPECIE_NAME + 1, this.size - 1);
-        p.addSpecie(SPECIE_NAME + 2, 1);
-        evaluate(dataset, p);
+        Population population = new PopulationBuilder()
+                .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
+                .withDistribution(this.size - 1, 1)
+                .make();
+        evaluate(dataset, population);
 
-        // Iterate until p = [1, 1, ..., 1], with x species
+        /**
+         * FIXME: refactor the loop below so it express the following intent
+         * Iterate until p = [1, 1, ..., 1], with x species
+         */
         for (int i = 1; i < this.size - 1; i++) {
-            p.getSpecie(SPECIE_NAME + 1).setIndividualCount(99 - i);
-            p.addSpecie(SPECIE_NAME + (2 + i), 1);
-            evaluate(dataset, p);
+            population.setNumberOfIndividualsIn(1, 99 - i);
+            population.addSpecie(SPECIE_NAME + (2 + i));
+            population.setNumberOfIndividualsIn(2 + i, 1);
+            evaluate(dataset, population);
         }
 
         return dataset;
@@ -154,14 +182,18 @@ public class SensitivityExperiment implements Experiment {
         DataSet dataset = new DataSet(SCHEMA, "individuals");
 
         // Initial population
-        Population p = new Population();
-        p.addSpecie(SPECIE_NAME + 1, this.size);
-        p.addSpecie(SPECIE_NAME + 2, 0);
+        Population p = new PopulationBuilder()
+                .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
+                .withDistribution(this.size, 0)
+                .make();
         evaluate(dataset, p);
 
-        // Iterate until we reach a balanced population p = [x, x]
+        /**
+         * FIXME: refactor the loop below so as it reflect the following intent
+         * Iterate until we reach a balanced population p = [x, x]
+         */
         for (int i = 1; i < this.size; i++) {
-            p.getSpecie(SPECIE_NAME + 2).setIndividualCount(i);
+            p.setNumberOfIndividualsIn(2, i);
             evaluate(dataset, p);
         }
 

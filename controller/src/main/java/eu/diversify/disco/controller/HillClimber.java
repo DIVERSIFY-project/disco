@@ -18,11 +18,7 @@
 
 package eu.diversify.disco.controller;
 
-import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.Specie;
-import eu.diversify.disco.population.diversity.DiversityMetric;
-import java.util.ArrayList;
-import java.util.List;
+import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 
 /**
  * Implementation of the simple Hill Climbing strategy.
@@ -41,24 +37,8 @@ public class HillClimber extends IterativeSearch {
      * @param metric the diversity metric that the controller shall use
      */
     public HillClimber() {
+        super(new IndividualPermutationExplorer());
     }
 
-    @Override
-    protected List<Update> getLegalUpdates(Population population) {
-        final ArrayList<Update> updates = new ArrayList<Update>();
-        for (Specie s1 : population.getSpecies()) {
-            if (s1.getIndividualCount() > 0) {
-                for (Specie s2 : population.getSpecies()) {
-                    if (!s1.getName().equals(s2.getName())) {
-                        final Update u = new Update();
-                        u.setUpdate(s1.getName(), -1);
-                        u.setUpdate(s2.getName(), +1);
-                        updates.add(u);
-                    }
-                }
-            }
-        }
-        return updates;
-    }
-    
+   
 }

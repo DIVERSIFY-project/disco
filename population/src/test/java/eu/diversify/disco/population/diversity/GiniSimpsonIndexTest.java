@@ -29,7 +29,7 @@ public class GiniSimpsonIndexTest extends DiversityMetricTest {
 
     @Override
     public DiversityMetric newMetricUnderTest() {
-        return new GiniSimpsonIndex();
+        return new NormalisedDiversityMetric(new GiniSimpsonIndex());
     }
     
 }

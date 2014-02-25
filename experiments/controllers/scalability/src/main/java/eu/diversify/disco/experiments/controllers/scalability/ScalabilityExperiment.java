@@ -36,21 +36,22 @@ package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.Controller;
 import eu.diversify.disco.controller.ControllerFactory;
-import eu.diversify.disco.controller.Problem;
-import eu.diversify.disco.controller.Solution;
+import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import javax.naming.spi.DirStateFactory.Result;
 
 /**
  * Evaluate the sensitivity of the response time against an increase of the
@@ -62,17 +63,24 @@ import javax.naming.spi.DirStateFactory.Result;
  */
 public class ScalabilityExperiment implements Experiment {
 
+    // TODO: This experiment should be multi-threaded to reduce the running time
+    
+    
     private static final Field STRATEGY = new Field("strategy", String.class);
     private static final Field INDIVIDUALS_COUNT = new Field("individual count", Integer.class);
     private static final Field SPECIES_COUNT = new Field("species count", Integer.class);
     private static final Field DURATION = new Field("duration", Long.class);
     private static final Field ERROR = new Field("error", Double.class);
-    private static final Schema SCHEMA = new Schema(Arrays.asList(new Field[]{STRATEGY, INDIVIDUALS_COUNT, SPECIES_COUNT, DURATION, ERROR}), "n/a");
-
+    private static final Schema SCHEMA = new Schema(Arrays.asList(new Field[]{
+        STRATEGY,
+        INDIVIDUALS_COUNT,
+        SPECIES_COUNT,
+        DURATION,
+        ERROR}), "n/a");
+    
     private final HashMap<String, Controller> controllers;
-    private final ArrayList<Result> results;
     private final ArrayList<Integer> speciesCounts;
-    private final ArrayList<Integer> individualsCount;
+    private final ArrayList<Integer> individualsCounts;
 
     /**
      * Create a new experiment from a setup file
@@ -81,9 +89,8 @@ public class ScalabilityExperiment implements Experiment {
      */
     public ScalabilityExperiment(ScalabilitySetup setup) throws ControllerInstantiationException {
         this.controllers = new HashMap<String, Controller>();
-        this.individualsCount = new ArrayList<Integer>();
+        this.individualsCounts = new ArrayList<Integer>();
         this.speciesCounts = new ArrayList<Integer>();
-        this.results = new ArrayList<Result>();
 
         // Load the configuration file
         this.setIndividualsCount(setup.getIndividualsCounts());
@@ -110,9 +117,9 @@ public class ScalabilityExperiment implements Experiment {
      * @param counts the list of individuals count used in this experiments
      */
     private void setIndividualsCount(List<Integer> counts) {
-        this.individualsCount.clear();
+        this.individualsCounts.clear();
         for (int c : counts) {
-            this.individualsCount.add(c);
+            this.individualsCounts.add(c);
         }
     }
 
@@ -133,48 +140,66 @@ public class ScalabilityExperiment implements Experiment {
      */
     @Override
     public List<DataSet> run() {
+        ArrayList<DataSet> results = new ArrayList<DataSet>();
+        displayDurationWarning();
+        results.add(runExperiment());
+        return results;
+    }
+
+    private DataSet runExperiment() {
         DataSet dataset = new DataSet(SCHEMA);
-
-        int total = this.speciesCounts.size() * this.individualsCount.size() * this.controllers.size();
-        System.out.println("Preparing for " + total + " run(s).");
-        System.out.println("This may take several minutes ... ");
-
-        for (int i = 0; i < this.speciesCounts.size(); i++) {
-            for (int j = 0; j < this.individualsCount.size(); j++) {
-
-                System.out.println("Scale [" + this.speciesCounts.get(i) + " x " + this.individualsCount.get(j) + "]: ");
-
-                // Initialise the population to be tested
-                final Population population = new Population();
-                population.addSpecie("sp1", this.individualsCount.get(j));
-                for (int s = 1; s < speciesCounts.get(i); s++) {
-                    population.addSpecie("sp" + (s + 1), 0);
-                }
-
-                // Test the population with all selected control strategies
+        for (Integer speciesCount : speciesCounts) {
+            for (Integer individualsCount : individualsCounts) {
+                System.out.println("Scale [" + speciesCount + " x " + individualsCount + "]: ");
+                Population population = initialisePopulation(individualsCount, speciesCount);
                 for (String key : this.controllers.keySet()) {
-                    final Controller controller = this.controllers.get(key);
-                    final Problem problem = new Problem(population, 1.0, new TrueDiversity());
-
-                    final long start = System.currentTimeMillis();
-                    final Solution solution = controller.applyTo(problem);
-                    final long duration = System.currentTimeMillis() - start;
-
-                    Data data = SCHEMA.newData();
-                    data.set(STRATEGY, key);
-                    data.set(SPECIES_COUNT, population.getSpecies().size());
-                    data.set(INDIVIDUALS_COUNT, population.getIndividualCount());
-                    data.set(ERROR, solution.getError());
-                    data.set(DURATION, duration);
-                    dataset.add(data);
-                    System.out.println("\t - " + key + " in " + duration + " ms");
+                    dataset.add(runControlStrategy(key, population));
                 }
-
             }
         }
+        return dataset;
+    }
 
-        ArrayList<DataSet> results = new ArrayList<DataSet>();
-        results.add(dataset);
-        return results;
+    private Population initialisePopulation(int numberOfIndividuals, int numberOfSpecies) {
+        final Population population = new PopulationBuilder().make();
+        population.addSpecie("sp1");
+        population.setNumberOfIndividualsIn(1, numberOfIndividuals);
+        for (int i = 2; i <= numberOfSpecies; i++) {
+            String name = String.format("sp%d", i);
+            population.addSpecie(name);
+            population.setNumberOfIndividualsIn(i, 0);
+        }
+        return population;
+    }
+
+    private Data runControlStrategy(String key, final Population population) {
+        final Controller controller = this.controllers.get(key);
+        final Problem problem = new ProblemBuilder()
+                .withInitialPopulation(population)
+                .withDiversityMetric(new TrueDiversity().normalise())
+                .withReferenceDiversity(1.0)
+                .make();
+        final long start = System.currentTimeMillis();
+        final Solution solution = controller.applyTo(problem);
+        final long duration = System.currentTimeMillis() - start;
+        Data data = logPopulationDetails(key, population, solution, duration);
+        return data;
+    }
+
+    private Data logPopulationDetails(String key, final Population population, final Solution solution, final long duration) {
+        Data data = SCHEMA.newData();
+        data.set(STRATEGY, key);
+        data.set(SPECIES_COUNT, population.getNumberOfSpecies());
+        data.set(INDIVIDUALS_COUNT, population.getTotalNumberOfIndividuals());
+        data.set(ERROR, solution.getError());
+        data.set(DURATION, duration);
+        System.out.println("\t - " + key + " in " + duration + " ms");
+        return data;
+    }
+
+    private void displayDurationWarning() {
+        int total = this.speciesCounts.size() * this.individualsCounts.size() * this.controllers.size();
+        System.out.println("Preparing for " + total + " run(s).");
+        System.out.println("This may take several minutes ... ");
     }
 }

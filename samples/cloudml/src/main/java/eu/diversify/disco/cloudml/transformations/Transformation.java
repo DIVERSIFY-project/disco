@@ -27,7 +27,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import eu.diversify.disco.cloudml.CloudML;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.Specie;
+import eu.diversify.disco.population.PopulationBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import static java.util.Collections.shuffle;
@@ -58,7 +58,7 @@ public class Transformation {
 
 
     public Population forward(CloudML model) {
-        Population population = new Population();
+        Population population = new PopulationBuilder().make();
         DeploymentModel dm = model.getRoot();
         
         for(String name : dm.getNodeTypes().keySet()){
@@ -70,26 +70,21 @@ public class Transformation {
         }
         
         for(NodeInstance ni : dm.getNodeInstances())
-            addOne(population, ni.getType().getName());
+            population.shiftNumberOfIndividualsIn(ni.getType().getName(), +1);
         
         
         for(ArtefactInstance ai: dm.getArtefactInstances())
-            addOne(population, ai.getType().getName());
+            population.shiftNumberOfIndividualsIn(ai.getType().getName(), +1);
         
         return population;
         
     }
     
-    public void addOne(Population population, String specieName){
-        Specie specie = population.getSpecie(specieName);
-        specie.setIndividualCount(specie.getIndividualCount()+1);
-    }
 
     public void backward(CloudML model, Population toBe) {
         DeploymentModel dm = model.getRoot();        
         
-        for(Specie specie : toBe.getSpecies()){
-            final String specieName = specie.getName();
+        for(final String specieName : toBe.getSpeciesNames()){
             if(dm.getNodeTypes().containsKey(specieName)){
                 Collection<NodeInstance> existings = filter(dm.getNodeInstances(), new Predicate<NodeInstance>(){
                     public boolean apply(NodeInstance t) {
@@ -97,7 +92,7 @@ public class Transformation {
                     }
                 });
                 int current = existings.size();
-                int desired = specie.getIndividualCount();
+                int desired = toBe.getNumberOfIndividualsIn(specieName);
                 for(int i = current; i < desired; i++){
                     NodeInstance ni = provision(dm.getNodeTypes().get(specieName), uniqueId(dm.getNodeInstances(),specieName));
                     dm.getNodeInstances().add(ni);
@@ -117,7 +112,7 @@ public class Transformation {
                     }
                 });
                 int current = existings.size();
-                int desired = specie.getIndividualCount();
+                int desired = toBe.getNumberOfIndividualsIn(specieName);
                 for(int i = current; i < desired; i++){
                     ArtefactInstance ai = provision(dm.getArtefactTypes().get(specieName), uniqueId(dm.getArtefactInstances(),specieName));
                     dm.getArtefactInstances().add(ai);

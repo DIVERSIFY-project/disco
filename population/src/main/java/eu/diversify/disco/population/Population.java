@@ -15,223 +15,185 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.population;
 
-import eu.diversify.disco.population.exceptions.DuplicateSpecieId;
-import eu.diversify.disco.population.exceptions.NegativeIndividualCount;
-import eu.diversify.disco.population.exceptions.UnknownSpecie;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * This the population models, which contains species identified by a name and
- * individuals counts.
- *
- * All modifications on the model must be made through the population object.
+ * The general interface of population as a mapping from species names to number
+ * of individuals in species.
  *
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Population {
-
-    private final LinkedHashMap<String, Specie> species;
+public interface Population {
 
     /**
-     * Create a new empty population model
+     * FIXME: What is the meaning of a population with no specie? is it an empty
+     * population? Is it a legal population?
      */
-    public Population() {
-        this.species = new LinkedHashMap<String, Specie>();
-    }
-    
-    
-    /**
-     * Build a new specie from the distribution of its individual into species
-     *
-     * @param distribution an array of integers representing how many
-     * individuals belong to each specie
-     */
-    public static Population fromDistribution(int[] distribution) {
-        return new Population(distribution);
-    }
-
-    /**
-     * Build a new specie from the distribution of its individual into species
-     *
-     * @param distribution an array of integers representing how many
-     * individuals belong to each specie
-     */
-    private Population(int[] distribution) {
-        this.species = new LinkedHashMap<String, Specie>();
-        for (int s = 0; s < distribution.length; s++) {
-            final String name = "s" + s;
-            this.species.put(name, new Specie(name, distribution[s]));
-        }
-    }
-
-    /**
-     * Check whether the population is empty, i.e., whether all species have a
-     * individual count of 0.
-     *
-     * @return true if the population is empty, false otherwise
-     */
-    public boolean isEmpty() {
-        return this.getIndividualCount() <= 0;
-    }
-
-    /**
-     * @return the total number of individuals in the population
-     */
-    public int getIndividualCount() {
-        int sum = 0;
-        for (String name : this.species.keySet()) {
-            sum += this.species.get(name).getIndividualCount();
-        }
-        return sum;
-    }
-
-    /**
-     * Create a new specie in this population
-     *
-     * @param name the name of the specie to create
-     * @throws DuplicateSpecieId when the given specie name if already in use in
-     * this population.
-     *
-     * @return the newly created specie.
-     */
-    public Specie addSpecie(String name) throws DuplicateSpecieId {
-        if (this.species.containsKey(name)) {
-            throw new DuplicateSpecieId(this, name);
-        }
-        Specie specie = new Specie(name);
-        species.put(name, specie);
-        return specie;
-    }
-
-    /**
-     * Create a new specie in this population, identified by the given name, and
-     * containing the given count of individual
-     *
-     * @param name the name of the specie
-     * @param initialCount the initial count of individuals in the new specie
-     * @throws DuplicateSpecieId when the given specie name if already in use in
-     * this population.
-     * @throws DuplicateSpecieId when the given specie name if already in use in
-     * this population.
-     * @return the newly created specie.
-     */
-    public Specie addSpecie(String name, int initialCount) throws DuplicateSpecieId, NegativeIndividualCount {
-        if (this.species.containsKey(name)) {
-            throw new DuplicateSpecieId(this, name);
-        }
-        Specie specie = new Specie(name, initialCount);
-        species.put(name, specie);
-        return specie;
-    }
-
-    /**
-     * @return the collections of species in this population
-     */
-    public List<Specie> getSpecies() {
-        ArrayList<Specie> result = new ArrayList<Specie>(species.values());
-        return Collections.unmodifiableList(result);
-    }
-
-    /**
-     * Check whether this population has a specie with the given name
-     *
-     * @param name the name of the needed specie
-     * @return true if the population has a specie with the given name
-     */
-    public boolean hasSpecie(String name) {
-        return this.species.containsKey(name);
-    }
-
-    /**
-     * Extract the specie with the given name or raise an exception if no such
-     * specie exists.
-     *
-     * @param specieName the name of the specie to look for
-     * @return the specie with the specified name
-     * @throws UnknownSpecie if no specie has the selected name
-     */
-    public Specie getSpecie(String specieName) throws UnknownSpecie {
-        Specie s = this.species.get(specieName);
-        if (s == null) {
-            throw new UnknownSpecie(this, specieName);
-        }
-        return s;
-    }
-
-    /**
-     * Delete the specie identified by the given name
-     *
-     * @param specieName the name of the specie to delete
-     * @return the specie that was deleted
-     */
-    public Specie deleteSpecie(String specieName) {
-        return this.species.remove(specieName);
-    }
-
-    /**
-     * Check the equality between two populations
-     *
-     * @param that the other population with which this population must be
-     * compared.
-     *
-     * @return true if the two population are the same
-     *
-     */
-    public boolean equals(Object that) {
-        boolean result = (that instanceof Population);
-        if (result) {
-            Population p = (Population) that;
-            result = p.getSpecies().size() == this.getSpecies().size();
-            if (result) {
-                Iterator<Specie> iterator = getSpecies().iterator();
-                while (iterator.hasNext() && result) {
-                    Specie specie = iterator.next();
-                    result = p.hasSpecie(specie.getName()) && p.getSpecie(specie.getName()).getIndividualCount() == specie.getIndividualCount();
-                }
-            }
-        }
-        return result;
-    }
+    public static final String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
+    public static final Integer DEFAULT_NUMBER_OF_INDIVIDUALS_PER_SPECIE = 0;
 
     @Override
-    public String toString() {
-        final StringBuilder result = new StringBuilder();
-        result.append("{");
-        final List<Specie> species = this.getSpecies();
-        for (int i = 0; i < species.size(); i++) {
-            final Specie specie = species.get(i);
-            result.append(specie.getName());
-            result.append(": ");
-            result.append(specie.getIndividualCount());
-            if (i < species.size() - 1) {
-                result.append(", ");
-            }
-        }
-        result.append("}");
-        return result.toString();
-    }
+    public boolean equals(Object obj);
+
+    @Override
+    public int hashCode();
+
+    /**
+     * @return a complete copy of the population
+     */
+    public Population deepCopy();
+
+    /**
+     * @param specieIndex the index of the specie from interest, starting from 1
+     * @return the number of individuals in the specie at index 'specieIndex'
+     * @throws IllegalArgumentException if the given index is irrelevant
+     */
+    public int getNumberOfIndividualsIn(int specieIndex);
+
+    /**
+     * @param specieName the name of the specie of interest
+     * @return the number of individuals in the selected specie
+     * @throws IllegalArgumentException if the given specie name is irrelevant
+     */
+    public int getNumberOfIndividualsIn(String specieName);
+
+    /**
+     * @return the number of species
+     */
+    public int getNumberOfSpecies();
+
+    /**
+     * @param specieName the name of the specie of interest
+     * @return the index of the specie
+     * @throws IllegalArgumentException if the given specie name is irrelevant
+     */
+    public int getSpecieIndex(String specieName);
+
+    /**
+     * @return the mean number of individuals per specie
+     */
+    public double getMeanNumberOfIndividuals();
+
+    /**
+     * @return the total number of individual in the whole population
+     */
+    public int getTotalNumberOfIndividuals();
+
+    /**
+     * @return the list of species name ordered by index
+     */
+    public List<String> getSpeciesNames();
+
+    /**
+     * @return the list of number of individuals contained in each species,
+     * ordered by specie index
+     */
+    public List<Integer> getDistribution();
+
+    /**
+     * @param specieIndex the index of the population of interest, starting at 1
+     * @return the fraction of the whole population as a scalar value in [0, 1]
+     * @throws IllegalArgumentException if the given index is irrelevant
+     */
+    public double getFractionIn(int specieIndex);
+
+    /**
+     * @param specieName the name of specie of interest
+     * @return the fraction of the whole population as a scalar value in [0, 1]
+     * @throws IllegalArgumentException if the given name is irrelevant
+     */
+    public double getFractionIn(String specieName);
+
+    /**
+     * Check whether the population contains a specie with the given name
+     *
+     * @param specieName the name of interest
+     * @return true if the population does contains a specie with the given name
+     */
+    public boolean hasAnySpecieNamed(String specieName);
+
+    /**
+     * @return true if the population does not contains any individuals (i.e.,
+     * whether the total number of individuals is zero)
+     */
+    public boolean isEmpty();
+
+    /**
+     * Update the name of the specie at in the given index, with the given name
+     * @param specieIndex the index of interest
+     * @param newName the new name to use for the selected specie
+     * @return the modified population 
+     */
+    public Population renameSpecie(int specieIndex, String newName);
+    
+    /**
+     * Update the name of the specie at in the given index, with the given name
+     * @param oldName the name of the specie whose name must be changed
+     * @param newName the new name to use for the selected specie
+     * @return the modified population 
+     */
+    public Population renameSpecie(String oldName, String newName);
+
+    /**
+     * Create a new specie, with the given and no individual
+     * @param specieName the name of the new specie to create
+     * @return the modified population
+     */
+    public Population addSpecie(String specieName);
+
+    /**
+     * Remove the selected specie from the population
+     * @param specieIndex the index of the specie to remove
+     * @return the modified population
+     * @throws IllegalArgumentException if the given index is irrelevant
+     */
+    public Population removeSpecie(int specieIndex);
+
+    /**
+     * Remove the selected specie from the population
+     * @param specieName the name of the specie to remove
+     * @return the modified population
+     * @throws IllegalArgumentException if the given name is irrelevant
+     */
+    public Population removeSpecie(String specieName);
+
+    /**
+     * Set the number of individual in the selected population
+     * @param specieIndex the index of the specie of interest
+     * @param numberOfIndividuals the number of individual to associate with the selected specie
+     * @return the modified population
+     * @throws IllegalArgumentException if the given index is irrelevant
+     */
+    public Population setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals);
+
+    /**
+     * Adjust the number of individual in the selected specie by the given addend
+     * @param specieIndex the index of the specie whose number of individuals shall be adjusted
+     * @param offset the change to add to the number of specie
+     * @return the modified population
+     * @throws IllegalArgumentException if the given index is irrelevant
+     */
+    public Population shiftNumberOfIndividualsIn(int specieIndex, int offset);
+
+    /**
+     * Adjust the number of individual in the selected specie by the given addend
+     * @param specieIndex the index of the specie whose number of individuals shall be adjusted
+     * @param offset the change to add to the number of specie
+     * @return the modified population
+     * @throws IllegalArgumentException if the given name is irrelevant
+     */
+    public Population shiftNumberOfIndividualsIn(String specieName, int offset);
+
+    /**
+     * @return a string representing the content of the population 
+     */
+    public String toString();
+
+    /**
+     * @return an array containing the relative distribution of the population
+     */
+    public double[] toArrayOfFractions();
 }

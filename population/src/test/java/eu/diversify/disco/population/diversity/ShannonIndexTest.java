@@ -28,7 +28,7 @@ public class ShannonIndexTest extends DiversityMetricTest {
 
     @Override
     public DiversityMetric newMetricUnderTest() {
-        return new ShannonIndex();
+        return new NormalisedDiversityMetric(new ShannonIndex());
     }
     
 }

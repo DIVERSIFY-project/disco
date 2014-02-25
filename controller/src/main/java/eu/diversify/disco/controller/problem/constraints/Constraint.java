@@ -15,36 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
+package eu.diversify.disco.controller.problem.constraints;
 
-
-
-package eu.diversify.disco.population.exceptions;
-
-import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.actions.Action;
 
 /**
- * Exception raised if one tries to create to specie with the same unique ID.
+ * Interface of constraint which can be added to a given problem
  * 
  * @author Franck Chauvel
  * @since 0.1
  */
-public class DuplicateSpecieId extends RuntimeException {
+public interface Constraint {
     
-    private Population population;
-    private String duplicateName;
-
-    
-    /**
-     * Create a new DuplicateSpecieId exception with the population at sake and 
-     * ID which is already used.
-     * 
-     * @param population the erroneous population 
-     * @param duplicateName the specie name already used the given population
-     */
-    public DuplicateSpecieId(Population population, String duplicateName) {
-        this.population = population;
-        this.duplicateName = duplicateName;
-    }
-        
+    public boolean isLegal(Action action);
     
 }

@@ -37,15 +37,18 @@ package eu.diversify.disco.experiments.controllers.singlerun;
 import eu.diversify.disco.controller.Controller;
 import eu.diversify.disco.controller.ControllerFactory;
 import eu.diversify.disco.controller.IterativeSearch;
-import eu.diversify.disco.controller.Problem;
-import eu.diversify.disco.controller.Solution;
+import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.ConcretePopulation;
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,27 +94,35 @@ public class SingleRunExperiment implements Experiment {
      * experiment
      */
     public SingleRunExperiment(SingleRunSetup setup) {
-        this.population = new Population();
+        initialisePopulation(setup);
+        
+        this.reference = setup.getReference();
+        
+        this.controllers = new HashMap<String, Controller>();
+        initialiseControlStrategies(setup);
+        
+        this.result = prepareResult();
+
+    }
+
+    private void initialisePopulation(SingleRunSetup setup) {
+        this.population = new PopulationBuilder().make();
         final List<Integer> counts = setup.getPopulation();
         for (int i = 0; i < counts.size(); i++) {
-            this.population.addSpecie("s" + i, counts.get(i));
+            this.population.addSpecie("s" + (i + 1));
+            this.population.setNumberOfIndividualsIn(i + 1, counts.get(i));
         }
+    }
 
-        this.reference = setup.getReference();
-
+    private void initialiseControlStrategies(SingleRunSetup setup) throws IllegalArgumentException {
         try {
-            this.controllers = new HashMap<String, Controller>();
             final ControllerFactory factory = new ControllerFactory();
             for (String strategy : setup.getStrategies()) {
                 this.controllers.put(strategy, factory.instantiate(strategy));
             }
-
         } catch (ControllerInstantiationException cie) {
             throw new IllegalArgumentException(cie.getMessage());
         }
-
-        this.result = prepareResult();
-
     }
 
     /**
@@ -120,7 +131,10 @@ public class SingleRunExperiment implements Experiment {
      * @return the dataset
      */
     private DataSet prepareResult() {
-        Schema schema = new Schema(Arrays.asList(new Field[]{ITERATION, DIVERSITY, REFERENCE, ERROR, STRATEGY}), "n/a");
+        Schema schema = new Schema(Arrays.asList(new Field[]{ITERATION,
+                                                             DIVERSITY,
+                                                             REFERENCE, ERROR,
+                                                             STRATEGY}), "n/a");
         return new DataSet(schema);
     }
 
@@ -179,22 +193,16 @@ public class SingleRunExperiment implements Experiment {
      */
     public List<DataSet> run() {
 
-        for (String key : this.controllers.keySet()) {
-            System.out.println("Running '" + key + "'");
-            final Controller controller = this.controllers.get(key);
-            final Problem problem = new Problem(this.population, this.reference, new TrueDiversity());
+        for (String controlStrategy : this.controllers.keySet()) {
+            System.out.println("Running '" + controlStrategy + "'");
+            final Controller controller = this.controllers.get(controlStrategy);
+            final Problem problem = new ProblemBuilder()
+                    .withInitialPopulation(this.population)
+                    .withDiversityMetric(new TrueDiversity().normalise())
+                    .withReferenceDiversity(this.reference)
+                    .make();
             final Solution solution = controller.applyTo(problem);
-            Solution it = solution;
-            while (it.hasPrevious()) {
-                Data data = result.getSchema().newData();
-                data.set(ITERATION, it.getIteration());
-                data.set(DIVERSITY, it.getDiversity());
-                data.set(REFERENCE, this.reference);
-                data.set(ERROR, it.getError());
-                data.set(STRATEGY, key);
-                this.result.add(data);
-                it = it.getPrevious();
-            }
+            recordControllerTrajectory(solution, controlStrategy);
         }
 
         ArrayList<DataSet> output = new ArrayList<DataSet>();
@@ -207,5 +215,19 @@ public class SingleRunExperiment implements Experiment {
      */
     public DataSet getResults() {
         return this.result;
+    }
+
+    private void recordControllerTrajectory(final Solution solution, String key) {
+        Solution it = solution;
+        while (it.hasPrevious()) {
+            Data data = result.getSchema().newData();
+            data.set(ITERATION, it.getIteration());
+            data.set(DIVERSITY, it.getDiversity());
+            data.set(REFERENCE, this.reference);
+            data.set(ERROR, it.getError());
+            data.set(STRATEGY, key);
+            this.result.add(data);
+            it = it.getPrevious();
+        }
     }
 }

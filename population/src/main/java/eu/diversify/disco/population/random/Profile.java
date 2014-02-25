@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population.random;
 
 import eu.diversify.disco.population.Population;
@@ -42,7 +59,7 @@ public class Profile {
     public void setIndividualsCount(int min, int max) {
         this.individualsCount.reset(min, max);
     }
-    
+
     public void setNumberOfIndividuals(Range numberOfIndividuals) {
         this.individualsCount.reset(numberOfIndividuals);
     }
@@ -54,13 +71,13 @@ public class Profile {
     public Range getNumberOfSpecies() {
         return this.speciesCount;
     }
-    
+
     public void setNumberOfSpecies(Range numberOfSpecies) {
         this.speciesCount.reset(numberOfSpecies);
     }
 
     public boolean matches(Population population) {
-        return this.speciesCount.contains(population.getSpecies().size())
-                && this.individualsCount.contains(population.getIndividualCount());
+        return this.speciesCount.contains(population.getNumberOfSpecies())
+                && this.individualsCount.contains(population.getTotalNumberOfIndividuals());
     }
 }
