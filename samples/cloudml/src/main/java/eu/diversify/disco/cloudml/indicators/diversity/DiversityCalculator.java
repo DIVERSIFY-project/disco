@@ -48,7 +48,7 @@ public class DiversityCalculator extends DeploymentIndicator {
         CloudML cloudml = new CloudML();
         cloudml.setRoot(deployment);
         Population population = transformation.forward(cloudml);
-        return metric.normalised(population);
+        return metric.applyTo(population);
     }
     
 }
