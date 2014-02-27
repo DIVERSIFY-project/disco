@@ -86,6 +86,11 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
+    public double getVariance() {
+        return delegate.getVariance();
+    }
+    
+    @Override
     public int getTotalNumberOfIndividuals() {
         return delegate.getTotalNumberOfIndividuals();
     }

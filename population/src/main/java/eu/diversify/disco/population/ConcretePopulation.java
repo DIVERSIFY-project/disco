@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  *
  * This file is part of Disco.
@@ -32,10 +33,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.diversify.disco.population;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -293,5 +294,16 @@ public class ConcretePopulation implements Population {
     @Override
     public List<Integer> getDistribution() {
         return Collections.unmodifiableList(this.distribution);
+    }
+
+    @Override
+    public double getVariance() {
+        int s = getNumberOfSpecies();
+        double mu = getMeanNumberOfIndividuals();
+        double total = 0D;
+        for(int index=1 ; index<=s ; index++) {
+            total += Math.pow(getNumberOfIndividualsIn(index) - mu, 2);
+        }
+        return total / s;
     }
 }
