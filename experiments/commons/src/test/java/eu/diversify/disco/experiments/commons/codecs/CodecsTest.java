@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.experiments.codecs;
+package eu.diversify.disco.experiments.commons.codecs;
 
 import eu.diversify.disco.experiments.commons.codecs.Codecs;
 import eu.diversify.disco.experiments.commons.data.Data;

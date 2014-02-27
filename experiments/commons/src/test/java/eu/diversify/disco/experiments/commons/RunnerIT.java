@@ -16,7 +16,7 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.experiments;
+package eu.diversify.disco.experiments.commons;
 
 import eu.diversify.disco.experiments.commons.Runner;
 import java.io.File;

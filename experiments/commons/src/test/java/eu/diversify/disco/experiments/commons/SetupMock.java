@@ -16,8 +16,9 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.experiments;
+package eu.diversify.disco.experiments.commons;
 
+import eu.diversify.disco.experiments.commons.ExperimentMock;
 import eu.diversify.disco.experiments.commons.Setup;
 import eu.diversify.disco.experiments.commons.Experiment;
 import java.util.ArrayList;

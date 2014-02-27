@@ -2,18 +2,18 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 /**
  *
@@ -42,7 +42,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -63,6 +65,7 @@ public class Runner {
             + "This is free software: you are free to change and redistribute it.\n"
             + "There is NO WARRANTY, to the extent permitted by law.\n";
     private final static String CLOSING_MESSAGE = "That's all folks!";
+    private final static String DEFAULT_SETUP_FILE = "setup.yml";
 
     /**
      * To run an experiment, we first load the setup file, build the associated
@@ -83,6 +86,51 @@ public class Runner {
     }
 
     /**
+     * Run the first setup file found within the arguments list or the default
+     * one if none is found.
+     *
+     * @param setupClass the Class of the setup
+     * @param commandLineArguments the command line arguments
+     */
+    public void run(Class setupClass, String... commandLineArguments) {
+        System.out.println(DISCLAIMER);
+        List<String> setupFiles = extractSetupFiles(commandLineArguments);
+        run(setupClass, setupFiles.get(0));
+        /*
+         * TODO: Should ideally run all the given setup files. So far it run
+         * only the first one as in the following
+         *
+         * for (String setupFile : setupFiles) { run(setupClass, setupFile); }
+         *
+         */
+        System.out.println(CLOSING_MESSAGE);
+    }
+
+    /**
+     * Extract the setup files specified in the command line arguments. If none
+     * are specified, return a list containing only de the default setup file.
+     *
+     * @param args the commands line arguments
+     * @return the list of setup file to run
+     */
+    List<String> extractSetupFiles(String[] args) {
+        ArrayList<String> setupFiles = new ArrayList<String>();
+        for (String arg : args) {
+            if (isSetupFile(arg)) {
+                setupFiles.add(arg);
+            }
+        }
+        if (setupFiles.isEmpty()) {
+            setupFiles.add(DEFAULT_SETUP_FILE);
+        }
+        return setupFiles;
+    }
+
+    private boolean isSetupFile(String text) {
+        return text.matches("[^\\.]*\\.(yaml|yml)$");
+    }
+
+    /**
      * To generate the the visualisation we call the RScript application,
      * assuming their is a 'view.r' script available in the current directory.
      */
@@ -94,7 +142,6 @@ public class Runner {
             System.out.println("Error code: " + errorCode);
 
         } catch (IOException ex) {
-            System.out.println("Pouet!");
             System.out.println("ERROR: Unable to generate visualisation using R. Is R properly installed?'");
             throw new RScriptNotFound();
 
