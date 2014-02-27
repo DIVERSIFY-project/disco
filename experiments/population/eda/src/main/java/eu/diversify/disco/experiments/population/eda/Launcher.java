@@ -27,10 +27,8 @@ import eu.diversify.disco.experiments.commons.Runner;
  */
 public class Launcher {
 
-    private final static String DEFAULT_SETUP_FILE = "setup.yml";
-
     public static void main(String args[]) {
         Runner runner = new Runner();
-        runner.run(EdaSetup.class, DEFAULT_SETUP_FILE);
+        runner.run(EdaSetup.class, args);
     }
 }
