@@ -28,11 +28,9 @@ import eu.diversify.disco.experiments.commons.Runner;
  */
 public class Launcher {
    
-    private static final String DEFAULT_CONFIG_FILE = "setup.yml";
-    
     public static void main(String[] args) {
         Runner runner = new Runner();
-        runner.run(SensitivitySetup.class, DEFAULT_CONFIG_FILE);
+        runner.run(SensitivitySetup.class, args);
     }
     
 }
