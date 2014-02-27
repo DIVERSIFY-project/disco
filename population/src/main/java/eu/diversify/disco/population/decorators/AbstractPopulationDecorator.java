@@ -127,9 +127,8 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
-    public Population renameSpecie(String oldName, String newName) {
-        delegate.renameSpecie(oldName, newName);
-        return this;
+    public final Population renameSpecie(String oldName, String newName) {
+        return renameSpecie(getSpecieIndex(oldName), newName);
     }
     
     @Override
@@ -145,9 +144,8 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
-    public Population removeSpecie(String specieName) {
-        delegate.removeSpecie(specieName);
-        return this;
+    public final Population removeSpecie(String specieName) {
+       return removeSpecie(getSpecieIndex(specieName));
     }
 
     @Override
@@ -157,15 +155,20 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
+    public final Population setNumberOfIndividualsIn(String specieName, int numberOfIndividuals) {
+        return setNumberOfIndividualsIn(getSpecieIndex(specieName), numberOfIndividuals);
+    }
+        
+
+    @Override
     public Population shiftNumberOfIndividualsIn(int specieIndex, int offset) {
         delegate.shiftNumberOfIndividualsIn(specieIndex, offset);
         return this;
     }
 
     @Override
-    public Population shiftNumberOfIndividualsIn(String specieName, int offset) {
-        delegate.shiftNumberOfIndividualsIn(specieName, offset);
-        return this;
+    public final Population shiftNumberOfIndividualsIn(String specieName, int offset) {
+        return shiftNumberOfIndividualsIn(getSpecieIndex(specieName), offset);
     }
 
     @Override

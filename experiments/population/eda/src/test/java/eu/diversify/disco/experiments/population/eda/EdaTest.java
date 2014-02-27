@@ -150,14 +150,13 @@ public class EdaTest extends TestCase {
         assertEquals("Wrong number of species", 1, filtered.size());
     }
 
-    // FIXME: setNumberOfIndividualsIn should accepts a specie name as well
     
     private Population makeMinimalPopulation(int s1, int s2) {
         Population minimalPopulation = new PopulationBuilder().make();
         minimalPopulation.addSpecie("s1");
-        minimalPopulation.setNumberOfIndividualsIn(1, s1);
+        minimalPopulation.setNumberOfIndividualsIn("s1", s1);
         minimalPopulation.addSpecie("s2");
-        minimalPopulation.setNumberOfIndividualsIn(2, s2);
+        minimalPopulation.setNumberOfIndividualsIn("s2", s2);
         return minimalPopulation;
     }
 }

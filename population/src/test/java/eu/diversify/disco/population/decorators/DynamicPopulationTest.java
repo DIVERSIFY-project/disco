@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.population.decorators;
@@ -22,22 +39,24 @@ package eu.diversify.disco.population.decorators;
 import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.PopulationTest;
 import java.util.Arrays;
+import static junit.framework.TestCase.assertSame;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * TODO: To refactor and integrate with the new population test
- * 
+ * Shall override all mutators test and check for mutability
+ *
  * @author Franck Chauvel
  * @since 0.1
  */
 @RunWith(JUnit4.class)
 public class DynamicPopulationTest extends PopulationTest {
+
     public static final String SPECIE_LION = "Lion";
     public static final String SPECIE_HIPPOPOTAMUS = "Hippopotamus";
 
-      @Override
+    @Override
     public void testShiftNumberOfIndividualsInByIndex() {
         super.testShiftNumberOfIndividualsInByIndex();
         assertSame(getActual(), getInitial());
@@ -57,16 +76,54 @@ public class DynamicPopulationTest extends PopulationTest {
 
     @Override
     public void testRemoveSpecieByIndex() {
-        super.testRemoveSpecieByIndex(); //To change body of generated methods, choose Tools | Templates.
+        super.testRemoveSpecieByIndex();
         assertSame(getActual(), getInitial());
     }
 
     @Override
     public void testRemoveSpecieByName() {
-        super.testRemoveSpecieByName(); //To change body of generated methods, choose Tools | Templates.
+        super.testRemoveSpecieByName();
         assertSame(getActual(), getInitial());
     }
+
+    @Override
+    public void testSetNumberOfIndividualsInBySpecieIndex() {
+        super.testSetNumberOfIndividualsInBySpecieIndex();
+        assertSame(getActual(), getInitial());
+    }
+
+    @Override
+    public void testSetNumberOfIndividualsInBySpecieName() {
+        super.testSetNumberOfIndividualsInBySpecieName();
+        assertSame(getActual(), getInitial());
+    }
+
+    @Override
+    public void testShiftNumberOfIndividualsByIndexThatDoesNotExists() {
+        super.testShiftNumberOfIndividualsByIndexThatDoesNotExists();
+        assertSame(getActual(), getInitial());
+    }
+
+    @Override
+    public void testShiftNumberOfIndividualBySpecieNameThatDoesNotExist() {
+        super.testShiftNumberOfIndividualBySpecieNameThatDoesNotExist();
+        assertSame(getActual(), getInitial());
+    }
+
     
+    
+    @Override
+    public void testRenameSpecieByIndex() {
+        super.testRenameSpecieByIndex();
+        assertSame(getActual(), getInitial());
+    }
+
+    @Override
+    public void testRenameSpecieByName() {
+        super.testRenameSpecieByName();
+        assertSame(getActual(), getInitial());
+    }
+
     @Test
     public void testNewIndividual() {
         DynamicPopulation p = makePopulation();
@@ -95,11 +152,11 @@ public class DynamicPopulationTest extends PopulationTest {
                 p.getNumberOfIndividualsIn(SPECIE_LION));
 
     }
-    
+
     @Test
     public void testIndividualDeath() {
         DynamicPopulation population = makePopulation();
-        
+
         final int ni = population.getTotalNumberOfIndividuals();
         final int ns = population.getNumberOfSpecies();
         final int nLions = population.getNumberOfIndividualsIn(SPECIE_LION);
@@ -107,15 +164,15 @@ public class DynamicPopulationTest extends PopulationTest {
         Individual individual = new Animal(SPECIE_LION);
         individual.join(population);
         individual.leave(population);
-        
+
         assertEquals(
                 "Wrong number of individuals",
                 ni,
                 population.getTotalNumberOfIndividuals());
-        
+
         assertEquals(
                 "Wrong number of species",
-                ns, 
+                ns,
                 population.getNumberOfSpecies());
         assertEquals(
                 "Wrong number of lions",
@@ -126,10 +183,10 @@ public class DynamicPopulationTest extends PopulationTest {
     @Test
     public void testIndividualNewSpecie() {
         DynamicPopulation p = makePopulation();
-        
+
         Individual i = new Animal(SPECIE_HIPPOPOTAMUS);
         i.join(p);
-                
+
         assertEquals(
                 "Wrong number of species",
                 p.getNumberOfSpecies(),
@@ -142,15 +199,14 @@ public class DynamicPopulationTest extends PopulationTest {
                 p.getNumberOfSpecies(),
                 3);
     }
-    
-    
+
     @Test
     public void testIndividualSpecieExtinction() {
         DynamicPopulation p = makePopulation();
-        
+
         Individual i = new Animal(SPECIE_HIPPOPOTAMUS);
         i.join(p);
-                
+
         assertEquals(
                 "Wrong number of species",
                 p.getNumberOfSpecies(),
@@ -163,9 +219,7 @@ public class DynamicPopulationTest extends PopulationTest {
                 p.getNumberOfSpecies(),
                 2);
     }
-    
 
-    
     private DynamicPopulation makePopulation() {
         DynamicPopulation result = (DynamicPopulation) new PopulationBuilder().dynamic().make();
         Individual i1 = new Animal(SPECIE_HIPPOPOTAMUS);
@@ -179,5 +233,4 @@ public class DynamicPopulationTest extends PopulationTest {
     public PopulationBuilder getBuilder() {
         return new PopulationBuilder().dynamic();
     }
-    
 }

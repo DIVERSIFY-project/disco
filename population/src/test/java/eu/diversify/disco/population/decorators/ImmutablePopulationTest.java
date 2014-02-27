@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * TODO: Override all mutators
+ * Shall override the all mutators test and check for immutability
  * 
  * @author Franck Chauvel
  * @since 0.1
@@ -50,6 +50,18 @@ public class ImmutablePopulationTest extends PopulationTest {
         super.testShiftNumberOfIndividualsInBySpecieName();
         assertNotSame(getActual(), getInitial());
     }
+
+    @Override
+    public void testSetNumberOfIndividualsInBySpecieIndex() {
+        super.testSetNumberOfIndividualsInBySpecieIndex();
+        assertNotSame(getActual(), getInitial());
+    }
+
+    @Override
+    public void testSetNumberOfIndividualsInBySpecieName() {
+        super.testSetNumberOfIndividualsInBySpecieName();
+        assertNotSame(getActual(), getInitial());
+    }    
 
     @Override
     public void testAddSpecie() {

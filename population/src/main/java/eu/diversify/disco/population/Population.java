@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population;
 
 import java.util.List;
@@ -123,22 +140,25 @@ public interface Population {
 
     /**
      * Update the name of the specie at in the given index, with the given name
+     *
      * @param specieIndex the index of interest
      * @param newName the new name to use for the selected specie
-     * @return the modified population 
+     * @return the modified population
      */
     public Population renameSpecie(int specieIndex, String newName);
-    
+
     /**
      * Update the name of the specie at in the given index, with the given name
+     *
      * @param oldName the name of the specie whose name must be changed
      * @param newName the new name to use for the selected specie
-     * @return the modified population 
+     * @return the modified population
      */
     public Population renameSpecie(String oldName, String newName);
 
     /**
      * Create a new specie, with the given and no individual
+     *
      * @param specieName the name of the new specie to create
      * @return the modified population
      */
@@ -146,6 +166,7 @@ public interface Population {
 
     /**
      * Remove the selected specie from the population
+     *
      * @param specieIndex the index of the specie to remove
      * @return the modified population
      * @throws IllegalArgumentException if the given index is irrelevant
@@ -154,6 +175,7 @@ public interface Population {
 
     /**
      * Remove the selected specie from the population
+     *
      * @param specieName the name of the specie to remove
      * @return the modified population
      * @throws IllegalArgumentException if the given name is irrelevant
@@ -162,16 +184,32 @@ public interface Population {
 
     /**
      * Set the number of individual in the selected population
+     *
      * @param specieIndex the index of the specie of interest
-     * @param numberOfIndividuals the number of individual to associate with the selected specie
+     * @param numberOfIndividuals the number of individual to associate with the
+     * selected specie
      * @return the modified population
      * @throws IllegalArgumentException if the given index is irrelevant
      */
     public Population setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals);
 
     /**
-     * Adjust the number of individual in the selected specie by the given addend
-     * @param specieIndex the index of the specie whose number of individuals shall be adjusted
+     * Set the number of individual in the selected population
+     *
+     * @param specieIndex the name of the specie of interest
+     * @param numberOfIndividuals the number of individual to associate with the
+     * selected specie
+     * @return the modified population
+     * @throws IllegalArgumentException if the given index is irrelevant
+     */
+    public Population setNumberOfIndividualsIn(String specieName, int numberOfIndividuals);
+
+    /**
+     * Adjust the number of individual in the selected specie by the given
+     * addend
+     *
+     * @param specieIndex the index of the specie whose number of individuals
+     * shall be adjusted
      * @param offset the change to add to the number of specie
      * @return the modified population
      * @throws IllegalArgumentException if the given index is irrelevant
@@ -179,8 +217,11 @@ public interface Population {
     public Population shiftNumberOfIndividualsIn(int specieIndex, int offset);
 
     /**
-     * Adjust the number of individual in the selected specie by the given addend
-     * @param specieIndex the index of the specie whose number of individuals shall be adjusted
+     * Adjust the number of individual in the selected specie by the given
+     * addend
+     *
+     * @param specieIndex the index of the specie whose number of individuals
+     * shall be adjusted
      * @param offset the change to add to the number of specie
      * @return the modified population
      * @throws IllegalArgumentException if the given name is irrelevant
@@ -188,7 +229,7 @@ public interface Population {
     public Population shiftNumberOfIndividualsIn(String specieName, int offset);
 
     /**
-     * @return a string representing the content of the population 
+     * @return a string representing the content of the population
      */
     public String toString();
 

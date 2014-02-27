@@ -156,6 +156,30 @@ public abstract class PopulationTest extends TestCase {
     }
 
     // Mutator tests
+    
+    @Test
+    public void testSetNumberOfIndividualsInBySpecieIndex() {
+        initial = getBuilder().withDistribution(1, 2, 3).make();
+        actual = initial.setNumberOfIndividualsIn(1, 54);
+        expected = getBuilder().withDistribution(54, 2, 3).make();
+        assertEquals(expected, actual);
+    }
+    
+    
+    @Test
+    public void testSetNumberOfIndividualsInBySpecieName() {
+        initial = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(1, 2, 3)
+                .make();
+        actual = initial.setNumberOfIndividualsIn("s1", 54); 
+        expected = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(54, 2, 3)
+                .make();
+        assertEquals(expected, actual);
+    }
+    
     @Test
     public void testShiftNumberOfIndividualsInByIndex() {
         initial = getBuilder().withDistribution(1, 2, 3).make();
