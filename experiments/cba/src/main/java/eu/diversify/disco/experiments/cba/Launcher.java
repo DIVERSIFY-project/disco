@@ -29,11 +29,10 @@ import eu.diversify.disco.experiments.commons.Runner;
  * @since 0.1
  */
 public class Launcher {
-    public static final String DEFAULT_SETUP_FILE = "setup.yml";
-    
+   
     public static void main(String args[]) {
         Runner runner = new Runner();
-        runner.run(CbaSetup.class, DEFAULT_SETUP_FILE);
+        runner.run(CbaSetup.class, args);
     }
 
 }
