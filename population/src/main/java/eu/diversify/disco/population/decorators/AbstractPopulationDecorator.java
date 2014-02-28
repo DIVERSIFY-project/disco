@@ -22,6 +22,7 @@ package eu.diversify.disco.population.decorators;
 
 import eu.diversify.disco.population.Population;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Factor the common code out of decorators object, and provide default implementations for some 
@@ -185,5 +186,12 @@ public abstract class AbstractPopulationDecorator implements Population {
     public double[] toArrayOfFractions() {
         return delegate.toArrayOfFractions();
     }
+
+    @Override
+    public Map<String, Integer> toMap() {
+        return delegate.toMap();
+    }
+     
+    
 
 }

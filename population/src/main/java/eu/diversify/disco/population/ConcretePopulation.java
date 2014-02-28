@@ -16,29 +16,14 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 
 package eu.diversify.disco.population;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A value object representing a population. Intended to be immutable
@@ -49,6 +34,7 @@ import java.util.List;
 public class ConcretePopulation implements Population {
 
     public static final String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
+    
     // FIXME: Change the implementation of the list of species name to ensure access to species name in O(c) 
     private final ArrayList<String> speciesName;
     private final ArrayList<Integer> distribution;
@@ -157,15 +143,12 @@ public class ConcretePopulation implements Population {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object object) {
         boolean result = false;
-        if (obj != null) {
-            if (Population.class.isAssignableFrom(obj.getClass())) {
-                final Population other = (Population) obj;
-                if (this.speciesName.equals(other.getSpeciesNames())
-                        && this.distribution.equals(other.getDistribution())) {
-                    result = true;
-                }
+        if (object != null) {
+            if (object instanceof Population) {
+                final Population other = (Population) object;
+                result = this.toMap().equals(other.toMap());
             }
         }
         return result;
@@ -305,5 +288,14 @@ public class ConcretePopulation implements Population {
             total += Math.pow(getNumberOfIndividualsIn(index) - mu, 2);
         }
         return total / s;
+    }
+
+    @Override
+    public Map<String, Integer> toMap() {
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for(int index=0 ; index<this.distribution.size() ; index++) {
+            map.put(this.speciesName.get(index), this.distribution.get(index));
+        }
+        return map;
     }
 }
