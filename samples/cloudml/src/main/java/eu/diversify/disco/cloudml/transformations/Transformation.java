@@ -58,8 +58,13 @@ public class Transformation {
 
 
     public Population forward(CloudML model) {
+        
         Population population = new PopulationBuilder().make();
         DeploymentModel dm = model.getRoot();
+        
+        if (dm == null) {
+            return population;
+        }
         
         for(String name : dm.getNodeTypes().keySet()){
             population.addSpecie(name);
