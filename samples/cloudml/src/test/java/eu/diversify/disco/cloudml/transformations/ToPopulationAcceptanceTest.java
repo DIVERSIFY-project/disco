@@ -56,6 +56,7 @@ public class ToPopulationAcceptanceTest extends TestCase {
         
         // Real cases
         examples.add(SENSAPP.toArray());
+        examples.add(MDMS.toArray());
         
         return examples;
     }

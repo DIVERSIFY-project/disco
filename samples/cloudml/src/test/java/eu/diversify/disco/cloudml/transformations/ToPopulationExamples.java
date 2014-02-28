@@ -22,18 +22,15 @@ import org.cloudml.core.Property;
  */
 public enum ToPopulationExamples {
 
-    EMPTY_MODEL(
-    "Empty DeploymentModel model",
-    createEmptyDeploymentModel(),
-    createEmptyPopulation()),
-    ONE_VM_TYPE_BUT_NO_INSTANCE(
-    "1 VM type but no instance",
-    cloudMlWithOneVmTypeButNoInstance(),
-    populationWithOneVmTypeButNoInstance()),
-    ONE_VM_TYPE_AND_ITS_INSTANCE(
-    "1 VM type and 1 instance",
-    cloudmlWithOneVmTypeAndItsInstance(),
-    populationWithOneVmTypeAndItsInstance()),
+    EMPTY_MODEL("Empty DeploymentModel model",
+                createEmptyDeploymentModel(),
+                createEmptyPopulation()),
+    ONE_VM_TYPE_BUT_NO_INSTANCE("1 VM type but no instance",
+                                cloudMlWithOneVmTypeButNoInstance(),
+                                populationWithOneVmTypeButNoInstance()),
+    ONE_VM_TYPE_AND_ITS_INSTANCE("1 VM type and 1 instance",
+                                 cloudmlWithOneVmTypeAndItsInstance(),
+                                 populationWithOneVmTypeAndItsInstance()),
     MANY_VM_TYPES_BUT_NO_INSTANCE(
     "Many VM types but no instance",
     cloudmlManyVmTypesButNoInstance(),
@@ -61,7 +58,11 @@ public enum ToPopulationExamples {
     SENSAPP(
     "SensApp",
     cloudmlWithSensApp(),
-    populationWithSensApp());
+    populationWithSensApp()),
+    MDMS(
+    "MDMS",
+    cloudmlWithMdms(),
+    populationWithMdms());
     /*
      *
      */
@@ -140,7 +141,8 @@ public enum ToPopulationExamples {
 
     private static Population populationManyVmTypesButNoInstance() {
         return new PopulationBuilder()
-                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, VM_NAME_PREFIX + 3)
+                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2,
+                                  VM_NAME_PREFIX + 3)
                 .withDistribution(0, 0, 0)
                 .make();
     }
@@ -156,7 +158,8 @@ public enum ToPopulationExamples {
 
     private static Population populationWithManyVmTypesAndTwoInstances() {
         return new PopulationBuilder()
-                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, VM_NAME_PREFIX + 3)
+                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2,
+                                  VM_NAME_PREFIX + 3)
                 .withDistribution(2, 2, 2)
                 .make();
     }
@@ -190,7 +193,9 @@ public enum ToPopulationExamples {
     private static DeploymentModel cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances() {
         DeploymentModel model = cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance();
         NodeInstance host = addNewInstanceForVmType(model, getVmType(model, 1));
-        ArtefactInstance app = addNewInstanceForArtefactType(model, getArtefactType(model, 1));
+        ArtefactInstance app = addNewInstanceForArtefactType(model,
+                                                             getArtefactType(
+                model, 1));
         deploy(model, host, app);
         return model;
     }
@@ -207,14 +212,19 @@ public enum ToPopulationExamples {
         Node nodeType = addNewVmType(model);
         Artefact artefactType = addNewArtefactType(model);
         NodeInstance host = addNewInstanceForVmType(model, getVmType(model, 2));
-        ArtefactInstance app = addNewInstanceForArtefactType(model, getArtefactType(model, 2));
+        ArtefactInstance app = addNewInstanceForArtefactType(model,
+                                                             getArtefactType(
+                model, 2));
         deploy(model, host, app);
         return model;
     }
 
     private static Population populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances() {
         return new PopulationBuilder()
-                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, ARTEFACT_NAME_PREFIX + 1, ARTEFACT_NAME_PREFIX + 2)
+                .withSpeciesNamed(VM_NAME_PREFIX + 1,
+                                  VM_NAME_PREFIX + 2,
+                                  ARTEFACT_NAME_PREFIX + 1,
+                                  ARTEFACT_NAME_PREFIX + 2)
                 .withDistribution(1, 1, 1, 1)
                 .make();
     }
@@ -223,45 +233,64 @@ public enum ToPopulationExamples {
         JsonCodec jsonCodec = new JsonCodec();
         DeploymentModel root = null;
         try {
-            root = (DeploymentModel) jsonCodec.load(new FileInputStream("../src/main/resources/sensappAdmin.json"));
+            root = (DeploymentModel) jsonCodec.load(new FileInputStream(
+                    "../src/main/resources/sensappAdmin.json"));
             for (NodeInstance ni : root.getNodeInstances()) {
                 ni.getProperties().add(new Property("state", "onn"));
             }
             for (ArtefactInstance ai : root.getArtefactInstances()) {
                 ai.getProperties().add(new Property("state", "onn"));
             }
-            
+
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ForwardTransformTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ForwardTransformTest.class.getName()).log(
+                    Level.SEVERE, null, ex);
 
         }
         return root;
     }
-    
-    
+
     private static Population populationWithSensApp() {
         // cloudmlsensappgui: 1, cloudmlsensapp: 1, SensAppGUIWar: 1, MongoDB: 1, jettyWarContainer: 2, SensAppWar: 1 
         return new PopulationBuilder()
-                .withSpeciesNamed("cloudmlsensappgui", "cloudmlsensapp", "SensAppGUIWar", "MongoDB", "jettyWarContainer", "SensAppWar")
+                .withSpeciesNamed("cloudmlsensappgui", "cloudmlsensapp",
+                                  "SensAppGUIWar", "MongoDB",
+                                  "jettyWarContainer", "SensAppWar")
                 .withDistribution(1, 1, 1, 1, 2, 1)
                 .make();
     }
+
+    private static DeploymentModel cloudmlWithMdms() {
+        return new MdmsModelCreator().create();
+    }
+
+    private static Population populationWithMdms() {
+        return new PopulationBuilder()
+                .withSpeciesNamed("EC2", "MySQL", "Balancer", "RingoJS", "OpenJDK", "Rhino", "MDMS")
+                .withDistribution(3, 1, 1, 1, 1, 1, 1)
+                .make();
+    }
+
 
     /*
      * Helper functions to manipulate DeploymentModel models
      */
     private static Node getVmType(DeploymentModel model, int nodeTypeIndex) {
-        final Node type = model.getNodeTypes().get(VM_NAME_PREFIX + nodeTypeIndex);
+        final Node type = model.getNodeTypes().get(
+                VM_NAME_PREFIX + nodeTypeIndex);
         if (type == null) {
-            throw new IllegalArgumentException("No VM type with index '" + nodeTypeIndex + "'");
+            throw new IllegalArgumentException(
+                    "No VM type with index '" + nodeTypeIndex + "'");
         }
         return type;
     }
 
     private static Artefact getArtefactType(DeploymentModel model, int artefactTypeIndex) {
-        final Artefact type = model.getArtefactTypes().get(ARTEFACT_NAME_PREFIX + artefactTypeIndex);
+        final Artefact type = model.getArtefactTypes().get(
+                ARTEFACT_NAME_PREFIX + artefactTypeIndex);
         if (type == null) {
-            throw new IllegalArgumentException("No artefact type with idnex '" + artefactTypeIndex + "'");
+            throw new IllegalArgumentException(
+                    "No artefact type with idnex '" + artefactTypeIndex + "'");
         }
         return type;
     }
