@@ -47,6 +47,7 @@ public class ForwardAcceptanceTest extends TestCase {
         examples.add(ONE_VM_TYPE_BUT_NO_INSTANCE.toArray());
         examples.add(ONE_VM_TYPE_AND_ITS_INSTANCE.toArray()); 
         examples.add(MANY_VM_TYPES_BUT_NO_INSTANCE.toArray());
+        examples.add(MANY_VM_TYPES_WITH_TWO_INSTANCES.toArray());
         
         return examples;
     }

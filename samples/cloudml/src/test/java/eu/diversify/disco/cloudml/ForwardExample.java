@@ -14,27 +14,32 @@ import org.cloudml.core.NodeInstance;
  */
 public enum ForwardExample {
 
-    // TODO: test many vms types, and no instance
-    // TODO: test many vm types and and many instances
     // TODO: test one artefact type and no instance
     // TODO: test many artefact types and many instances
-    // TODO: test
+    
     EMPTY_MODEL(
-    "Empty CloudML model",
-    createEmptyCloudML(),
-    createEmptyPopulation()),
+        "Empty CloudML model",
+        createEmptyCloudML(),
+        createEmptyPopulation()),
     ONE_VM_TYPE_BUT_NO_INSTANCE(
-    "1 VM type but no instance",
-    cloudMlWithOneVmTypeButNoInstance(),
-    populationWithOneVmTypeButNoInstance()),
+        "1 VM type but no instance",
+        cloudMlWithOneVmTypeButNoInstance(),
+        populationWithOneVmTypeButNoInstance()),
     ONE_VM_TYPE_AND_ITS_INSTANCE(
-    "1 VM type and one instance",
-    cloudmlWithOneVmTypeAndItsInstance(),
-    populationWithOneVmTypeAndItsInstance()),
+        "1 VM type and one instance",
+        cloudmlWithOneVmTypeAndItsInstance(),
+        populationWithOneVmTypeAndItsInstance()),
     MANY_VM_TYPES_BUT_NO_INSTANCE(
-    "Many VM types but no instance",
-    cloudmlManyVmTypesButNoInstance(),
-    populationManyVmTypesButNoInstance());
+        "Many VM types but no instance",
+        cloudmlManyVmTypesButNoInstance(),
+        populationManyVmTypesButNoInstance()),
+    MANY_VM_TYPES_WITH_TWO_INSTANCES(
+        "Many VM types with two instances",
+        cloudmlWithManyVmTypesWithTwoInstances(),
+        populationWithManyVmTypesAndTwoInstances());
+    /*
+     *
+     */
     private final String name;
     private final CloudML input;
     private final Population expectedOutput;
@@ -60,6 +65,11 @@ public enum ForwardExample {
     public Object[] toArray() {
         return new Object[]{this};
     }
+    
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 
     // helpers that create the various population and cloudMl models;
     private static CloudML createEmptyCloudML() {
@@ -72,12 +82,9 @@ public enum ForwardExample {
 
     private static CloudML cloudMlWithOneVmTypeButNoInstance() {
         DeploymentModel model = new DeploymentModel();
-
         CloudML cloudml = new CloudML();
         cloudml.setRoot(model);
-
         addNewVmType(cloudml);
-
         return cloudml;
     }
 
@@ -89,10 +96,8 @@ public enum ForwardExample {
 
     private static CloudML cloudmlWithOneVmTypeAndItsInstance() {
         CloudML model = cloudMlWithOneVmTypeButNoInstance();
-        
         final Node vmType = model.getRoot().getNodeTypes().get(VM_NAME_PREFIX + 1);
         addNewInstanceForVmType(model, vmType);
-        
         return model;
     }
 
@@ -109,32 +114,47 @@ public enum ForwardExample {
         addNewVmType(model);
         return model;
     }
-    
-     private static Population populationManyVmTypesButNoInstance() {
+
+    private static Population populationManyVmTypesButNoInstance() {
         return new PopulationBuilder()
                 .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, VM_NAME_PREFIX + 3)
                 .withDistribution(0, 0, 0)
                 .make();
     }
     
+    
+    private static CloudML cloudmlWithManyVmTypesWithTwoInstances() {
+        CloudML model = cloudmlManyVmTypesButNoInstance();
+        for (Node vmType: model.getRoot().getNodeTypes().values()) {
+            addNewInstanceForVmType(model, vmType);
+            addNewInstanceForVmType(model, vmType);
+        }
+        return model;
+    }
+    
+    
+    private static Population populationWithManyVmTypesAndTwoInstances() {
+        return new PopulationBuilder()
+                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, VM_NAME_PREFIX + 3)
+                .withDistribution(2, 2, 2)
+                .make();
+    }
+    
     // Helper functions to manipulate CloudML models
-
     private static void addNewVmType(CloudML model) {
         final int vmCount = model.getRoot().getNodeTypes().size();
         final String vmName = VM_NAME_PREFIX + (vmCount + 1);
         Node vm = new Node(vmName);
         model.getRoot().getNodeTypes().put(vmName, vm);
     }
-    
+
     private static void addNewInstanceForVmType(CloudML model, Node vmType) {
         final int count = model.getRoot().getNodeInstances().size();
         Node type = model.getRoot().getNodeTypes().get(vmType.getName());
         NodeInstance instance = new NodeInstance(VM_INSTANCE_NAME_PREFIX + (count + 1), type);
         model.getRoot().getNodeInstances().add(instance);
     }
-    
     // Constant values
-    
     public static final String VM_NAME_PREFIX = "VM #";
     public static final String VM_INSTANCE_NAME_PREFIX = "vm instance #1";
 }
