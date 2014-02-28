@@ -54,18 +54,17 @@ public class DiversityController {
         this.controller = new AdaptiveHillClimber();
         this.transformation = new BidirectionalTransformation();
     }
-
     
     
-    public DeploymentModel applyTo(DeploymentModel current) {
+    public Solution applyTo(DeploymentModel current) {
         Population population = transformation.toPopulation(current);
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(population)
                 .withDiversityMetric(this.metric)
                 .withReferenceDiversity(this.reference)
                 .make();
-        Solution result = this.controller.applyTo(problem);
-        transformation.toCloudML(current, result.getPopulation());
-        return current;
+        Solution solution = this.controller.applyTo(problem);
+        transformation.toCloudML(current, solution.getPopulation());
+        return solution;
     }
 }
