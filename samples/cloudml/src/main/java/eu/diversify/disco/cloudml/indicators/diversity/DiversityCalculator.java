@@ -20,7 +20,6 @@
 
 package eu.diversify.disco.cloudml.indicators.diversity;
 
-import eu.diversify.disco.cloudml.CloudML;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.transformations.Transformation;
 import eu.diversify.disco.population.Population;
@@ -45,10 +44,8 @@ public class DiversityCalculator extends DeploymentIndicator {
 
     @Override
     protected double doEvaluation(DeploymentModel deployment) {
-        CloudML cloudml = new CloudML();
-        cloudml.setRoot(deployment);
-        Population population = transformation.forward(cloudml);
-        return metric.applyTo(population);
+        Population population = transformation.forward(deployment);
+        return metric.applyTo(population); 
     }
     
 }

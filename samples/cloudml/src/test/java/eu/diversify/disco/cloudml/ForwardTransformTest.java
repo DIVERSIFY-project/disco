@@ -38,20 +38,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 public class ForwardTransformTest extends TestCase {
 
-
     @Test
     public void testWithEmptyCloudMlModel() {
-        CloudML model = new CloudML();
+        DeploymentModel model = new DeploymentModel();
         Transformation transformation = new Transformation();
     }
-    
+
     @Test
     public void testForwardTrans() {
-        CloudML model = new CloudML();
+        DeploymentModel model = new DeploymentModel();
         Runner.initFakeModel(model);
         Transformation transformation = new Transformation();
 
@@ -63,12 +61,10 @@ public class ForwardTransformTest extends TestCase {
 
     @Test
     public void testLoadSenseApp() {
-        CloudML model = new CloudML();
-
-        initWithSenseApp(model);
         Transformation transformation = new Transformation();
-        assertEquals(2, model.getRoot().getNodeTypes().size());
+        DeploymentModel model = initWithSenseApp();
 
+        assertEquals(2, model.getNodeTypes().size());
         Population population = transformation.forward(model);
 
         assertEquals(6, population.getNumberOfSpecies());
@@ -76,28 +72,21 @@ public class ForwardTransformTest extends TestCase {
 
     @Test
     public void testProvision() {
-        CloudML model = new CloudML();
-
-        initWithSenseApp(model);
-
         Transformation transformation = new Transformation();
-
-
-
-        ArtefactInstance ai = transformation.provision(model.root.getArtefactTypes().get("SensAppGUIWar"), "noname");
-        Collection<Binding> bd = transformation.fixBinding(model.getRoot(), ai);
+       
+        DeploymentModel model = initWithSenseApp();
+        ArtefactInstance ai = transformation.provision(model.getArtefactTypes().get("SensAppGUIWar"), "noname");
+        Collection<Binding> bd = transformation.fixBinding(model, ai);
 
         assertTrue(bd.isEmpty());
-
-        assertEquals(6, model.getRoot().getBindingInstances().size());
+        assertEquals(6, model.getBindingInstances().size());
 
     }
 
     @Test
     public void testWithMDMS() {
 
-        CloudML model = new CloudML();
-        initWithMDMS(model);
+        DeploymentModel model = initWithMDMS();
 
 
 
@@ -109,7 +98,7 @@ public class ForwardTransformTest extends TestCase {
 
         transformation.backward(model, population);
 
-        ArtefactInstance ai = filter(model.getRoot().getArtefactInstances(), new Predicate<ArtefactInstance>() {
+        ArtefactInstance ai = filter(model.getArtefactInstances(), new Predicate<ArtefactInstance>() {
             public boolean apply(ArtefactInstance t) {
                 return t.getName().startsWith("RingoJS");
             }
@@ -117,15 +106,13 @@ public class ForwardTransformTest extends TestCase {
 
         assertEquals("ec2_mdms", ai.getDestination().getName());
 
-        assertEquals(10, model.getRoot().getBindingInstances().size());
+        assertEquals(10, model.getBindingInstances().size());
 
 
 
     }
 
-    
-    public void initWithSenseApp(CloudML model) {
-
+    public DeploymentModel initWithSenseApp() {
         JsonCodec jsonCodec = new JsonCodec();
         DeploymentModel root = null;
         try {
@@ -141,22 +128,12 @@ public class ForwardTransformTest extends TestCase {
         for (ArtefactInstance ai : root.getArtefactInstances()) {
             ai.getProperties().add(new Property("state", "onn"));
         }
-
-        model.setRoot(root);
+        return root;
     }
 
-    public void initWithMDMS(CloudML model) {
-
-
+    public DeploymentModel initWithMDMS() {
         MdmsModelCreator creator = new MdmsModelCreator();
-
-        DeploymentModel dm = creator.create();
-
-        model.setRoot(dm);
-
-
-
-
+        return creator.create();
     }
 
     public <T extends Object> T parseMe(final String xpath, final Object context) {

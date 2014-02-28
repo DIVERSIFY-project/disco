@@ -26,6 +26,7 @@ import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
+import org.cloudml.core.DeploymentModel;
 
 /**
  * Wrap the diversity controller and the transformation into a single object
@@ -54,15 +55,9 @@ public class DiversityController {
         this.transformation = new Transformation();
     }
 
-    /**
-     * Update the given CloudML model so as to maintain the predefined diversity
-     * level
-     *
-     * @param current the model which has to be diversified
-     *
-     * @return the resulting model
-     */
-    public CloudML applyTo(CloudML current) {
+    
+    
+    public DeploymentModel applyTo(DeploymentModel current) {
         Population population = transformation.forward(current);
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(population)

@@ -18,8 +18,8 @@ public enum ForwardExample {
 
     // TODO: test many artefact types and many instances, and their instances
     EMPTY_MODEL(
-        "Empty CloudML model",
-        createEmptyCloudML(),
+        "Empty DeploymentModel model",
+        createEmptyDeploymentModel(),
         createEmptyPopulation()),
     ONE_VM_TYPE_BUT_NO_INSTANCE(
         "1 VM type but no instance",
@@ -50,7 +50,7 @@ public enum ForwardExample {
         cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
         populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances()),
     TWO_VM_TYPES_TWO_ARTEFACT_TYPES_AND_THE_FOUR_RELATED_INSTANCES(
-        "2 VM typea, 2 artefact types and the four related instances",
+        "2 VM types, 2 artefact types and the four related instances",
         cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances(),
         populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances())
     ;
@@ -59,10 +59,10 @@ public enum ForwardExample {
      *
      */
     private final String name;
-    private final CloudML input;
+    private final DeploymentModel input;
     private final Population expectedOutput;
 
-    private ForwardExample(String name, CloudML input, Population expectedOutput) {
+    private ForwardExample(String name, DeploymentModel input, Population expectedOutput) {
         this.name = name;
         this.input = input;
         this.expectedOutput = expectedOutput;
@@ -72,7 +72,7 @@ public enum ForwardExample {
         return this.name;
     }
 
-    public CloudML getInput() {
+    public DeploymentModel getInput() {
         return this.input;
     }
 
@@ -90,16 +90,16 @@ public enum ForwardExample {
     }
 
     // helpers that create the various population and cloudMl models;
-    private static CloudML createEmptyCloudML() {
-        return new CloudML();
+    private static DeploymentModel createEmptyDeploymentModel() {
+        return new DeploymentModel();
     }
 
     private static Population createEmptyPopulation() {
         return new PopulationBuilder().make();
     }
 
-    private static CloudML cloudMlWithOneVmTypeButNoInstance() {
-        CloudML cloudml = prepareCloudMLModel();
+    private static DeploymentModel cloudMlWithOneVmTypeButNoInstance() {
+        DeploymentModel cloudml = new DeploymentModel();
         addNewVmType(cloudml);
         return cloudml;
     }
@@ -110,9 +110,9 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlWithOneVmTypeAndItsInstance() {
-        CloudML model = cloudMlWithOneVmTypeButNoInstance();
-        final Node vmType = model.getRoot().getNodeTypes().get(VM_NAME_PREFIX + 1);
+    private static DeploymentModel cloudmlWithOneVmTypeAndItsInstance() {
+        DeploymentModel model = cloudMlWithOneVmTypeButNoInstance();
+        final Node vmType = model.getNodeTypes().get(VM_NAME_PREFIX + 1);
         addNewInstanceForVmType(model, vmType);
         return model;
     }
@@ -124,8 +124,8 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlManyVmTypesButNoInstance() {
-        CloudML model = cloudMlWithOneVmTypeButNoInstance();
+    private static DeploymentModel cloudmlManyVmTypesButNoInstance() {
+        DeploymentModel model = cloudMlWithOneVmTypeButNoInstance();
         addNewVmType(model);
         addNewVmType(model);
         return model;
@@ -138,9 +138,9 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlWithManyVmTypesWithTwoInstances() {
-        CloudML model = cloudmlManyVmTypesButNoInstance();
-        for (Node vmType : model.getRoot().getNodeTypes().values()) {
+    private static DeploymentModel cloudmlWithManyVmTypesWithTwoInstances() {
+        DeploymentModel model = cloudmlManyVmTypesButNoInstance();
+        for (Node vmType : model.getNodeTypes().values()) {
             addNewInstanceForVmType(model, vmType);
             addNewInstanceForVmType(model, vmType);
         }
@@ -154,10 +154,10 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlWithOneArtefactTypeButNoInstance() {
-        CloudML cloudml = prepareCloudMLModel();
-        addNewArtefactType(cloudml);
-        return cloudml;
+    private static DeploymentModel cloudmlWithOneArtefactTypeButNoInstance() {
+        DeploymentModel model = new DeploymentModel();
+        addNewArtefactType(model);
+        return model;
     }
 
     private static Population populationWithOneArtefactTypeButNoInstance() {
@@ -167,8 +167,8 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance() {
-        CloudML model = cloudMlWithOneVmTypeButNoInstance();
+    private static DeploymentModel cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance() {
+        DeploymentModel model = cloudMlWithOneVmTypeButNoInstance();
         addNewArtefactType(model);
         return model;
     }
@@ -180,8 +180,8 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances() {
-        CloudML model = cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance();
+    private static DeploymentModel cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances() {
+        DeploymentModel model = cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance();
         NodeInstance host = addNewInstanceForVmType(model, getVmType(model, 1));
         ArtefactInstance app = addNewInstanceForArtefactType(model, getArtefactType(model, 1));
         deploy(model, host, app);
@@ -195,8 +195,8 @@ public enum ForwardExample {
                 .make();
     }
 
-    private static CloudML cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances() {
-        CloudML model = cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances();
+    private static DeploymentModel cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances() {
+        DeploymentModel model = cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances();
         Node nodeType = addNewVmType(model);
         Artefact artefactType = addNewArtefactType(model);
         NodeInstance host = addNewInstanceForVmType(model, getVmType(model, 2));
@@ -213,66 +213,61 @@ public enum ForwardExample {
     }
 
     /*
-     * Helper functions to manipulate CloudML models
+     * Helper functions to manipulate DeploymentModel models
      */
-    private static Node getVmType(CloudML model, int nodeTypeIndex) {
-        final Node type = model.getRoot().getNodeTypes().get(VM_NAME_PREFIX + nodeTypeIndex);
+    private static Node getVmType(DeploymentModel model, int nodeTypeIndex) {
+        final Node type = model.getNodeTypes().get(VM_NAME_PREFIX + nodeTypeIndex);
         if (type == null) {
             throw new IllegalArgumentException("No VM type with index '" + nodeTypeIndex + "'");
         }
         return type;
     }
 
-    private static Artefact getArtefactType(CloudML model, int artefactTypeIndex) {
-        final Artefact type = model.getRoot().getArtefactTypes().get(ARTEFACT_NAME_PREFIX + artefactTypeIndex);
+    private static Artefact getArtefactType(DeploymentModel model, int artefactTypeIndex) {
+        final Artefact type = model.getArtefactTypes().get(ARTEFACT_NAME_PREFIX + artefactTypeIndex);
         if (type == null) {
             throw new IllegalArgumentException("No artefact type with idnex '" + artefactTypeIndex + "'");
         }
         return type;
     }
 
-    private static CloudML prepareCloudMLModel() {
-        DeploymentModel model = new DeploymentModel();
-        CloudML cloudml = new CloudML();
-        cloudml.setRoot(model);
-        return cloudml;
-    }
 
-    private static Node addNewVmType(CloudML model) {
-        final int vmCount = model.getRoot().getNodeTypes().size();
+    private static Node addNewVmType(DeploymentModel model) {
+        final int vmCount = model.getNodeTypes().size();
         final String vmName = VM_NAME_PREFIX + (vmCount + 1);
         Node vm = new Node(vmName);
-        model.getRoot().getNodeTypes().put(vmName, vm);
+        model.getNodeTypes().put(vmName, vm);
         return vm;
     }
 
-    private static Artefact addNewArtefactType(CloudML model) {
-        final int count = model.getRoot().getArtefactTypes().size();
+    private static Artefact addNewArtefactType(DeploymentModel model) {
+        final int count = model.getArtefactTypes().size();
         final String typeName = ARTEFACT_NAME_PREFIX + (count + 1);
         Artefact type = new Artefact(typeName);
-        model.getRoot().getArtefactTypes().put(typeName, type);
+        model.getArtefactTypes().put(typeName, type);
         return type;
     }
 
-    private static NodeInstance addNewInstanceForVmType(CloudML model, Node type) {
-        final int count = model.getRoot().getNodeInstances().size();
+    private static NodeInstance addNewInstanceForVmType(DeploymentModel model, Node type) {
+        final int count = model.getNodeInstances().size();
         final String instanceName = VM_INSTANCE_NAME_PREFIX + (count + 1);
         NodeInstance instance = new NodeInstance(instanceName, type);
-        model.getRoot().getNodeInstances().add(instance);
+        model.getNodeInstances().add(instance);
         return instance;
     }
 
-    private static ArtefactInstance addNewInstanceForArtefactType(CloudML model, Artefact type) {
-        final int count = model.getRoot().getArtefactInstances().size();
+    private static ArtefactInstance addNewInstanceForArtefactType(DeploymentModel model, Artefact type) {
+        final int count = model.getArtefactInstances().size();
         final String instanceName = ARTEFACT_INSTANCE_NAME_PREFIX + (count + 1);
         ArtefactInstance instance = new ArtefactInstance(instanceName, type);
-        model.getRoot().getArtefactInstances().add(instance);
+        model.getArtefactInstances().add(instance);
         return instance;
     }
 
-    private static void deploy(CloudML model, NodeInstance host, ArtefactInstance app) {
+    private static void deploy(DeploymentModel model, NodeInstance host, ArtefactInstance app) {
         app.setDestination(host);
     }
+    
     // Constant values
     public static final String VM_NAME_PREFIX = "node type #";
     public static final String ARTEFACT_NAME_PREFIX = "artefact type #";

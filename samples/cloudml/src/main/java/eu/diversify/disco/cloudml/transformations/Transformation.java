@@ -23,7 +23,6 @@ import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import eu.diversify.disco.cloudml.CloudML;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
 import java.util.ArrayList;
@@ -56,36 +55,22 @@ public class Transformation {
 
     Random random = new Random();
 
-    public Population forward(CloudML model) {
-
+ 
+    public Population forward(DeploymentModel model) {
+        abortIfInvalid(model);
         Population population = new PopulationBuilder().make();
-        DeploymentModel dm = model.getRoot();
-
-        if (dm == null) {
-            return population;
-        }
-
-        for (Node nodeType : dm.getNodeTypes().values()) {
-            abortIfInvalid(nodeType);
-            population.addSpecie(nodeType.getName());
-        }
-
-        for (Artefact artefactType : dm.getArtefactTypes().values()) {
-            abortIfInvalid(artefactType);
-            population.addSpecie(artefactType.getName());
-        }
-
-        for (NodeInstance node : dm.getNodeInstances()) {
-            abortIfInvalid(node);
-            population.shiftNumberOfIndividualsIn(node.getType().getName(), +1);
-        }
-
-        for (ArtefactInstance artefact : dm.getArtefactInstances()) {
-            abortIfInvalid(artefact);
-            population.shiftNumberOfIndividualsIn(artefact.getType().getName(), +1);
-        }
-
+        convertNodeTypes(model, population);
+        convertArtefactTypes(model, population);
+        convertNodeInstances(model, population);
+        convertArtefactInstances(model, population);
         return population;
+    }
+    
+    
+    private void abortIfInvalid(DeploymentModel model) {
+        if (model == null) {
+            throw new IllegalArgumentException("Cannot convert null!");
+        }
     }
 
     private void abortIfInvalid(Node nodeType) {
@@ -122,13 +107,11 @@ public class Transformation {
             throw new IllegalArgumentException(message);
         }
     }
-
-    public void backward(CloudML model, Population toBe) {
-        DeploymentModel dm = model.getRoot();
-
-        for (final String specieName : toBe.getSpeciesNames()) {
-            if (dm.getNodeTypes().containsKey(specieName)) {
-                Collection<NodeInstance> existings = filter(dm.getNodeInstances(), new Predicate<NodeInstance>() {
+    
+    public void backward(DeploymentModel deployment, Population toBe) {
+                for (final String specieName : toBe.getSpeciesNames()) {
+            if (deployment.getNodeTypes().containsKey(specieName)) {
+                Collection<NodeInstance> existings = filter(deployment.getNodeInstances(), new Predicate<NodeInstance>() {
                     public boolean apply(NodeInstance t) {
                         return t.getType().getName().equals(specieName);
                     }
@@ -136,19 +119,19 @@ public class Transformation {
                 int current = existings.size();
                 int desired = toBe.getNumberOfIndividualsIn(specieName);
                 for (int i = current; i < desired; i++) {
-                    NodeInstance ni = provision(dm.getNodeTypes().get(specieName), uniqueId(dm.getNodeInstances(), specieName));
-                    dm.getNodeInstances().add(ni);
+                    NodeInstance ni = provision(deployment.getNodeTypes().get(specieName), uniqueId(deployment.getNodeInstances(), specieName));
+                    deployment.getNodeInstances().add(ni);
                 }
                 if (current > desired) {
                     List<NodeInstance> existingList = new ArrayList<NodeInstance>();
                     shuffle(existingList);
                     for (int i = current; i > desired; i--) {
-                        dm.getNodeInstances().remove(existingList.get(i - 1));
+                        deployment.getNodeInstances().remove(existingList.get(i - 1));
                     }
                 }
             }
-            else if (dm.getArtefactTypes().containsKey(specieName)) {
-                Collection<ArtefactInstance> existings = filter(dm.getArtefactInstances(), new Predicate<ArtefactInstance>() {
+            else if (deployment.getArtefactTypes().containsKey(specieName)) {
+                Collection<ArtefactInstance> existings = filter(deployment.getArtefactInstances(), new Predicate<ArtefactInstance>() {
                     public boolean apply(ArtefactInstance t) {
                         return t.getType().getName().equals(specieName);
                     }
@@ -156,25 +139,25 @@ public class Transformation {
                 int current = existings.size();
                 int desired = toBe.getNumberOfIndividualsIn(specieName);
                 for (int i = current; i < desired; i++) {
-                    ArtefactInstance ai = provision(dm.getArtefactTypes().get(specieName), uniqueId(dm.getArtefactInstances(), specieName));
-                    dm.getArtefactInstances().add(ai);
+                    ArtefactInstance ai = provision(deployment.getArtefactTypes().get(specieName), uniqueId(deployment.getArtefactInstances(), specieName));
+                    deployment.getArtefactInstances().add(ai);
                 }
                 if (current > desired) {
                     List<ArtefactInstance> existingsList = new ArrayList<ArtefactInstance>();
                     shuffle(existingsList);
                     for (int i = current; i > desired; i--) {
-                        dm.getArtefactInstances().remove(existingsList.get(i - 1));
+                        deployment.getArtefactInstances().remove(existingsList.get(i - 1));
                     }
                 }
             }
 
             List<Binding> requiredBindings = new ArrayList<Binding>();
-            for (ArtefactInstance ai : dm.getArtefactInstances()) {
-                requiredBindings.addAll(fixBinding(dm, ai));
+            for (ArtefactInstance ai : deployment.getArtefactInstances()) {
+                requiredBindings.addAll(fixBinding(deployment, ai));
 
             }
 
-            fixAllDestination(dm);
+            fixAllDestination(deployment);
 
         }
     }
@@ -306,5 +289,33 @@ public class Transformation {
             name = prefix += random.nextInt(1000);
         }
         return name;
+    }
+
+    private void convertNodeTypes(DeploymentModel model, Population population) {
+        for (Node nodeType : model.getNodeTypes().values()) {
+            abortIfInvalid(nodeType);
+            population.addSpecie(nodeType.getName());
+        }
+    }
+
+    private void convertArtefactTypes(DeploymentModel model, Population population) {
+        for (Artefact artefactType : model.getArtefactTypes().values()) {
+            abortIfInvalid(artefactType);
+            population.addSpecie(artefactType.getName());
+        }
+    }
+
+    private void convertNodeInstances(DeploymentModel model, Population population) {
+        for (NodeInstance node : model.getNodeInstances()) {
+            abortIfInvalid(node);
+            population.shiftNumberOfIndividualsIn(node.getType().getName(), +1);
+        }
+    }
+
+    private void convertArtefactInstances(DeploymentModel model, Population population) {
+        for (ArtefactInstance artefact : model.getArtefactInstances()) {
+            abortIfInvalid(artefact);
+            population.shiftNumberOfIndividualsIn(artefact.getType().getName(), +1);
+        }
     }
 }

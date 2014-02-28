@@ -24,8 +24,8 @@ import org.cloudml.core.Property;
 import org.cloudml.core.Provider;
 
 /**
- * Run the transformation from a CloudML to a population model, diversify the
- * population model, and adjust the CloudML model.
+ * Run the transformation from a DeploymentModel to a population model, diversify the
+ * population model, and adjust the DeploymentModel model.
  *
  * @author Franck Chauvel
  * @author Hui Song
@@ -36,14 +36,12 @@ public class Runner {
 
     public static void main(String[] args) {
         final DiversityController controller = new DiversityController(0.25);        
-        CloudML model = new CloudML();
+        DeploymentModel model = new DeploymentModel();
         initFakeModel(model);
         controller.applyTo(model);
     }
 
-    public static void initFakeModel(CloudML model) {
-        model.init();
-        DeploymentModel dm = model.getRoot();
+    public static void initFakeModel(DeploymentModel dm) {
 
         Provider hugeProvider = new Provider("huge", "../src/main/resources/credentials");
         Provider bigsmallProvider = new Provider("bigsmall", "../src/main/resources/credentials");
