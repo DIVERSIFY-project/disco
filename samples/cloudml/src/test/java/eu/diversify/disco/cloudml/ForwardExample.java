@@ -18,43 +18,43 @@ public enum ForwardExample {
 
     // TODO: test many artefact types and many instances, and their instances
     EMPTY_MODEL(
-    "Empty CloudML model",
-    createEmptyCloudML(),
-    createEmptyPopulation()),
+        "Empty CloudML model",
+        createEmptyCloudML(),
+        createEmptyPopulation()),
     ONE_VM_TYPE_BUT_NO_INSTANCE(
-    "1 VM type but no instance",
-    cloudMlWithOneVmTypeButNoInstance(),
-    populationWithOneVmTypeButNoInstance()),
+        "1 VM type but no instance",
+        cloudMlWithOneVmTypeButNoInstance(),
+        populationWithOneVmTypeButNoInstance()),
     ONE_VM_TYPE_AND_ITS_INSTANCE(
-    "1 VM type and 1 instance",
-    cloudmlWithOneVmTypeAndItsInstance(),
-    populationWithOneVmTypeAndItsInstance()),
+        "1 VM type and 1 instance",
+        cloudmlWithOneVmTypeAndItsInstance(),
+        populationWithOneVmTypeAndItsInstance()),
     MANY_VM_TYPES_BUT_NO_INSTANCE(
-    "Many VM types but no instance",
-    cloudmlManyVmTypesButNoInstance(),
-    populationManyVmTypesButNoInstance()),
+        "Many VM types but no instance",
+        cloudmlManyVmTypesButNoInstance(),
+        populationManyVmTypesButNoInstance()),
     MANY_VM_TYPES_WITH_TWO_INSTANCES(
-    "Many VM types with 2 instances",
-    cloudmlWithManyVmTypesWithTwoInstances(),
-    populationWithManyVmTypesAndTwoInstances()),
+        "Many VM types with 2 instances",
+        cloudmlWithManyVmTypesWithTwoInstances(),
+        populationWithManyVmTypesAndTwoInstances()),
     ONE_ARTEFACT_TYPE_BUT_NO_INSTANCE(
-    "1 artefact type, but no instance (and no VM type)",
-    cloudmlWithOneArtefactTypeButNoInstance(),
-    populationWithOneArtefactTypeButNoInstance()),
+        "1 artefact type, but no instance (and no VM type)",
+        cloudmlWithOneArtefactTypeButNoInstance(),
+        populationWithOneArtefactTypeButNoInstance()),
     ONE_VM_TYPE_ONE_ARTEFACT_TYPE_BUT_NO_INSTANCE(
-    "1 VM type, 1 artefact type, no instance",
-    cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
-    populationWithOneVmTypeOneArtefactTypeAndNoInstance()),
+        "1 VM type, 1 artefact type, no instance",
+        cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
+        populationWithOneVmTypeOneArtefactTypeAndNoInstance()),
     ONE_VM_TYPE_ONE_ARTEFACT_TYPE_AND_THEIR_TWO_INSTANCES(
-    "1 VM type, 1 artefact type and their two instances",
-    cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
-    populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances())
-//    TWO_VM_TYPES_TWO_ARTEFACT_TYPES_AND_THE_FOUR_RELATED_INSTANCES(
-//    "1 VM type, 1 artefact type and their two instances",
-//    cloudmlWithTwoVmTypeTwoArtefactTypeAndTheFourRelatedInstances(),
-//    populationWithTwoVmTypeTwoArtefactTypeAndTheFourTwoRelatedInstances())
-            
+        "1 VM type, 1 artefact type and their two instances",
+        cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
+        populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances()),
+    TWO_VM_TYPES_TWO_ARTEFACT_TYPES_AND_THE_FOUR_RELATED_INSTANCES(
+        "2 VM typea, 2 artefact types and the four related instances",
+        cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances(),
+        populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances())
     ;
+    
     /*
      *
      */
@@ -195,22 +195,22 @@ public enum ForwardExample {
                 .make();
     }
 
-//    private static CloudML cloudmlWithTwoVmTypeTwoArtefactTypeAndTheFourRelatedInstances() {
-//        CloudML model = cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances();
-//        Node nodeType = addNewVmType(model);
-//        Artefact artefactType = addNewArtefactType(model);
-//        NodeInstance host = addNewInstanceForVmType(model, getVmType(model, 2));
-//        ArtefactInstance app = addNewInstanceForArtefactType(model, getArtefactType(model, 2));
-//        deploy(model, host, app);
-//        return model;
-//    }
-//
-//    private static Population populationWithTwoVmTypeTwoArtefactTypeAndTheFourRelatedInstances() {
-//        return new PopulationBuilder()
-//                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, ARTEFACT_NAME_PREFIX + 1, ARTEFACT_NAME_PREFIX + 2)
-//                .withDistribution(1, 1, 1, 1)
-//                .make();
-//    }
+    private static CloudML cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances() {
+        CloudML model = cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances();
+        Node nodeType = addNewVmType(model);
+        Artefact artefactType = addNewArtefactType(model);
+        NodeInstance host = addNewInstanceForVmType(model, getVmType(model, 2));
+        ArtefactInstance app = addNewInstanceForArtefactType(model, getArtefactType(model, 2));
+        deploy(model, host, app);
+        return model;
+    }
+
+    private static Population populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances() {
+        return new PopulationBuilder()
+                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, ARTEFACT_NAME_PREFIX + 1, ARTEFACT_NAME_PREFIX + 2)
+                .withDistribution(1, 1, 1, 1)
+                .make();
+    }
 
     /*
      * Helper functions to manipulate CloudML models
