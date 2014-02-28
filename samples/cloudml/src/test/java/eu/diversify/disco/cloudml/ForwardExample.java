@@ -2,6 +2,7 @@ package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
+import org.cloudml.core.Artefact;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
@@ -14,29 +15,33 @@ import org.cloudml.core.NodeInstance;
  */
 public enum ForwardExample {
 
-    // TODO: test one artefact type and no instance
+    // TODO: test one artefact type, one vm type and no instance
     // TODO: test many artefact types and many instances
-    
     EMPTY_MODEL(
-        "Empty CloudML model",
-        createEmptyCloudML(),
-        createEmptyPopulation()),
+    "Empty CloudML model",
+    createEmptyCloudML(),
+    createEmptyPopulation()),
     ONE_VM_TYPE_BUT_NO_INSTANCE(
-        "1 VM type but no instance",
-        cloudMlWithOneVmTypeButNoInstance(),
-        populationWithOneVmTypeButNoInstance()),
+    "1 VM type but no instance",
+    cloudMlWithOneVmTypeButNoInstance(),
+    populationWithOneVmTypeButNoInstance()),
     ONE_VM_TYPE_AND_ITS_INSTANCE(
-        "1 VM type and one instance",
-        cloudmlWithOneVmTypeAndItsInstance(),
-        populationWithOneVmTypeAndItsInstance()),
+    "1 VM type and 1 instance",
+    cloudmlWithOneVmTypeAndItsInstance(),
+    populationWithOneVmTypeAndItsInstance()),
     MANY_VM_TYPES_BUT_NO_INSTANCE(
-        "Many VM types but no instance",
-        cloudmlManyVmTypesButNoInstance(),
-        populationManyVmTypesButNoInstance()),
+    "Many VM types but no instance",
+    cloudmlManyVmTypesButNoInstance(),
+    populationManyVmTypesButNoInstance()),
     MANY_VM_TYPES_WITH_TWO_INSTANCES(
-        "Many VM types with two instances",
-        cloudmlWithManyVmTypesWithTwoInstances(),
-        populationWithManyVmTypesAndTwoInstances());
+    "Many VM types with 2 instances",
+    cloudmlWithManyVmTypesWithTwoInstances(),
+    populationWithManyVmTypesAndTwoInstances()),
+    ONE_VM_TYPE_ONE_ARTEFACT_TYPE_BUT_NO_INSTANCE(
+    "1 VM type, 1 artefact type, no instances",
+    cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
+    populationWithOneVmTypeOneArtefactTypeAndNoInstance()
+    );
     /*
      *
      */
@@ -65,7 +70,7 @@ public enum ForwardExample {
     public Object[] toArray() {
         return new Object[]{this};
     }
-    
+
     @Override
     public String toString() {
         return this.getName();
@@ -121,18 +126,16 @@ public enum ForwardExample {
                 .withDistribution(0, 0, 0)
                 .make();
     }
-    
-    
+
     private static CloudML cloudmlWithManyVmTypesWithTwoInstances() {
         CloudML model = cloudmlManyVmTypesButNoInstance();
-        for (Node vmType: model.getRoot().getNodeTypes().values()) {
+        for (Node vmType : model.getRoot().getNodeTypes().values()) {
             addNewInstanceForVmType(model, vmType);
             addNewInstanceForVmType(model, vmType);
         }
         return model;
     }
-    
-    
+
     private static Population populationWithManyVmTypesAndTwoInstances() {
         return new PopulationBuilder()
                 .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, VM_NAME_PREFIX + 3)
@@ -140,21 +143,45 @@ public enum ForwardExample {
                 .make();
     }
     
-    // Helper functions to manipulate CloudML models
+    private static CloudML cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance() {
+        CloudML model = cloudMlWithOneVmTypeButNoInstance();
+        addNewArtefactType(model);
+        return model;
+    }
+    
+    private static Population populationWithOneVmTypeOneArtefactTypeAndNoInstance() {
+        return new PopulationBuilder()
+                .withSpeciesNamed(VM_NAME_PREFIX + 1, ARTEFACT_NAME_PREFIX + 1)
+                .withDistribution(0, 0)
+                .make();
+    }
+
+    /*
+     * Helper functions to manipulate CloudML models
+     */
     private static void addNewVmType(CloudML model) {
         final int vmCount = model.getRoot().getNodeTypes().size();
         final String vmName = VM_NAME_PREFIX + (vmCount + 1);
         Node vm = new Node(vmName);
         model.getRoot().getNodeTypes().put(vmName, vm);
     }
+    
+    private static void addNewArtefactType(CloudML model) {
+        final int count = model.getRoot().getArtefactTypes().size();
+        final String typeName = ARTEFACT_NAME_PREFIX + (count + 1);
+        Artefact type = new Artefact(typeName);
+        model.getRoot().getArtefactTypes().put(typeName, type);
+    }
 
     private static void addNewInstanceForVmType(CloudML model, Node vmType) {
         final int count = model.getRoot().getNodeInstances().size();
         Node type = model.getRoot().getNodeTypes().get(vmType.getName());
-        NodeInstance instance = new NodeInstance(VM_INSTANCE_NAME_PREFIX + (count + 1), type);
+        final String instanceName = VM_INSTANCE_NAME_PREFIX + (count + 1);
+        NodeInstance instance = new NodeInstance(instanceName, type);
         model.getRoot().getNodeInstances().add(instance);
     }
     // Constant values
     public static final String VM_NAME_PREFIX = "VM #";
+    public static final String ARTEFACT_NAME_PREFIX = "Artefact Type #";
     public static final String VM_INSTANCE_NAME_PREFIX = "vm instance #1";
 }
