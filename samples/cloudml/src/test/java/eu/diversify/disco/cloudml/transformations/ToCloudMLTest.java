@@ -15,69 +15,72 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 package eu.diversify.disco.cloudml.transformations;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import static eu.diversify.disco.cloudml.transformations.ToCloudMLExample.*;
+
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import org.cloudml.codecs.JsonCodec;
-import org.cloudml.core.ArtefactInstance;
-import org.cloudml.core.Binding;
 import org.cloudml.core.DeploymentModel;
-import org.cloudml.core.NodeInstance;
-import org.cloudml.core.Property;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.runners.Parameterized;
 
 /**
- * Test the behaviour of the conversion from a Population Model to a CloudML
- * model
+ * Test the behaviour of the conversion from a CloudML model and a population
+ * level, back into a CloudML level;
  *
- * @author Hui Song
+ * @author Franck Chauvel
  * @since 0.1
  */
-@RunWith(JUnit4.class)
+@RunWith(Parameterized.class)
 public class ToCloudMLTest extends TestCase {
 
-    @Test
-    public void testProvision() {
-        BidirectionalTransformation transformation = new BidirectionalTransformation();
+    private final ToCloudMLExample example;
+    private final ToCloudML transformation;
+    private DeploymentModel actual;
 
-        DeploymentModel model = initWithSenseApp();
-        ArtefactInstance ai = transformation.provision(
-                model.getArtefactTypes().get("SensAppGUIWar"), "noname");
-        Collection<Binding> bd = transformation.fixBinding(model, ai);
-
-        assertTrue(bd.isEmpty());
-        assertEquals(6, model.getBindingInstances().size());
+    public ToCloudMLTest(ToCloudMLExample example) {
+        this.example = example;
+        this.transformation = new ToCloudML();
+        this.actual = null; // To be set during the test
     }
 
-    public DeploymentModel initWithSenseApp() {
-        JsonCodec jsonCodec = new JsonCodec();
-        DeploymentModel root = null;
+    @Test
+    public void testToCloudMLWith() {
         try {
-            root = (DeploymentModel) jsonCodec.load(new FileInputStream(
-                    "../src/main/resources/sensappAdmin.json"));
-            for (NodeInstance ni : root.getNodeInstances()) {
-                ni.getProperties().add(new Property("state", "onn"));
+            actual = transformation.applyTo(example.getInputDeployment(),
+                                            example.getInputPopulation());
+            if (example.shallRaiseAnException()) {
+                String message = String.format("Should have raised '%s",
+                                               example.getExpectedException().getName());
+                fail(message);
             }
-            for (ArtefactInstance ai : root.getArtefactInstances()) {
-                ai.getProperties().add(new Property("state", "onn"));
-            }
+            // FIXME: equals is not enough! Shall use model comparator
+            assertEquals(example.getInputDeployment(), actual);
 
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null,
-                                                            ex);
+        } catch (Exception e) {
+            if (example.shallRaise(e.getClass())) {
+                assertTrue(true);
+
+            }
+            else {
+                String message = String.format("Expected '%s' but '%s' caught!",
+                                               example.getExpectedException().getName(),
+                                               e.getClass().getName());
+                fail(message);
+            }
         }
+    }
 
-        return root;
+    @Parameterized.Parameters(name = "{0}")
+    public static Collection<Object[]> getExamples() {
+        final ArrayList<Object[]> examples = new ArrayList<Object[]>();
+
+        examples.add(WITH_NULL_DEPLOYMENT.toArray());
+        examples.add(WITH_NULL_POPULATION.toArray());
+        
+        return examples;
     }
 }

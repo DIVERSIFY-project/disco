@@ -61,6 +61,8 @@ public class ToCloudML {
     }
 
     public DeploymentModel applyTo(DeploymentModel deployment, Population toBe) {
+        abortIfInvalid(deployment);
+        abortIfInvalid(toBe);
         for (final String specieName : toBe.getSpeciesNames()) {
             if (deployment.getNodeTypes().containsKey(specieName)) {
                 Collection<NodeInstance> existings = filter(deployment.getNodeInstances(), new Predicate<NodeInstance>() {
@@ -242,6 +244,18 @@ public class ToCloudML {
             name = prefix += random.nextInt(1000);
         }
         return name;
+    }
+
+    private void abortIfInvalid(DeploymentModel deployment) {
+        if (deployment == null) {
+            throw new IllegalArgumentException("Cannot convert 'null' as input deployment model");
+        }
+    }
+
+    private void abortIfInvalid(Population toBe) {
+        if (toBe == null) {
+            throw new IllegalArgumentException("Cannot exploit 'null' as a target population configuration");
+        }
     }
     
 }
