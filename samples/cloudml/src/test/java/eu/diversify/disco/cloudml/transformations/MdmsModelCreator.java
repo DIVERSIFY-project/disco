@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.cloudml;
+package eu.diversify.disco.cloudml.transformations;
 
 import java.util.List;
 import java.util.Map;

@@ -21,7 +21,7 @@
 package eu.diversify.disco.cloudml.indicators.diversity;
 
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
-import eu.diversify.disco.cloudml.transformations.Transformation;
+import eu.diversify.disco.cloudml.transformations.BidirectionalTransformation;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import org.cloudml.core.DeploymentModel;
@@ -35,16 +35,16 @@ import org.cloudml.core.DeploymentModel;
 public class DiversityCalculator extends DeploymentIndicator {
 
     private final DiversityMetric metric;
-    private final Transformation transformation;
+    private final BidirectionalTransformation transformation;
     
     public DiversityCalculator(DiversityMetric metric) {
         this.metric = metric;
-        this.transformation = new Transformation();
+        this.transformation = new BidirectionalTransformation();
     }
 
     @Override
     protected double doEvaluation(DeploymentModel deployment) {
-        Population population = transformation.forward(deployment);
+        Population population = transformation.toPopulation(deployment);
         return metric.applyTo(population); 
     }
     

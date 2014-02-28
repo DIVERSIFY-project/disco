@@ -1,19 +1,4 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+/*
  */
 package eu.diversify.disco.cloudml.transformations;
 
@@ -24,7 +9,6 @@ import static com.google.common.collect.Collections2.transform;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import static java.util.Collections.shuffle;
@@ -44,72 +28,23 @@ import org.cloudml.core.ServerPort;
 import org.cloudml.core.ServerPortInstance;
 
 /**
- * Convert back and forth between CloudML models and Population models.
- * 
+ * Update a cloud model so as it reflect a given population
+ *
  * @author Hui Song
  * @author Franck Chauvel
- * 
+ *
  * @since 0.1
  */
-public class Transformation {
+public class ToCloudML {
 
-    Random random = new Random();
+    private final Random random;
 
- 
-    public Population forward(DeploymentModel model) {
-        abortIfInvalid(model);
-        Population population = new PopulationBuilder().make();
-        convertNodeTypes(model, population);
-        convertArtefactTypes(model, population);
-        convertNodeInstances(model, population);
-        convertArtefactInstances(model, population);
-        return population;
-    }
-    
-    
-    private void abortIfInvalid(DeploymentModel model) {
-        if (model == null) {
-            throw new IllegalArgumentException("Cannot convert null!");
-        }
+    public ToCloudML() {
+        this.random = new Random();
     }
 
-    private void abortIfInvalid(Node nodeType) {
-        if (nodeType == null) {
-            String message = String.format("Illformed CloudML model: null node type!");
-            throw new IllegalArgumentException(message);
-        }
-        if (nodeType.getName().equals("")) {
-            String message = String.format("Illformed CloudML model: node type has an empty name ''");
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private void abortIfInvalid(Artefact artefactType) {
-        if (artefactType == null) {
-            throw new IllegalArgumentException("Illformed CloudML model: null artefact type!");
-        }
-        if (artefactType.getName().equals("")) {
-            String message = String.format("Illformed CloudML model: artefact type has an empty name ''");
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private void abortIfInvalid(ArtefactInstance artefact) {
-        if (artefact.getType() == null) {
-            String message = String.format("Illformed CloudML model: the artefact '%s' has no type!", artefact.getName());
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private void abortIfInvalid(NodeInstance node) {
-        if (node.getType() == null) {
-            String message = String.format("Illformed CloudML model: the node '%s' has no type!", node.getName());
-            throw new IllegalArgumentException(message);
-        }
-    }
-    
-    public void backward(DeploymentModel deployment, Population toBe) {
-                for (final String specieName : toBe.getSpeciesNames()) {
+    public DeploymentModel applyTo(DeploymentModel deployment, Population toBe) {
+        for (final String specieName : toBe.getSpeciesNames()) {
             if (deployment.getNodeTypes().containsKey(specieName)) {
                 Collection<NodeInstance> existings = filter(deployment.getNodeInstances(), new Predicate<NodeInstance>() {
                     public boolean apply(NodeInstance t) {
@@ -160,15 +95,16 @@ public class Transformation {
             fixAllDestination(deployment);
 
         }
+        return deployment;
     }
 
-    public NodeInstance provision(Node type, String name) {
+    NodeInstance provision(Node type, String name) {
         NodeInstance ni = type.instanciates(name);
 
         return ni;
     }
 
-    public ArtefactInstance provision(Artefact type, String name) {
+    ArtefactInstance provision(Artefact type, String name) {
         ArtefactInstance ai = type.instanciates(name);
         for (ServerPort sp : type.getProvided()) {
             ai.getProvided().add(new ServerPortInstance(sp.getName(), sp, ai));
@@ -181,7 +117,7 @@ public class Transformation {
         return ai;
     }
 
-    public void fixAllDestination(DeploymentModel dm) {
+    void fixAllDestination(DeploymentModel dm) {
         Multimap<ArtefactInstance, ArtefactInstance> connected = HashMultimap.create();
         for (BindingInstance bi : dm.getBindingInstances()) {
             if (bi.getType().getClient().getIsRemote() && bi.getType().getServer().getIsRemote()) {
@@ -219,7 +155,7 @@ public class Transformation {
         }
     }
 
-    public Collection<Binding> fixBinding(DeploymentModel dm, ArtefactInstance ai) {
+    Collection<Binding> fixBinding(DeploymentModel dm, ArtefactInstance ai) {
 
         List<Binding> lacks = new ArrayList<Binding>();
 
@@ -277,7 +213,7 @@ public class Transformation {
         return lacks;
     }
 
-    public <T extends NamedElement> String uniqueId(List<T> pool, String prefix) {
+    <T extends NamedElement> String uniqueId(List<T> pool, String prefix) {
         Collection<String> names = transform(pool, new Function<T, String>() {
             public String apply(T f) {
                 return f.getName();
@@ -290,32 +226,5 @@ public class Transformation {
         }
         return name;
     }
-
-    private void convertNodeTypes(DeploymentModel model, Population population) {
-        for (Node nodeType : model.getNodeTypes().values()) {
-            abortIfInvalid(nodeType);
-            population.addSpecie(nodeType.getName());
-        }
-    }
-
-    private void convertArtefactTypes(DeploymentModel model, Population population) {
-        for (Artefact artefactType : model.getArtefactTypes().values()) {
-            abortIfInvalid(artefactType);
-            population.addSpecie(artefactType.getName());
-        }
-    }
-
-    private void convertNodeInstances(DeploymentModel model, Population population) {
-        for (NodeInstance node : model.getNodeInstances()) {
-            abortIfInvalid(node);
-            population.shiftNumberOfIndividualsIn(node.getType().getName(), +1);
-        }
-    }
-
-    private void convertArtefactInstances(DeploymentModel model, Population population) {
-        for (ArtefactInstance artefact : model.getArtefactInstances()) {
-            abortIfInvalid(artefact);
-            population.shiftNumberOfIndividualsIn(artefact.getType().getName(), +1);
-        }
-    }
+    
 }

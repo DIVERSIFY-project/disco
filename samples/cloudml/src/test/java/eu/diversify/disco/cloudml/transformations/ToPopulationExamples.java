@@ -1,12 +1,18 @@
-package eu.diversify.disco.cloudml;
+package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.cloudml.codecs.JsonCodec;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
+import org.cloudml.core.Property;
 
 /**
  * Hold the examples of invocation for the forward transformation
@@ -14,47 +20,48 @@ import org.cloudml.core.NodeInstance;
  * @author Franck Chauvel
  * @since 0.1
  */
-public enum ForwardExample {
+public enum ToPopulationExamples {
 
-    // TODO: test many artefact types and many instances, and their instances
     EMPTY_MODEL(
-        "Empty DeploymentModel model",
-        createEmptyDeploymentModel(),
-        createEmptyPopulation()),
+    "Empty DeploymentModel model",
+    createEmptyDeploymentModel(),
+    createEmptyPopulation()),
     ONE_VM_TYPE_BUT_NO_INSTANCE(
-        "1 VM type but no instance",
-        cloudMlWithOneVmTypeButNoInstance(),
-        populationWithOneVmTypeButNoInstance()),
+    "1 VM type but no instance",
+    cloudMlWithOneVmTypeButNoInstance(),
+    populationWithOneVmTypeButNoInstance()),
     ONE_VM_TYPE_AND_ITS_INSTANCE(
-        "1 VM type and 1 instance",
-        cloudmlWithOneVmTypeAndItsInstance(),
-        populationWithOneVmTypeAndItsInstance()),
+    "1 VM type and 1 instance",
+    cloudmlWithOneVmTypeAndItsInstance(),
+    populationWithOneVmTypeAndItsInstance()),
     MANY_VM_TYPES_BUT_NO_INSTANCE(
-        "Many VM types but no instance",
-        cloudmlManyVmTypesButNoInstance(),
-        populationManyVmTypesButNoInstance()),
+    "Many VM types but no instance",
+    cloudmlManyVmTypesButNoInstance(),
+    populationManyVmTypesButNoInstance()),
     MANY_VM_TYPES_WITH_TWO_INSTANCES(
-        "Many VM types with 2 instances",
-        cloudmlWithManyVmTypesWithTwoInstances(),
-        populationWithManyVmTypesAndTwoInstances()),
+    "Many VM types with 2 instances",
+    cloudmlWithManyVmTypesWithTwoInstances(),
+    populationWithManyVmTypesAndTwoInstances()),
     ONE_ARTEFACT_TYPE_BUT_NO_INSTANCE(
-        "1 artefact type, but no instance (and no VM type)",
-        cloudmlWithOneArtefactTypeButNoInstance(),
-        populationWithOneArtefactTypeButNoInstance()),
+    "1 artefact type, but no instance (and no VM type)",
+    cloudmlWithOneArtefactTypeButNoInstance(),
+    populationWithOneArtefactTypeButNoInstance()),
     ONE_VM_TYPE_ONE_ARTEFACT_TYPE_BUT_NO_INSTANCE(
-        "1 VM type, 1 artefact type, no instance",
-        cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
-        populationWithOneVmTypeOneArtefactTypeAndNoInstance()),
+    "1 VM type, 1 artefact type, no instance",
+    cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
+    populationWithOneVmTypeOneArtefactTypeAndNoInstance()),
     ONE_VM_TYPE_ONE_ARTEFACT_TYPE_AND_THEIR_TWO_INSTANCES(
-        "1 VM type, 1 artefact type and their two instances",
-        cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
-        populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances()),
+    "1 VM type, 1 artefact type and their two instances",
+    cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
+    populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances()),
     TWO_VM_TYPES_TWO_ARTEFACT_TYPES_AND_THE_FOUR_RELATED_INSTANCES(
-        "2 VM types, 2 artefact types and the four related instances",
-        cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances(),
-        populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances())
-    ;
-    
+    "2 VM types, 2 artefact types and the four related instances",
+    cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances(),
+    populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances()),
+    SENSAPP(
+    "SensApp",
+    cloudmlWithSensApp(),
+    populationWithSensApp());
     /*
      *
      */
@@ -62,7 +69,7 @@ public enum ForwardExample {
     private final DeploymentModel input;
     private final Population expectedOutput;
 
-    private ForwardExample(String name, DeploymentModel input, Population expectedOutput) {
+    private ToPopulationExamples(String name, DeploymentModel input, Population expectedOutput) {
         this.name = name;
         this.input = input;
         this.expectedOutput = expectedOutput;
@@ -212,6 +219,34 @@ public enum ForwardExample {
                 .make();
     }
 
+    private static DeploymentModel cloudmlWithSensApp() {
+        JsonCodec jsonCodec = new JsonCodec();
+        DeploymentModel root = null;
+        try {
+            root = (DeploymentModel) jsonCodec.load(new FileInputStream("../src/main/resources/sensappAdmin.json"));
+            for (NodeInstance ni : root.getNodeInstances()) {
+                ni.getProperties().add(new Property("state", "onn"));
+            }
+            for (ArtefactInstance ai : root.getArtefactInstances()) {
+                ai.getProperties().add(new Property("state", "onn"));
+            }
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ForwardTransformTest.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+        return root;
+    }
+    
+    
+    private static Population populationWithSensApp() {
+        // cloudmlsensappgui: 1, cloudmlsensapp: 1, SensAppGUIWar: 1, MongoDB: 1, jettyWarContainer: 2, SensAppWar: 1 
+        return new PopulationBuilder()
+                .withSpeciesNamed("cloudmlsensappgui", "cloudmlsensapp", "SensAppGUIWar", "MongoDB", "jettyWarContainer", "SensAppWar")
+                .withDistribution(1, 1, 1, 1, 2, 1)
+                .make();
+    }
+
     /*
      * Helper functions to manipulate DeploymentModel models
      */
@@ -230,7 +265,6 @@ public enum ForwardExample {
         }
         return type;
     }
-
 
     private static Node addNewVmType(DeploymentModel model) {
         final int vmCount = model.getNodeTypes().size();
@@ -267,7 +301,6 @@ public enum ForwardExample {
     private static void deploy(DeploymentModel model, NodeInstance host, ArtefactInstance app) {
         app.setDestination(host);
     }
-    
     // Constant values
     public static final String VM_NAME_PREFIX = "node type #";
     public static final String ARTEFACT_NAME_PREFIX = "artefact type #";
