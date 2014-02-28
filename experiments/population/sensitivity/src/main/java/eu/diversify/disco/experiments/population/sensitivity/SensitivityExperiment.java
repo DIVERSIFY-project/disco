@@ -37,6 +37,9 @@ import java.util.List;
  * distribution of individuals, to a increasing number of specie, and to an
  * increasing number of individuals.
  *
+ * FIXME: Should be broken down into three subclasses, each handling a specific 
+ * sensitivity experiment. Seems to challenges the commons of experiments.
+ * 
  * @author Franck Chauvel
  * @since 0.1
  */
@@ -158,6 +161,7 @@ public class SensitivityExperiment implements Experiment {
 
         return dataset;
     }
+    
 
     /**
      * Sensitivity to an increase of the number of individuals
