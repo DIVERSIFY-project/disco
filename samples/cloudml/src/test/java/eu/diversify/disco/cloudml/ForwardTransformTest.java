@@ -123,7 +123,7 @@ public class ForwardTransformTest extends TestCase {
 
     }
 
-    @Test
+    
     public void initWithSenseApp(CloudML model) {
 
         JsonCodec jsonCodec = new JsonCodec();
