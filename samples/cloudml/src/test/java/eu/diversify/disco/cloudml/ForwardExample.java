@@ -7,7 +7,7 @@ import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
 
 /**
- * Hold one single example of invocation of the forward transformation
+ * Hold the examples of invocation for the forward transformation
  *
  * @author Franck Chauvel
  * @since 0.1
@@ -18,21 +18,23 @@ public enum ForwardExample {
     // TODO: test many vm types and and many instances
     // TODO: test one artefact type and no instance
     // TODO: test many artefact types and many instances
-    
+    // TODO: test
     EMPTY_MODEL(
-        "Empty CloudML model",
-        createEmptyCloudML(),
-        createEmptyPopulation()),
+    "Empty CloudML model",
+    createEmptyCloudML(),
+    createEmptyPopulation()),
     ONE_VM_TYPE_BUT_NO_INSTANCE(
-        "1 VM type but no instance",
-        cloudMlWithOneVmTypeButNoInstance(),
-        populationWithOneVmTypeButNoInstance()),
+    "1 VM type but no instance",
+    cloudMlWithOneVmTypeButNoInstance(),
+    populationWithOneVmTypeButNoInstance()),
     ONE_VM_TYPE_AND_ITS_INSTANCE(
-        "1 VM type and one instance",
-        cloudmlWithOneVmTypeAndItsInstance(),
-        populationWithOneVmTypeAndItsInstance());
-    
-    
+    "1 VM type and one instance",
+    cloudmlWithOneVmTypeAndItsInstance(),
+    populationWithOneVmTypeAndItsInstance()),
+    MANY_VM_TYPES_BUT_NO_INSTANCE(
+    "Many VM types but no instance",
+    cloudmlManyVmTypesButNoInstance(),
+    populationManyVmTypesButNoInstance());
     private final String name;
     private final CloudML input;
     private final Population expectedOutput;
@@ -42,7 +44,7 @@ public enum ForwardExample {
         this.input = input;
         this.expectedOutput = expectedOutput;
     }
-    
+
     public String getName() {
         return this.name;
     }
@@ -60,7 +62,6 @@ public enum ForwardExample {
     }
 
     // helpers that create the various population and cloudMl models;
-    
     private static CloudML createEmptyCloudML() {
         return new CloudML();
     }
@@ -72,38 +73,68 @@ public enum ForwardExample {
     private static CloudML cloudMlWithOneVmTypeButNoInstance() {
         DeploymentModel model = new DeploymentModel();
 
-        Node vm = new Node(SINGLE_VM_NAME);
-        model.getNodeTypes().put(SINGLE_VM_NAME, vm);
-
         CloudML cloudml = new CloudML();
         cloudml.setRoot(model);
+
+        addNewVmType(cloudml);
 
         return cloudml;
     }
 
     private static Population populationWithOneVmTypeButNoInstance() {
         return new PopulationBuilder()
-                .withSpeciesNamed(SINGLE_VM_NAME)
+                .withSpeciesNamed(VM_NAME_PREFIX + 1)
                 .make();
     }
 
     private static CloudML cloudmlWithOneVmTypeAndItsInstance() {
         CloudML model = cloudMlWithOneVmTypeButNoInstance();
-
-        Node type = model.getRoot().getNodeTypes().get(SINGLE_VM_NAME);
-        NodeInstance instance = new NodeInstance(SINGLE_VM_INSTANCE_NAME, type);
-        model.getRoot().getNodeInstances().add(instance);
-
+        
+        final Node vmType = model.getRoot().getNodeTypes().get(VM_NAME_PREFIX + 1);
+        addNewInstanceForVmType(model, vmType);
+        
         return model;
     }
 
     private static Population populationWithOneVmTypeAndItsInstance() {
         return new PopulationBuilder()
-                .withSpeciesNamed(SINGLE_VM_NAME)
+                .withSpeciesNamed(VM_NAME_PREFIX + 1)
                 .withDistribution(1)
                 .make();
     }
+
+    private static CloudML cloudmlManyVmTypesButNoInstance() {
+        CloudML model = cloudMlWithOneVmTypeButNoInstance();
+        addNewVmType(model);
+        addNewVmType(model);
+        return model;
+    }
     
-    public static final String SINGLE_VM_NAME = "VM";
-    public static final String SINGLE_VM_INSTANCE_NAME = "instance#1";
+     private static Population populationManyVmTypesButNoInstance() {
+        return new PopulationBuilder()
+                .withSpeciesNamed(VM_NAME_PREFIX + 1, VM_NAME_PREFIX + 2, VM_NAME_PREFIX + 3)
+                .withDistribution(0, 0, 0)
+                .make();
+    }
+    
+    // Helper functions to manipulate CloudML models
+
+    private static void addNewVmType(CloudML model) {
+        final int vmCount = model.getRoot().getNodeTypes().size();
+        final String vmName = VM_NAME_PREFIX + (vmCount + 1);
+        Node vm = new Node(vmName);
+        model.getRoot().getNodeTypes().put(vmName, vm);
+    }
+    
+    private static void addNewInstanceForVmType(CloudML model, Node vmType) {
+        final int count = model.getRoot().getNodeInstances().size();
+        Node type = model.getRoot().getNodeTypes().get(vmType.getName());
+        NodeInstance instance = new NodeInstance(VM_INSTANCE_NAME_PREFIX + (count + 1), type);
+        model.getRoot().getNodeInstances().add(instance);
+    }
+    
+    // Constant values
+    
+    public static final String VM_NAME_PREFIX = "VM #";
+    public static final String VM_INSTANCE_NAME_PREFIX = "vm instance #1";
 }
