@@ -1,20 +1,3 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.cloudml.util.actions;
 
 import java.util.ArrayList;
@@ -26,13 +9,12 @@ import org.cloudml.core.Binding;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.ServerPortInstance;
 
-public class FindServerPortInstance implements Action<ServerPortInstance> {
+public class FindServerPortInstance extends AbstractAction<ServerPortInstance> {
 
-    private final DeploymentEngineer deployer;
     private final Binding bindingType;
 
-    public FindServerPortInstance(DeploymentEngineer deployer, Binding bindingType) {
-        this.deployer = deployer;
+    public FindServerPortInstance(StandardLibrary library, Binding bindingType) {
+        super(library);
         this.bindingType = bindingType;
     }
 
@@ -40,8 +22,8 @@ public class FindServerPortInstance implements Action<ServerPortInstance> {
     public final ServerPortInstance applyTo(DeploymentModel deployment) {
         final List<ServerPortInstance> candidates = collectCandidates(deployment);
         if (candidates.isEmpty()) {
-            final Artefact artefact = deployer.findArtefactTypeProviding(deployment, bindingType);
-            final ArtefactInstance instance = deployer.install(deployment, artefact);
+            final Artefact artefact = getLibrary().findArtefactTypeProviding(deployment, bindingType);
+            final ArtefactInstance instance = getLibrary().install(deployment, artefact);
             final ServerPortInstance serverPort = instance.findProvidedPortByName(bindingType.getServer().getName());
             candidates.add(serverPort);
         }

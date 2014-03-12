@@ -2,23 +2,6 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -34,7 +17,7 @@
  */
 package eu.diversify.disco.cloudml.transformations;
 
-import eu.diversify.disco.cloudml.util.actions.DeploymentEngineer;
+import eu.diversify.disco.cloudml.util.actions.StandardLibrary;
 import eu.diversify.disco.population.Population;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,12 +40,12 @@ import org.cloudml.core.NodeInstance;
  */
 public class ToCloudML {
 
-    private final DeploymentEngineer deployer;
+    private final StandardLibrary deployer;
     private final Random random;
 
     public ToCloudML() {
         this.random = new Random();
-        deployer = new DeploymentEngineer();
+        deployer = new StandardLibrary();
     }
 
     public DeploymentModel applyTo(DeploymentModel deployment, Population toBe) {

@@ -30,23 +30,21 @@ import org.cloudml.core.ServerPortInstance;
 import static org.cloudml.core.builders.Commons.*;
 
 
-public class Bind implements Action<Void> { 
+public class Bind extends AbstractAction<Void> { 
 
-
-    private final DeploymentEngineer deployer;
     private final ClientPortInstance clientPort;
     
-    public Bind(DeploymentEngineer deployer, ClientPortInstance clientPort) {
-      this.deployer = deployer;
+    public Bind(StandardLibrary library, ClientPortInstance clientPort) {
+      super(library);
       this.clientPort = clientPort;
     }
 
     @Override
     public Void applyTo(DeploymentModel deployment) {
-        String name = deployer.createUniqueBindingInstanceName(deployment);
+        String name = getLibrary().createUniqueBindingInstanceName(deployment);
         if (!isAlreadyBound(deployment, clientPort)) {
-            Binding bindingType = deployer.findBindingFor(deployment, clientPort);
-            ServerPortInstance serverPort = deployer.findServerPortFor(deployment, bindingType); 
+            Binding bindingType = getLibrary().findBindingFor(deployment, clientPort);
+            ServerPortInstance serverPort = getLibrary().findServerPortFor(deployment, bindingType); 
             aBindingInstance()
                     .named(name)
                     .from(clientPort.getOwner().getName(), clientPort.getName())

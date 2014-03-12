@@ -1,20 +1,3 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 package eu.diversify.disco.cloudml.util.actions;
 
@@ -28,13 +11,12 @@ import org.cloudml.core.ClientPortInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.ServerPortInstance;
 
-public class Uninstall implements Action<Void> {
+public class Uninstall extends AbstractAction<Void> {
 
-    private final DeploymentEngineer deployer;
     private final ArtefactInstance artefactInstance;
 
-    public Uninstall(DeploymentEngineer deployer, ArtefactInstance artefactInstance) {
-        this.deployer = deployer;
+    public Uninstall(StandardLibrary library, ArtefactInstance artefactInstance) {
+        super(library);
         this.artefactInstance = artefactInstance;
     }
 
@@ -51,9 +33,9 @@ public class Uninstall implements Action<Void> {
         for (ClientPortInstance clientPort : artefactInstance.getRequired()) {
             if (isBound(target, clientPort)) {
                 final ArtefactInstance server = findServerPort(target, clientPort).getOwner();
-                deployer.unbind(target, clientPort);
+                getLibrary().unbind(target, clientPort);
                 if (!isUsed(target, server)) {
-                    deployer.uninstall(target, server);
+                    getLibrary().uninstall(target, server);
                 }
             }
         }
@@ -117,19 +99,19 @@ public class Uninstall implements Action<Void> {
         ArrayList<ClientPortInstance> customerToBeRebound = new ArrayList<ClientPortInstance>();
         for (ServerPortInstance serverPort : artefactInstance.getProvided()) {
             customerToBeRebound.add(findClientPort(target, serverPort));
-            deployer.unbind(target, serverPort);
+            getLibrary().unbind(target, serverPort);
         }
         return customerToBeRebound;
     }
 
     private void reconnectClientsWithAlternativeServer(ArrayList<ClientPortInstance> customerToBeRebound, DeploymentModel target) {
         for (ClientPortInstance clientPort : customerToBeRebound) {
-            deployer.bind(target, clientPort);
+            getLibrary().bind(target, clientPort);
         }
     }
 
     private void shutdownArtefactInstance(DeploymentModel target) {
-        deployer.stop(target, artefactInstance);
+        getLibrary().stop(target, artefactInstance);
         target.getArtefactInstances().remove(artefactInstance);
     }
 

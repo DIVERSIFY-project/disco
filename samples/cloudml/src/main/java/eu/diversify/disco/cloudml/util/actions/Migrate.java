@@ -23,19 +23,18 @@ import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.NodeInstance;
 
-public class Migrate implements Action<NodeInstance> {
+public class Migrate extends AbstractAction<NodeInstance> {
         
     private final ArtefactInstance instance;
-    private final DeploymentEngineer deployer;
     
-    public Migrate(DeploymentEngineer deployer, ArtefactInstance instance) {
+    public Migrate(StandardLibrary library, ArtefactInstance instance) {
+        super(library);
         this.instance = instance;
-        this.deployer = deployer;
     }
 
     @Override
     public NodeInstance applyTo(DeploymentModel target) {
-        NodeInstance newDestination = deployer.findAlternativeDestinationFor(target, instance);
+        NodeInstance newDestination = getLibrary().findAlternativeDestinationFor(target, instance);
         instance.setDestination(newDestination);
         return newDestination;
     }  

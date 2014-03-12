@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 
 package eu.diversify.disco.cloudml.util.actions;
 
@@ -24,13 +23,12 @@ import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 
 
-public class StopArtefactInstance implements Action<Void> {
+public class StopArtefactInstance extends AbstractAction<Void> {
 
-    private DeploymentEngineer deployer; 
     private ArtefactInstance instance;
 
-    public StopArtefactInstance(DeploymentEngineer deployer, ArtefactInstance instance) {
-        this.deployer = deployer;
+    public StopArtefactInstance(StandardLibrary library, ArtefactInstance instance) {
+        super(library);
         this.instance = instance;
     }
       

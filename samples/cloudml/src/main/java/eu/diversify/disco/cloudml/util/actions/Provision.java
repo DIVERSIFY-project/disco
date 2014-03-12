@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 
 package eu.diversify.disco.cloudml.util.actions;
 
@@ -27,20 +26,19 @@ import org.cloudml.core.NodeInstance;
 import static org.cloudml.core.builders.Commons.*;
 import org.cloudml.core.builders.NodeInstanceBuilder;
 
-public class Provision implements Action<NodeInstance> {
+public class Provision extends AbstractAction<NodeInstance> {
  
     private final Node nodeType;
-    private final DeploymentEngineer deployer;
     
        
-    public Provision(Node nodeType, DeploymentEngineer deployer) {
+    public Provision(StandardLibrary library, Node nodeType) {
+        super(library);
         this.nodeType = nodeType;
-        this.deployer = deployer;
     }
     
     @Override
     public NodeInstance applyTo(DeploymentModel target) {
-        String instanceName = deployer.createUniqueNodeInstanceName(target);
+        String instanceName = getLibrary().createUniqueNodeInstanceName(target);
         NodeInstanceBuilder builder = aNodeInstance()
                 .named(instanceName)
                 .ofType(nodeType.getName());

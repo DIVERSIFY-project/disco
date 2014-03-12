@@ -26,13 +26,12 @@ import org.cloudml.core.Binding;
 import org.cloudml.core.ClientPortInstance;
 import org.cloudml.core.DeploymentModel;
 
-public class FindBinding implements Action<Binding> {
+public class FindBinding extends AbstractAction<Binding> {
 
-    private final DeploymentEngineer deployer;
     private final ClientPortInstance clientPort;
 
-    public FindBinding(DeploymentEngineer deployer, ClientPortInstance clientPort) {
-        this.deployer = deployer;
+    public FindBinding(StandardLibrary library, ClientPortInstance clientPort) {
+        super(library);
         this.clientPort = clientPort;
     }
 

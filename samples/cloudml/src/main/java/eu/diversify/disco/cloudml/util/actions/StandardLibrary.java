@@ -30,24 +30,24 @@ import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
 import org.cloudml.core.ServerPortInstance;
 
-public class DeploymentEngineer {
+public class StandardLibrary {
 
-    private final NamingStrategy naming;
+    private final NamingStrategy naming; 
 
-    public DeploymentEngineer() {
+    public StandardLibrary() {
         this.naming = new NamingStrategy();
     }
     
-    public DeploymentEngineer(NamingStrategy naming) {
+    public StandardLibrary(NamingStrategy naming) {
         this.naming = naming;
     }   
     
     public NodeInstance provision(DeploymentModel deployment, Node nodeType) {
-        return new Provision(nodeType, this).applyTo(deployment);
+        return new Provision(this, nodeType).applyTo(deployment);
     }
 
     public void shutdown(DeploymentModel deployment, NodeInstance nodeInstance) {
-        new Terminate(this, nodeInstance).applyTo(deployment);
+        new Terminate(this, nodeInstance).applyTo(deployment);  
     }
 
     public ArtefactInstance install(DeploymentModel deployment, Artefact artefactType) {

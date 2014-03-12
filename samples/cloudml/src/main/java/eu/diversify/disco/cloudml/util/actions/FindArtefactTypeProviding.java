@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 
 package eu.diversify.disco.cloudml.util.actions;
 
@@ -32,13 +30,12 @@ import org.cloudml.core.DeploymentModel;
  * @author Franck Chauvel
  * @since 0.1
  */
-class FindArtefactTypeProviding implements Action<Artefact> {
+class FindArtefactTypeProviding extends AbstractAction<Artefact> {
 
-    private final DeploymentEngineer deployer;
     private final Binding bindingType;
 
-    public FindArtefactTypeProviding(DeploymentEngineer deployer, Binding bindingType) {
-        this.deployer = deployer;
+    public FindArtefactTypeProviding(StandardLibrary library, Binding bindingType) {
+        super(library);
         this.bindingType = bindingType;
     }
 

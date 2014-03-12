@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.util.actions;
 
 import java.util.ArrayList;
@@ -28,14 +27,13 @@ import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
 
-public class FindDestination implements Action<NodeInstance> {
+public class FindDestination extends AbstractAction<NodeInstance> {
 
-    private final DeploymentEngineer library;
     private final Artefact artefact;
     private final ArrayList<NodeInstance> excluded;
 
-    public FindDestination(DeploymentEngineer deployer, Artefact artefact, NodeInstance... toExclude) {
-        this.library = deployer;
+    public FindDestination(StandardLibrary library, Artefact artefact, NodeInstance... toExclude) {
+        super(library);
         this.artefact = artefact;
         this.excluded = new ArrayList<NodeInstance>(Arrays.asList(toExclude));
     }
@@ -44,8 +42,8 @@ public class FindDestination implements Action<NodeInstance> {
     public final NodeInstance applyTo(DeploymentModel deployment) {
         final List<NodeInstance> candidates = collectCandidates(deployment);
         if (candidates.isEmpty()) {
-            Node nodeType = library.findNodeType(deployment, artefact);
-            candidates.add(library.provision(deployment, nodeType));
+            Node nodeType = getLibrary().findNodeType(deployment, artefact);
+            candidates.add(getLibrary().provision(deployment, nodeType));
         }
         return chooseOne(candidates);
     }

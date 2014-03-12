@@ -27,13 +27,12 @@ import org.cloudml.core.BindingInstance;
 import org.cloudml.core.DeploymentModel;
 
 
-public class Unbind implements Action<Void> {
+public class Unbind extends AbstractAction<Void> {
 
-    private final DeploymentEngineer deployer;
     private final ArtefactPortInstance<? extends ArtefactPort> port;
 
-    public Unbind(DeploymentEngineer deployer, ArtefactPortInstance<? extends ArtefactPort> port) {
-        this.deployer = deployer;
+    public Unbind(StandardLibrary library, ArtefactPortInstance<? extends ArtefactPort> port) {
+        super(library);
         this.port = port;
     }
 

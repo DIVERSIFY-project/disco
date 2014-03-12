@@ -23,13 +23,12 @@ import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.NodeInstance;
 
 
-public class StopNodeInstance implements Action<Void> {
+public class StopNodeInstance extends AbstractAction<Void> {
 
-    private final DeploymentEngineer deployer;
     private final NodeInstance instance;
 
-    public StopNodeInstance(DeploymentEngineer deployer, NodeInstance instance) {
-        this.deployer = deployer;
+    public StopNodeInstance(StandardLibrary library, NodeInstance instance) {
+        super(library);
         this.instance = instance;
     }
 
