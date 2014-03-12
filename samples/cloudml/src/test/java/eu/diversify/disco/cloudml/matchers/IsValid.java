@@ -15,26 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
 
-
-
-package eu.diversify.disco.cloudml.util;
+package eu.diversify.disco.cloudml.matchers;
 
 import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.validation.DeploymentValidator;
+import org.cloudml.core.validation.Report;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
- */
-public class DeploymentMatcher {
 
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
+public class IsValid extends TypeSafeMatcher<DeploymentModel> {
+
+    @Override 
+    public boolean matchesSafely(DeploymentModel t) {
+        DeploymentValidator validator = new DeploymentValidator();
+        return validator.validate(t).pass(Report.WITHOUT_WARNING);
     }
-    
+
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("Valid deployment model");
+    }
+
+
 }

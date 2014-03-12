@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test the toPopulation transformation on various examples
@@ -57,7 +58,7 @@ public class ToPopulationTest extends TestCase {
     }
 
     
-    @Parameterized.Parameters(name="{0}")
+    @Parameters(name="{0}")
     public static Collection<Object[]> getExamples() {
         final ArrayList<Object[]> examples = new ArrayList<Object[]>();
         

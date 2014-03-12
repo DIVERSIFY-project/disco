@@ -15,26 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
 
+package eu.diversify.disco.cloudml.util.actions;
 
-
-package eu.diversify.disco.cloudml.util;
-
+import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
- */
-public class DeploymentMatcher {
 
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
+public class StopArtefactInstance implements Action<Void> {
+
+    private DeploymentEngineer deployer; 
+    private ArtefactInstance instance;
+
+    public StopArtefactInstance(DeploymentEngineer deployer, ArtefactInstance instance) {
+        this.deployer = deployer;
+        this.instance = instance;
     }
-    
+      
+    @Override
+    public Void applyTo(DeploymentModel target) {
+        this.instance.setStatus(ArtefactInstance.State.configured);
+        return NOTHING;
+    }      
+
 }

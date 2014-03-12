@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.util;
@@ -22,11 +39,13 @@ package eu.diversify.disco.cloudml.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
+import org.cloudml.core.Provider;
 
 /**
  * Help to build deployment models
@@ -35,26 +54,26 @@ import org.cloudml.core.NodeInstance;
  * @since 0.1
  */
 public class DeploymentModelBuilder {
-    
+
     private final DeploymentModel result;
     private final NamingPolicy naming;
-    
+
     public DeploymentModelBuilder() {
         this.result = new DeploymentModel();
         this.naming = new NamingPolicy();
-                
+
     }
-    
+
     public DeploymentModelBuilder(NamingPolicy naming) {
         this.result = new DeploymentModel();
         this.naming = naming;
     }
-    
+
     public DeploymentModelBuilder(DeploymentModel toExtend) {
         this.result = toExtend;
         this.naming = new NamingPolicy();
     }
-    
+
     public DeploymentModelBuilder(DeploymentModel toExtend, NamingPolicy naming) {
         this.result = toExtend;
         this.naming = naming;
@@ -64,14 +83,28 @@ public class DeploymentModelBuilder {
         return result;
     }
 
-    public Node addNodeType(String name) {
-        Node nodeType = new Node(name);
+    public Node addNodeType(String name, Provider provider) {
+        abortIfInvalid(provider);
+        Node nodeType = new Node(name, provider);
         result.getNodeTypes().put(name, nodeType);
         return nodeType;
     }
+    
+    private void abortIfInvalid(Provider provider) {
+        if (this.result.getProviders().contains(provider)) {
+            String message = String.format("The given provided '%s' is not part of the model under construction", provider.getName());
+            throw new IllegalArgumentException(message);
+        }
+    }
 
     public Node addNodeTypeWithDefaultName() {
-        return addNodeType(naming.defaultNodeTypeName(result.getNodeTypes().keySet()));
+        Provider provider = null;
+        if (this.result.getProviders().isEmpty()) {
+            provider = addNewProviderWithDefaultSettings();
+        } else {
+            provider = this.result.getProviders().get(0);
+        }
+        return addNodeType(naming.defaultNodeTypeName(result.getNodeTypes().keySet()), provider);
     }
 
     public Artefact addArtefactType(String artefactTypeName) {
@@ -132,7 +165,7 @@ public class DeploymentModelBuilder {
         abortIfInvalidArtefactInstance(application);
         application.setDestination(host);
     }
-    
+
     private void abortIfInvalidNodeInstance(NodeInstance host) {
         if (host == null) {
             throw new IllegalArgumentException("null given as node instance!");
@@ -155,37 +188,37 @@ public class DeploymentModelBuilder {
     }
 
     private boolean isExternal(NodeInstance nodeInstance) {
-        // FIXME: return !result.getNodeInstances().contains(nodeInstance);
-        boolean found = false;
-        Iterator<NodeInstance> iterator = result.getNodeInstances().iterator();
-        while (!found && iterator.hasNext()) {
-            NodeInstance instance = iterator.next();
-            if (instance.getName().equals(nodeInstance.getName())) {
-                found = true;
-            }
-        }
-        return !found;
+        return !result.getNodeInstances().contains(nodeInstance);
+//        boolean found = false;
+//        Iterator<NodeInstance> iterator = result.getNodeInstances().iterator();
+//        while (!found && iterator.hasNext()) {
+//            final NodeInstance instance = iterator.next();
+//            if (instance.getName().equals(nodeInstance.getName())) {
+//                found = true;
+//            }
+//        }
+//        return !found;
     }
 
     private boolean isExternal(ArtefactInstance artefactInstance) {
-        // FIXME: return !result.getArtefactInstances().contains(artefactInstance);
-        boolean found = false;
-        Iterator<ArtefactInstance> iterator = result.getArtefactInstances().iterator();
-        while (!found && iterator.hasNext()) {
-            ArtefactInstance instance = iterator.next();
-            if (instance.getName().equals(artefactInstance.getName())) {
-                found = true;
-            }
-        }
-        return !found;
+        return !result.getArtefactInstances().contains(artefactInstance);
+//        boolean found = false;
+//        Iterator<ArtefactInstance> iterator = result.getArtefactInstances().iterator();
+//        while (!found && iterator.hasNext()) {
+//            final ArtefactInstance instance = iterator.next();
+//            if (instance.getName().equals(artefactInstance.getName())) {
+//                found = true;
+//            }
+//        }
+//        return !found;
     }
 
     private boolean isExternal(Node type) {
-        return !result.getNodeTypes().containsKey(type.getName());
+        return !result.getNodeTypes().values().contains(type);
     }
 
     private boolean isExternal(Artefact type) {
-        return !result.getArtefactTypes().containsKey(type.getName());
+        return !result.getArtefactTypes().values().contains(type);
     }
 
     private Collection<String> artefactInstancesName() {
@@ -217,7 +250,7 @@ public class DeploymentModelBuilder {
     public Node findNodeType(int index) {
         Node found = null;
         Iterator<Node> iterator = result.getNodeTypes().values().iterator();
-        while(iterator.hasNext() && found == null) {
+        while (iterator.hasNext() && found == null) {
             Node node = iterator.next();
             if (node.getName().equals(naming.nameOfNodeType(index))) {
                 found = node;
@@ -236,5 +269,23 @@ public class DeploymentModelBuilder {
             }
         }
         return found;
+    }
+
+    public Provider addNewProviderWithDefaultSettings() {
+        return addNewProvider(naming.defaultProviderName(providersNames()));
+    }
+
+    public Provider addNewProvider(String defaultProviderName) {
+        Provider provider = new Provider(defaultProviderName);
+        this.result.getProviders().add(provider);
+        return provider;
+    }
+
+    private List<String> providersNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        for (Provider provider : this.result.getProviders()) {
+            names.add(provider.getName());
+        }
+        return names;
     }
 }

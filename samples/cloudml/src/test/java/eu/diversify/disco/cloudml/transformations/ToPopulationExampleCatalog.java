@@ -55,41 +55,41 @@ public class ToPopulationExampleCatalog {
     }
 
     private void prepareCatalog() {
-        add("Empty DeploymentModel model",
-            createEmptyDeploymentModel(),
-            createEmptyPopulation());
-
-        add("1 VM type but no instance",
-            cloudMlWithOneVmTypeButNoInstance(),
-            populationWithOneVmTypeButNoInstance());
-
-        add("1 VM type and 1 instance",
-            cloudmlWithOneVmTypeAndItsInstance(),
-            populationWithOneVmTypeAndItsInstance());
-
-        add("Many VM types but no instance",
-            cloudmlManyVmTypesButNoInstance(),
-            populationManyVmTypesButNoInstance());
-
-        add("Many VM types with 2 instances",
-            cloudmlWithManyVmTypesWithTwoInstances(),
-            populationWithManyVmTypesAndTwoInstances());
-
-        add("1 artefact type, but no instance (and no VM type)",
-            cloudmlWithOneArtefactTypeButNoInstance(),
-            populationWithOneArtefactTypeButNoInstance());
-
-        add("1 VM type, 1 artefact type, no instance",
-            cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
-            populationWithOneVmTypeOneArtefactTypeAndNoInstance());
-
-        add("1 VM type, 1 artefact type and their two instances",
-            cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
-            populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances());
-
-        add("2 VM types, 2 artefact types and the four related instances",
-            cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances(),
-            populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances());
+//        add("Empty DeploymentModel model",
+//            createEmptyDeploymentModel(),
+//            createEmptyPopulation());
+//
+//        add("1 VM type but no instance",
+//            cloudMlWithOneVmTypeButNoInstance(),
+//            populationWithOneVmTypeButNoInstance());
+//
+//        add("1 VM type and 1 instance",
+//            cloudmlWithOneVmTypeAndItsInstance(),
+//            populationWithOneVmTypeAndItsInstance());
+//
+//        add("Many VM types but no instance",
+//            cloudmlManyVmTypesButNoInstance(),
+//            populationManyVmTypesButNoInstance());
+//
+//        add("Many VM types with 2 instances",
+//            cloudmlWithManyVmTypesWithTwoInstances(),
+//            populationWithManyVmTypesAndTwoInstances());
+//
+//        add("1 artefact type, but no instance (and no VM type)",
+//            cloudmlWithOneArtefactTypeButNoInstance(),
+//            populationWithOneArtefactTypeButNoInstance());
+//
+//        add("1 VM type, 1 artefact type, no instance",
+//            cloudmlWithOneVmTypeOneArtefactTypeAndNoInstance(),
+//            populationWithOneVmTypeOneArtefactTypeAndNoInstance());
+//
+//        add("1 VM type, 1 artefact type and their two instances",
+//            cloudmlWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances(),
+//            populationWithOneVmTypeOneArtefactTypeAndTheirTwoRelatedInstances());
+//
+//        add("2 VM types, 2 artefact types and the four related instances",
+//            cloudmlWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances(),
+//            populationWithTwoVmTypesTwoArtefactTypesAndTheFourRelatedInstances());
 
         add("SensApp",
             cloudmlWithSensApp(),

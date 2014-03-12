@@ -16,25 +16,15 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-package eu.diversify.disco.cloudml.util;
+package eu.diversify.disco.cloudml.util.actions;
 
 import org.cloudml.core.DeploymentModel;
 
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
- */
-public class DeploymentMatcher {
 
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
-    }
+public interface Action<T> {
+    
+    public static final Void NOTHING = null;
+    
+    public T applyTo(DeploymentModel target);
     
 }

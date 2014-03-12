@@ -17,24 +17,26 @@
  */
 
 
-
-package eu.diversify.disco.cloudml.util;
+package eu.diversify.disco.cloudml.util.actions;
 
 import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.NodeInstance;
 
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
- */
-public class DeploymentMatcher {
 
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
+public class StopNodeInstance implements Action<Void> {
+
+    private final DeploymentEngineer deployer;
+    private final NodeInstance instance;
+
+    public StopNodeInstance(DeploymentEngineer deployer, NodeInstance instance) {
+        this.deployer = deployer;
+        this.instance = instance;
     }
+
+    @Override
+    public Void applyTo(DeploymentModel target) {
+        instance.setStatusAsStopped();
+        return NOTHING;
+    } 
     
 }

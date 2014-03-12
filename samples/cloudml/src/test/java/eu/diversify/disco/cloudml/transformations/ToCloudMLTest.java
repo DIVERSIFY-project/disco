@@ -26,6 +26,7 @@ import org.cloudml.core.DeploymentModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test the behaviour of the conversion from a CloudML model and a population
@@ -74,7 +75,7 @@ public class ToCloudMLTest extends TestCase {
         }
     }
 
-    @Parameterized.Parameters(name = "{0}")
+    @Parameters(name="{0}")
     public static Collection<Object[]> getExamples() {
         final ArrayList<Object[]> examples = new ArrayList<Object[]>();
 

@@ -15,26 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
+package eu.diversify.disco.cloudml.matchers;
 
-
-
-package eu.diversify.disco.cloudml.util;
-
+import eu.diversify.disco.population.Population;
 import org.cloudml.core.DeploymentModel;
 
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
- */
-public class DeploymentMatcher {
+public class IsCloserBuilder {
 
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
+    private Population reference;
+    private Population opponent;
+
+    public IsCloserBuilder to(Population reference) {
+        this.reference = reference;
+        return this;
     }
-    
+
+    public IsCloser than(DeploymentModel opponent) {
+        return new IsCloser(reference, opponent);
+    }
 }

@@ -21,98 +21,67 @@ package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
-import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
-import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
+import org.cloudml.core.validation.DeploymentValidator;
+import org.cloudml.core.validation.Report;
+import org.cloudml.core.visitors.AbstractVisitListener;
+import org.cloudml.core.visitors.ContainmentDispatcher;
+import org.cloudml.core.visitors.Visitor;
 
-/**
- * Convert a CloudML deployment model into a population
- *
- * @author Franck Chauvel
- * @author Hui Song
- *
- * @since 0.1
- */
 public class ToPopulation {
 
-    public Population applyTo(DeploymentModel model) {
-        abortIfInvalid(model);
-        Population population = new PopulationBuilder().make();
-        convertNodeTypes(model, population);
-        convertArtefactTypes(model, population);
-        convertNodeInstances(model, population);
-        convertArtefactInstances(model, population);
-        return population;
+    public Population applyTo(DeploymentModel deployment) {
+        //FIXME: abortIfInvalidModel(deployment);
+        return extract(deployment).getExtractedPopulation();
     }
 
-    private void convertNodeTypes(DeploymentModel model, Population population) {
-        for (Node nodeType : model.getNodeTypes().values()) {
-            abortIfInvalid(nodeType);
-            population.addSpecie(nodeType.getName());
+    private void abortIfInvalidModel(DeploymentModel deployment) {
+        DeploymentValidator validator = new DeploymentValidator();
+        final Report validation = validator.validate(deployment);
+        if (!validation.pass(Report.WITHOUT_WARNING)) {
+            throw new IllegalArgumentException("Invalid model: " + validation.toString());
         }
     }
 
-    private void convertArtefactTypes(DeploymentModel model, Population population) {
-        for (Artefact artefactType : model.getArtefactTypes().values()) {
-            abortIfInvalid(artefactType);
-            population.addSpecie(artefactType.getName());
-        }
+    private PopulationExtractor extract(DeploymentModel deployment) {
+        PopulationExtractor extractor = new PopulationExtractor();
+        Visitor visitor = new Visitor(new ContainmentDispatcher());
+        visitor.addListeners(extractor);
+        deployment.accept(visitor);
+        return extractor;
     }
+    
+    private static class PopulationExtractor extends AbstractVisitListener {
 
-    private void convertNodeInstances(DeploymentModel model, Population population) {
-        for (NodeInstance node : model.getNodeInstances()) {
-            abortIfInvalid(node);
-            population.shiftNumberOfIndividualsIn(node.getType().getName(), +1);
-        }
-    }
+        private final Population population;
 
-    private void convertArtefactInstances(DeploymentModel model, Population population) {
-        for (ArtefactInstance artefact : model.getArtefactInstances()) {
-            abortIfInvalid(artefact);
-            population.shiftNumberOfIndividualsIn(artefact.getType().getName(), +1);
+        public PopulationExtractor() {
+            this.population = new PopulationBuilder().make();
         }
-    }
 
-    private void abortIfInvalid(DeploymentModel model) {
-        if (model == null) {
-            throw new IllegalArgumentException("Cannot convert null!");
+        @Override
+        public void onNodeInstance(NodeInstance subject) {
+            final String specieName = subject.getType().getName();
+            if (!population.hasAnySpecieNamed(specieName)) {
+                population.addSpecie(specieName);
+            }
+            population.shiftNumberOfIndividualsIn(specieName, +1);
         }
-    }
 
-    private void abortIfInvalid(Node nodeType) {
-        if (nodeType == null) {
-            String message = String.format("Illformed CloudML model: null node type!");
-            throw new IllegalArgumentException(message);
+        @Override
+        public void onArtefactInstance(ArtefactInstance subject) {
+            final String specieName = subject.getType().getName();
+            if (!population.hasAnySpecieNamed(specieName)) {
+                population.addSpecie(specieName);
+            }
+            population.shiftNumberOfIndividualsIn(specieName, +1);
         }
-        if (nodeType.getName().equals("")) {
-            String message = String.format("Illformed CloudML model: node type has an empty name ''");
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private void abortIfInvalid(Artefact artefactType) {
-        if (artefactType == null) {
-            throw new IllegalArgumentException("Illformed CloudML model: null artefact type!");
-        }
-        if (artefactType.getName().equals("")) {
-            String message = String.format("Illformed CloudML model: artefact type has an empty name ''");
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private void abortIfInvalid(ArtefactInstance artefact) {
-        if (artefact.getType() == null) {
-            String message = String.format("Illformed CloudML model: the artefact '%s' has no type!", artefact.getName());
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private void abortIfInvalid(NodeInstance node) {
-        if (node.getType() == null) {
-            String message = String.format("Illformed CloudML model: the node '%s' has no type!", node.getName());
-            throw new IllegalArgumentException(message);
+        
+        
+        public Population getExtractedPopulation() {
+            return this.population;
         }
     }
 }

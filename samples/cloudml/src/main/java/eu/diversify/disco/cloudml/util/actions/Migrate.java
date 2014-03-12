@@ -17,24 +17,27 @@
  */
 
 
+package eu.diversify.disco.cloudml.util.actions;
 
-package eu.diversify.disco.cloudml.util;
-
+import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.NodeInstance;
 
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
- */
-public class DeploymentMatcher {
-
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
-    }
+public class Migrate implements Action<NodeInstance> {
+        
+    private final ArtefactInstance instance;
+    private final DeploymentEngineer deployer;
     
+    public Migrate(DeploymentEngineer deployer, ArtefactInstance instance) {
+        this.instance = instance;
+        this.deployer = deployer;
+    }
+
+    @Override
+    public NodeInstance applyTo(DeploymentModel target) {
+        NodeInstance newDestination = deployer.findAlternativeDestinationFor(target, instance);
+        instance.setDestination(newDestination);
+        return newDestination;
+    }  
+
 }

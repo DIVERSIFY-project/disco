@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.util;
@@ -37,11 +54,13 @@ public class NamingPolicy {
     public static final String DEFAULT_NODE_INSTANCE_NAME_PREFIX = "node instance #";
     public static final String DEFAULT_ARTEFACT_TYPE_NAME_PREFIX = "artefact type #";
     public static final String DEFAULT_ARTEFACT_INSTANCE_NAME_PREFIX = "artefact instance #";
+    public static final String DEFAULT_PROVIDER_NAME_PREFIX = "provider #";
     private final int minimumId;
     private final String nodeTypeNamePrefix;
     private final String nodeInstanceNamePrefix;
     private final String artefactTypeNamePrefix;
     private final String artefactInstanceNamePrefix;
+    private final String providerNamePrefix;
 
     public NamingPolicy() {
         this.minimumId = DEFAULT_MINIMUM_ID;
@@ -49,10 +68,12 @@ public class NamingPolicy {
         this.nodeInstanceNamePrefix = DEFAULT_NODE_INSTANCE_NAME_PREFIX;
         this.artefactTypeNamePrefix = DEFAULT_ARTEFACT_TYPE_NAME_PREFIX;
         this.artefactInstanceNamePrefix = DEFAULT_ARTEFACT_INSTANCE_NAME_PREFIX;
+        this.providerNamePrefix = DEFAULT_PROVIDER_NAME_PREFIX;
     }
 
-    public NamingPolicy(int minimumId, String nodeTypNamePrefix, String nodeInstanceNamePrefix, String artefactTypeNamePrefix, String artefactInstanceNamePrefix) {
+    public NamingPolicy(int minimumId, String providerNamePrefix, String nodeTypNamePrefix, String nodeInstanceNamePrefix, String artefactTypeNamePrefix, String artefactInstanceNamePrefix) {
         this.minimumId = minimumId;
+        this.providerNamePrefix = providerNamePrefix;
         this.nodeTypeNamePrefix = nodeTypNamePrefix;
         this.nodeInstanceNamePrefix = nodeInstanceNamePrefix;
         this.artefactTypeNamePrefix = artefactTypeNamePrefix;
@@ -73,6 +94,10 @@ public class NamingPolicy {
 
     public String defaultArtefactInstanceName(Collection<String> existingInstanceNames) {
         return artefactInstanceNamePrefix + minimumUnusedId(existingInstanceNames);
+    }
+
+    public String defaultProviderName(Collection<String> existingProviderNames) {
+      return providerNamePrefix + minimumUnusedId(existingProviderNames);
     }
 
     public int getMinimumId() {

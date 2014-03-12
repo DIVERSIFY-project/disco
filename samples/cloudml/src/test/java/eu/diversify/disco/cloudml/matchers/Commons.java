@@ -15,26 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
-package eu.diversify.disco.cloudml.util;
-
-import org.cloudml.core.DeploymentModel;
-
-/**
- * Check various properties on deployment models
- * 
- * @author Franck Chauvel
- * @since 0.1
+/*
  */
-public class DeploymentMatcher {
+package eu.diversify.disco.cloudml.matchers;
 
-    /**
-     * @return true if the given model is empty
-     */
-    public boolean isEmpty(DeploymentModel modelToCheck) {
-        return false;
+
+public class Commons {
+
+    public static IsValid valid() {
+        return new IsValid();
     }
-    
+
+    public static IsCloserBuilder closer() {
+        return new IsCloserBuilder();
+    }
 }
