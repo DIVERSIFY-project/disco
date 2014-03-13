@@ -20,6 +20,7 @@
 
 package eu.diversify.disco.cloudml.util.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.cloudml.core.ArtefactPort;
 import org.cloudml.core.ArtefactPortInstance;
@@ -37,16 +38,24 @@ public class Unbind extends AbstractAction<Void> {
     }
 
     @Override
-    public Void applyTo(DeploymentModel target) {
-        List<BindingInstance> bindings = findBindingInstancesByPort(port);
+    public Void applyTo(DeploymentModel deployment) {
+        List<BindingInstance> bindings = findBindingInstancesByPort(deployment, port);
         for(BindingInstance binding: bindings) {
-            target.getBindingInstances().remove(binding);
+            deployment.getBindingInstances().remove(binding);
         }
         return NOTHING;
     }  
 
-    private List<BindingInstance> findBindingInstancesByPort(ArtefactPortInstance<? extends ArtefactPort> port) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // FIXME: Should be moved in CloudML
+    private List<BindingInstance> findBindingInstancesByPort(DeploymentModel deployment, ArtefactPortInstance<? extends ArtefactPort> port) {
+        final ArrayList<BindingInstance> selection = new ArrayList<BindingInstance>();
+        for (BindingInstance binding: deployment.getBindingInstances()) {
+            if (binding.getServer().equals(port)
+                    || binding.getClient().equals(port)) {
+                selection.add(binding);
+            }
+        }
+        return selection;
     }
     
 }

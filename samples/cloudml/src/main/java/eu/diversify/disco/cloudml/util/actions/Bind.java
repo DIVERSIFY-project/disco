@@ -42,7 +42,7 @@ public class Bind extends AbstractAction<Void> {
     @Override
     public Void applyTo(DeploymentModel deployment) {
         String name = getLibrary().createUniqueBindingInstanceName(deployment);
-        if (!isAlreadyBound(deployment, clientPort)) {
+        if (!deployment.isBound(clientPort)) {
             Binding bindingType = getLibrary().findBindingFor(deployment, clientPort);
             ServerPortInstance serverPort = getLibrary().findServerPortFor(deployment, bindingType); 
             aBindingInstance()
@@ -53,21 +53,6 @@ public class Bind extends AbstractAction<Void> {
                     .integrateIn(deployment);        
         }
         return NOTHING;
-    }
-
-    private boolean isAlreadyBound(DeploymentModel deployment, ClientPortInstance clientPort) {
-        return !findBindingInstancesByClient(deployment, clientPort).isEmpty();
-    }
-
-    // FIXME: Should be a feature of deployment models
-    private Collection<BindingInstance> findBindingInstancesByClient(DeploymentModel deployment, ClientPortInstance cpi) {
-        final ArrayList<BindingInstance> selection = new ArrayList<BindingInstance>();
-        for (final BindingInstance bi : deployment.getBindingInstances()) {
-            if (bi.getClient().equals(cpi)) {
-                selection.add(bi);
-            }
-        }
-        return selection;
     }
     
 }
