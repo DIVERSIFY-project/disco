@@ -46,7 +46,7 @@ public class StandardLibrary {
         return new Provision(this, nodeType).applyTo(deployment);
     }
 
-    public void shutdown(DeploymentModel deployment, NodeInstance nodeInstance) {
+    public void terminate(DeploymentModel deployment, NodeInstance nodeInstance) {
         new Terminate(this, nodeInstance).applyTo(deployment);  
     }
 

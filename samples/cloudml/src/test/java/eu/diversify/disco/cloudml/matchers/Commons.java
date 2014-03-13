@@ -19,6 +19,9 @@
  */
 package eu.diversify.disco.cloudml.matchers;
 
+import eu.diversify.disco.cloudml.matchers.builders.IsCloserBuilder;
+import eu.diversify.disco.cloudml.matchers.builders.CounterBuilder;
+
 
 public class Commons {
 
@@ -28,5 +31,9 @@ public class Commons {
 
     public static IsCloserBuilder closer() {
         return new IsCloserBuilder();
+    }
+    
+    public static CounterBuilder has(int count) {
+        return new CounterBuilder().withCount(count); 
     }
 }

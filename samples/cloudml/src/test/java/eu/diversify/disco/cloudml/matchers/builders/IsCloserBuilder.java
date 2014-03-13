@@ -17,8 +17,9 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml.matchers;
+package eu.diversify.disco.cloudml.matchers.builders;
 
+import eu.diversify.disco.cloudml.matchers.IsCloser;
 import eu.diversify.disco.population.Population;
 import org.cloudml.core.DeploymentModel;
 

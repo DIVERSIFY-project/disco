@@ -58,8 +58,10 @@ public class Uninstall extends AbstractAction<Void> {
     private List<ClientPortInstance> disconnectProvidedPorts(DeploymentModel deployment) {
         final List<ClientPortInstance> customerToBeRebound = new ArrayList<ClientPortInstance>();
         for (ServerPortInstance serverPort : artefactInstance.getProvided()) {
-            customerToBeRebound.addAll(deployment.findClientPorts(serverPort));
-            getLibrary().unbind(deployment, serverPort);
+            if (deployment.isBound(serverPort)) {
+                customerToBeRebound.addAll(deployment.findClientPorts(serverPort));
+                getLibrary().unbind(deployment, serverPort);
+            }
         }
         return customerToBeRebound;
     }

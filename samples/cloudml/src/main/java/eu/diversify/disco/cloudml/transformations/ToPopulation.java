@@ -15,20 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
+import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
 import org.cloudml.core.validation.DeploymentValidator;
 import org.cloudml.core.validation.Report;
 import org.cloudml.core.visitors.AbstractVisitListener;
 import org.cloudml.core.visitors.ContainmentDispatcher;
 import org.cloudml.core.visitors.Visitor;
+
+
 
 public class ToPopulation {
 
@@ -62,20 +65,24 @@ public class ToPopulation {
         }
 
         @Override
+        public void onNode(Node subject) {
+                population.addSpecie(subject.getName());
+        }
+
+        @Override
+        public void onArtefact(Artefact subject) {
+                population.addSpecie(subject.getName());
+        }
+
+        @Override
         public void onNodeInstance(NodeInstance subject) {
             final String specieName = subject.getType().getName();
-            if (!population.hasAnySpecieNamed(specieName)) {
-                population.addSpecie(specieName);
-            }
             population.shiftNumberOfIndividualsIn(specieName, +1);
         }
 
         @Override
         public void onArtefactInstance(ArtefactInstance subject) {
             final String specieName = subject.getType().getName();
-            if (!population.hasAnySpecieNamed(specieName)) {
-                population.addSpecie(specieName);
-            }
             population.shiftNumberOfIndividualsIn(specieName, +1);
         }
         

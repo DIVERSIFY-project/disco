@@ -66,7 +66,6 @@ public class Install extends AbstractAction<ArtefactInstance> {
         for (ClientPortInstance clientPort : instance.getRequired()) {
             getLibrary().bind(target, clientPort);
         }
-        builder.integrateIn(target);
         return instance;
     }
 }

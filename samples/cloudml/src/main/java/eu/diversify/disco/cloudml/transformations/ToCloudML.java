@@ -15,32 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.cloudml.util.actions.StandardLibrary;
 import eu.diversify.disco.population.Population;
-import java.util.ArrayList;
-import java.util.Collection;
-import static java.util.Collections.shuffle;
 import java.util.List;
-import java.util.Random;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
@@ -59,10 +39,8 @@ import org.cloudml.core.NodeInstance;
 public class ToCloudML {
 
     private final StandardLibrary deployer;
-    private final Random random;
 
     public ToCloudML() {
-        this.random = new Random();
         deployer = new StandardLibrary();
     }
 
@@ -96,10 +74,10 @@ public class ToCloudML {
     }
 
     private void adjustNodeInstanceCount(DeploymentModel deployment, final Node nodeType, int desired) {
-        final Collection<NodeInstance> existings = deployment.findNodeInstancesByType(nodeType); 
+        final List<NodeInstance> existings = deployment.findNodeInstancesByType(nodeType); 
         final int error = desired - existings.size();
         if (error < 0) {
-            removeExcessiveNodeInstances(existings, error, deployment);
+            removeExcessiveNodeInstances(existings, Math.abs(error), deployment);
         }
         else if (error > 0) {
             addExtraNodeInstances(error, deployment, nodeType);
@@ -112,25 +90,23 @@ public class ToCloudML {
         }
     }
 
-    private void removeExcessiveNodeInstances(Collection<NodeInstance> existings, int error, DeploymentModel deployment) {
-        List<NodeInstance> existingList = new ArrayList<NodeInstance>(existings);
-        shuffle(existingList);
-        for (int i = 0; i > error && !deployment.getNodeInstances().isEmpty(); i--) {
-            deployer.shutdown(deployment, existingList.get(i));
+    private void removeExcessiveNodeInstances(List<NodeInstance> existings, int excess, DeploymentModel deployment) {
+        final int bound = Math.min(excess, existings.size());
+        for (int i = 0; i < bound ; i++) {
+            deployer.terminate(deployment, existings.get(i));
         }
     }
 
     private void adjustArtefactInstanceCount(DeploymentModel deployment, Artefact artefact, int desired) {
-        Collection<ArtefactInstance> existings = deployment.findArtefactInstancesByType(artefact);
+        final List<ArtefactInstance> existings = deployment.findArtefactInstancesByType(artefact);
         final int error = desired - existings.size();
-        if (error > 0) {
-            addExtraArtefactInstances(error, deployment, artefact);
+        if (error < 0) {
+            removeExessiveArtefactInstances(existings, Math.abs(error), deployment);
         }
         else if (error > 0) {
-            removeExessiveArtefactInstances(existings, error, deployment);
-        }
+            addExtraArtefactInstances(error, deployment, artefact);
+        } 
     }
-
 
     private void addExtraArtefactInstances(final int error, DeploymentModel deployment, Artefact artefactType) {
         for (int i = 0; i < error; i++) {
@@ -138,11 +114,10 @@ public class ToCloudML {
         }
     }
 
-    private void removeExessiveArtefactInstances(Collection<ArtefactInstance> existings, final int error, DeploymentModel deployment) {
-        List<ArtefactInstance> existingsList = new ArrayList<ArtefactInstance>(existings);
-        shuffle(existingsList);
-        for (int i = 0; i > error; i--) {
-            deployer.uninstall(deployment, existingsList.get(i));
+    private void removeExessiveArtefactInstances(List<ArtefactInstance> existings, int excess, DeploymentModel deployment) {
+        final int bound = Math.min(excess, existings.size());
+        for (int i = 0; i < bound ; i++) {
+            deployer.uninstall(deployment, existings.get(i));
         }
     }
 
