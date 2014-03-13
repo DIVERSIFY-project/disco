@@ -32,18 +32,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 package eu.diversify.disco.cloudml.util.actions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 
-public class FindNodeType extends AbstractAction<Node> {
+public class FindNodeType extends AbstractFinder<Node> {
 
     private final Artefact artefact;
 
@@ -53,18 +50,7 @@ public class FindNodeType extends AbstractAction<Node> {
     }
 
     @Override
-    public final Node applyTo(DeploymentModel deployment) {
-        final List<Node> candidates = collectCandidates(deployment);
-        if (candidates.isEmpty()) {
-            final String message = String.format(
-                    "Unable to find a node type relevant to install artefacts of type '%s'",
-                    artefact.getName());
-            throw new IllegalStateException(message);
-        }
-        return chooseOne(candidates);
-    }
-
-    private List<Node> collectCandidates(DeploymentModel deployment) {
+    protected List<Node> collectCandidates(DeploymentModel deployment) {
         List<Node> candidates = new ArrayList<Node>();
         for (Node node : deployment.getNodes()) {
             if (isCandidate(artefact, node)) {
@@ -78,8 +64,11 @@ public class FindNodeType extends AbstractAction<Node> {
         return true;
     }
 
-    protected Node chooseOne(List<Node> candidates) {
-        final int index = new Random().nextInt(candidates.size());
-        return candidates.get(index);
+    @Override
+    protected void handleLackOfCandidate(DeploymentModel deployment, List<Node> candidates) {
+        final String message = String.format(
+                "Unable to find a node type relevant to install artefacts of type '%s'",
+                artefact.getName());
+        throw new IllegalStateException(message);
     }
 }
