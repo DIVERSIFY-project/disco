@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
-package eu.diversify.disco.cloudml.transformations;
 
+package eu.diversify.disco.cloudml.transformations.toPopulation;
+
+import eu.diversify.disco.cloudml.transformations.BidirectionalTransformation;
 import eu.diversify.disco.population.Population;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +42,7 @@ public class ToPopulationTest extends TestCase {
     private final BidirectionalTransformation transformation;
 
     
-    public ToPopulationTest(ToPopulationExample example) {
+    public ToPopulationTest(ToPopulationExample example) { 
         this.example = example;
         this.actualOutput = null;
         this.transformation = new BidirectionalTransformation();

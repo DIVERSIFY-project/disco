@@ -37,9 +37,31 @@ import static org.hamcrest.CoreMatchers.*;
 @RunWith(JUnit4.class)
 public class ToCloudMLTest extends TestCase {
 
-    public ToCloudMLTest() {
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithNullDeploumentModel() {
+                Population reference = new PopulationBuilder()
+                .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
+                .withDistribution(1, 1, 1, 1)
+                .make();
+
+        ToCloudML transformation = new ToCloudML();
+        DeploymentModel output = transformation.applyTo(null, reference);
     }
     
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithNullReferencePopulation() {
+       DeploymentModel source = new SshClientServer()
+                .getTypes()
+                .build();
+
+        Population reference = null;
+
+        ToCloudML transformation = new ToCloudML();
+        DeploymentModel output = transformation.applyTo(source, reference);
+    }
+   
     @Test
     public void testThatResultHasBeenCreatedFromScratch() {
         DeploymentModel source = new SshClientServer()

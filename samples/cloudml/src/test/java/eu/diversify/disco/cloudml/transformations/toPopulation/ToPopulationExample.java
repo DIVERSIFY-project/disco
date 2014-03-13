@@ -32,9 +32,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.cloudml.transformations;
+package eu.diversify.disco.cloudml.transformations.toPopulation;
 
-import eu.diversify.disco.cloudml.util.NamingPolicy;
 import eu.diversify.disco.population.Population;
 import org.cloudml.core.DeploymentModel;
 
@@ -77,23 +76,4 @@ public class ToPopulationExample {
         return this.getName();
     }
 
-    // helpers that create the various population and cloudMl models;
-
-
-   
-   
-
-  
-
-
-   
-
-   
-    
-
-   
-
-    
-
-   
 }
