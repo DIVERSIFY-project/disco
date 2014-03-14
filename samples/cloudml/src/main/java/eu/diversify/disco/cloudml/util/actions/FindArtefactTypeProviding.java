@@ -40,7 +40,7 @@ import org.cloudml.core.Artefact;
 import org.cloudml.core.Binding;
 import org.cloudml.core.DeploymentModel;
 
-class FindArtefactTypeProviding extends AbstractFinder<Artefact> {
+class FindArtefactTypeProviding extends AbstractFind<Artefact> {
 
     private final Binding bindingType;
 

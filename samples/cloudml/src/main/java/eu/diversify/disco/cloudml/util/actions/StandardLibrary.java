@@ -82,16 +82,16 @@ public class StandardLibrary {
         return new FindDestination(this, artefact.getType(), artefact.getDestination()).applyTo(deployment);
     }
 
-    public String createUniqueNodeInstanceName(DeploymentModel deployment) {
-        return naming.createUniqueNodeInstanceName(deployment);
+    public String createUniqueNodeInstanceName(DeploymentModel deployment, Node type) {
+        return naming.createUniqueNodeInstanceName(deployment, type);
     }
 
-    public String createUniqueArtefactInstanceName(DeploymentModel deployment) {
-        return naming.createUniqueArtefactInstanceName(deployment);
+    public String createUniqueArtefactInstanceName(DeploymentModel deployment, Artefact type) {
+        return naming.createUniqueArtefactInstanceName(deployment, type);
     }
 
-    public String createUniqueBindingInstanceName(DeploymentModel deployment) {
-        return naming.createUniqueBindingInstanceName(deployment);
+    public String createUniqueBindingInstanceName(DeploymentModel deployment, Binding type) {
+        return naming.createUniqueBindingInstanceName(deployment, type);
     }
 
     public void unbind(DeploymentModel deployment, ArtefactPortInstance<? extends ArtefactPort> port) {

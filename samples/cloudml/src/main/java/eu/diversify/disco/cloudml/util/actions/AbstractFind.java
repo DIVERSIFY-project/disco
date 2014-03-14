@@ -25,9 +25,9 @@ import java.util.Random;
 import org.cloudml.core.DeploymentModel;
 
 
-public abstract class AbstractFinder<T> extends AbstractAction<T> {
+public abstract class AbstractFind<T> extends AbstractAction<T> {
 
-    public AbstractFinder(StandardLibrary library) {
+    public AbstractFind(StandardLibrary library) {
         super(library);
     }
        

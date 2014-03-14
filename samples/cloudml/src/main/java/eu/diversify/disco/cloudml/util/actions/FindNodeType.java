@@ -40,7 +40,7 @@ import org.cloudml.core.Artefact;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 
-public class FindNodeType extends AbstractFinder<Node> {
+public class FindNodeType extends AbstractFind<Node> {
 
     private final Artefact artefact;
 

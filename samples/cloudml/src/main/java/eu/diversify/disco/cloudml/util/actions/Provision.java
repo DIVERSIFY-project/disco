@@ -37,13 +37,13 @@ public class Provision extends AbstractAction<NodeInstance> {
     }
     
     @Override
-    public NodeInstance applyTo(DeploymentModel target) {
-        String instanceName = getLibrary().createUniqueNodeInstanceName(target);
+    public NodeInstance applyTo(DeploymentModel deployment) {
+        String instanceName = getLibrary().createUniqueNodeInstanceName(deployment, nodeType);
         NodeInstanceBuilder builder = aNodeInstance()
                 .named(instanceName)
                 .ofType(nodeType.getName());
-        builder.integrateIn(target);
-        return target.findNodeInstanceByName(instanceName);
+        builder.integrateIn(deployment);
+        return deployment.findNodeInstanceByName(instanceName);
     }
    
 }

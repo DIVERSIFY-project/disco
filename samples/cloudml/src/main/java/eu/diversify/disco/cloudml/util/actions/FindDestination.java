@@ -43,7 +43,7 @@ import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
 
-public class FindDestination extends AbstractFinder<NodeInstance> {
+public class FindDestination extends AbstractFind<NodeInstance> {
 
     private final Artefact artefact;
     private final ArrayList<NodeInstance> excluded;

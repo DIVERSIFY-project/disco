@@ -42,7 +42,7 @@ import org.cloudml.core.Binding;
 import org.cloudml.core.ClientPortInstance;
 import org.cloudml.core.DeploymentModel;
 
-public class FindBinding extends AbstractFinder<Binding> {
+public class FindBinding extends AbstractFind<Binding> {
 
     private final ClientPortInstance clientPort;
 

@@ -19,10 +19,7 @@
 
 package eu.diversify.disco.cloudml.util.actions;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import org.cloudml.core.Binding;
-import org.cloudml.core.BindingInstance;
 import org.cloudml.core.ClientPortInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.ServerPortInstance;
@@ -41,9 +38,9 @@ public class Bind extends AbstractAction<Void> {
 
     @Override
     public Void applyTo(DeploymentModel deployment) {
-        String name = getLibrary().createUniqueBindingInstanceName(deployment);
         if (!deployment.isBound(clientPort)) {
             Binding bindingType = getLibrary().findBindingFor(deployment, clientPort);
+            String name = getLibrary().createUniqueBindingInstanceName(deployment, bindingType);
             ServerPortInstance serverPort = getLibrary().findServerPortFor(deployment, bindingType); 
             aBindingInstance()
                     .named(name)

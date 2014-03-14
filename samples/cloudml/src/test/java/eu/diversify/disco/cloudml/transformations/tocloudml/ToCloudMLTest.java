@@ -2,23 +2,6 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -31,8 +14,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/*
  */
 package eu.diversify.disco.cloudml.transformations.tocloudml;
 
@@ -63,7 +44,7 @@ public class ToCloudMLTest extends TestCase {
                 .make();
 
         ToCloudML transformation = new ToCloudML();
-        DeploymentModel output = transformation.applyTo(null, reference);
+        transformation.applyTo(null, reference);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -75,7 +56,7 @@ public class ToCloudMLTest extends TestCase {
         Population reference = null;
 
         ToCloudML transformation = new ToCloudML();
-        DeploymentModel output = transformation.applyTo(source, reference);
+        transformation.applyTo(source, reference);
     }
 
     @Test
@@ -92,13 +73,7 @@ public class ToCloudMLTest extends TestCase {
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
 
-        assertThat("output model", countNodesOfType(output, LINUX_TYPE), is(equalTo(1)));
-        assertThat("output model", countNodesOfType(output, WINDOWS_TYPE), is(equalTo(1)));
-        assertThat("output model", countArtefactsOfType(output, CLIENT_TYPE), is(equalTo(1)));
-        assertThat("output model", countArtefactsOfType(output, SERVER_TYPE), is(equalTo(1)));
-        assertThat("output model", countBindingsOfType(output, BINDING_TYPE), is(equalTo(1)));
-        assertThat("output model", output, is(valid()));
-        assertThat("output model", output, is(closer().to(reference).than(source)));
+        verifyModel(output, reference, source, 1, 1, 1, 1, 1);
     }
 
     @Test
@@ -115,13 +90,7 @@ public class ToCloudMLTest extends TestCase {
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
 
-        assertThat("output model", countNodesOfType(output, LINUX_TYPE), is(equalTo(3)));
-        assertThat("output model", countNodesOfType(output, WINDOWS_TYPE), is(equalTo(1)));
-        assertThat("output model", countArtefactsOfType(output, CLIENT_TYPE), is(equalTo(1)));
-        assertThat("output model", countArtefactsOfType(output, SERVER_TYPE), is(equalTo(1)));
-        assertThat("output model", countBindingsOfType(output, BINDING_TYPE), is(equalTo(1)));
-        assertThat("output model", output, is(valid()));
-        assertThat("output model", output, is(closer().to(reference).than(source)));
+        verifyModel(output, reference, source, 3, 1, 1, 1, 1);
     }
 
     @Test
@@ -138,17 +107,10 @@ public class ToCloudMLTest extends TestCase {
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
 
-        assertThat("Linux instance count", countNodesOfType(output, LINUX_TYPE), is(equalTo(1)));
-        assertThat("Windows instance count", countNodesOfType(output, WINDOWS_TYPE), is(equalTo(1)));
-        assertThat("Client instance count", countArtefactsOfType(output, CLIENT_TYPE), is(equalTo(1)));
-        assertThat("Server instance count", countArtefactsOfType(output, SERVER_TYPE), is(equalTo(1)));
-        assertThat("SSH connection count", countBindingsOfType(output, BINDING_TYPE), is(equalTo(1)));
-        assertThat("output model", output, is(valid()));
-        assertThat("output model", output, is(closer().to(reference).than(source)));
+        verifyModel(output, reference, source, 1, 1, 1, 1, 1);
     }
-    
-    
-     @Test
+
+    @Test
     public void weRequestManyClients() {
         DeploymentModel source = new SshClientServer()
                 .getTwoClientsConnectedToOneServer()
@@ -162,13 +124,7 @@ public class ToCloudMLTest extends TestCase {
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
 
-        assertThat("Linux instance", countNodesOfType(output, LINUX_TYPE), is(equalTo(1)));
-        assertThat("Windows instance", countNodesOfType(output, WINDOWS_TYPE), is(equalTo(1)));
-        assertThat("Client instance", countArtefactsOfType(output, CLIENT_TYPE), is(equalTo(5)));
-        assertThat("Server instance", countArtefactsOfType(output, SERVER_TYPE), is(equalTo(1)));
-        assertThat("Binding instance", countBindingsOfType(output, BINDING_TYPE), is(equalTo(5)));
-        assertThat("output model", output, is(valid()));
-        assertThat("output model", output, is(closer().to(reference).than(source)));
+        verifyModel(output, reference, source, 1, 1, 5, 1, 5);
     }
 
     @Test
@@ -184,12 +140,15 @@ public class ToCloudMLTest extends TestCase {
 
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
+        verifyModel(output, reference, source, 1, 0, 0, 0, 0);
+    }
 
-        assertThat("Linux instance", countNodesOfType(output, LINUX_TYPE), is(equalTo(1)));
-        assertThat("Windows instance", countNodesOfType(output, WINDOWS_TYPE), is(equalTo(0)));
-        assertThat("Client instance", countArtefactsOfType(output, CLIENT_TYPE), is(equalTo(0)));
-        assertThat("Server instance", countArtefactsOfType(output, SERVER_TYPE), is(equalTo(0)));
-        assertThat("Binding instance", countBindingsOfType(output, BINDING_TYPE), is(equalTo(0)));
+    private void verifyModel(DeploymentModel output, Population reference, DeploymentModel source, int linuxCount, int windowsCount, int clientCount, int serverCount, int bindingCount) {
+        assertThat("Linux instance", countNodesOfType(output, LINUX_TYPE), is(equalTo(linuxCount)));
+        assertThat("Windows instance", countNodesOfType(output, WINDOWS_TYPE), is(equalTo(windowsCount)));
+        assertThat("Client instance", countArtefactsOfType(output, CLIENT_TYPE), is(equalTo(clientCount)));
+        assertThat("Server instance", countArtefactsOfType(output, SERVER_TYPE), is(equalTo(serverCount)));
+        assertThat("Binding instance", countBindingsOfType(output, BINDING_TYPE), is(equalTo(bindingCount)));
         assertThat("output model", output, is(valid()));
         assertThat("output model", output, is(closer().to(reference).than(source)));
     }
