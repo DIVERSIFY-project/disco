@@ -50,7 +50,7 @@ public class DiversityController {
      */
     public DiversityController(double reference) {
         this.reference = reference;
-        this.metric = new TrueDiversity();
+        this.metric = new TrueDiversity().normalise();
         this.controller = new AdaptiveHillClimber();
         this.transformation = new BidirectionalTransformation();
     }

@@ -1,0 +1,1175 @@
+{
+    "eClass" : "net.cloudml.core:DeploymentModel",
+    "name" : "mdmsdeployment",
+    "providers" : [{
+        "eClass" : "net.cloudml.core:Provider",
+        "name" : "aws-ec2",
+        "credentials" : "./credentials"
+    }
+    ],	
+	"artefactTypes" : [{
+        "eClass" : "net.cloudml.core:Artefact",
+        "name" : "MDMS",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "MdmsZip",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/mdms/mdms.zip; cd ~; unzip mdms.zip; mv mdms-ringojs-master/ mdms; rm mdms.zip",
+            "startCommand" : "cd ~; sudo bash mdms/run.sh"
+        },
+        "required" : [{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RingoRequired",
+            "portNumber" : "0",
+			"isRemote" : true,
+			"isOptional" : false
+		},{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RedisRequired",
+            "portNumber" : "6397",
+			"isRemote" : true,
+			"isOptional" : false
+		}],
+		"provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "MDMSProvided",
+			"isRemote" : false,
+            "portNumber" : "8080"
+        }]
+	},{
+        "eClass" : "net.cloudml.core:Artefact",
+        "name" : "MDMS2",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "MdmsZip",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/mdms/mdms.zip; cd ~; unzip mdms.zip; mv mdms-ringojs-master/ mdms2; rm mdms.zip",
+            "startCommand" : "cd ~; sudo bash mdms2/run.sh"
+        },
+        "required" : [{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RingoRequired2",
+            "portNumber" : "0",
+			"isRemote" : true,
+			"isOptional" : false
+		},{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RedisRequired2",
+            "portNumber" : "6397",
+			"isRemote" : true,
+			"isOptional" : false
+		}],
+		"provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "MDMSProvided2",
+			"isRemote" : false,
+            "portNumber" : "8081"
+        }]
+	},{
+        "eClass" : "net.cloudml.core:Artefact",
+        "name" : "MDMS3",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "MdmsZip",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/mdms/mdms.zip; cd ~; unzip mdms.zip; mv mdms-ringojs-master/ mdms3; rm mdms.zip",
+            "startCommand" : "cd ~; sudo bash mdms3/run.sh"
+        },
+        "required" : [{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RingoRequired3",
+            "portNumber" : "0",
+			"isRemote" : true,
+			"isOptional" : false
+		},{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RedisRequired3",
+            "portNumber" : "6397",
+			"isRemote" : true,
+			"isOptional" : false
+		}],
+		"provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "MDMSProvided3",
+			"isRemote" : false,
+            "portNumber" : "8082"
+        }]
+	},{
+        "eClass" : "net.cloudml.core:Artefact",
+        "name" : "MDMS4",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "MdmsZip",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/mdms/mdms.zip; cd ~; unzip mdms.zip; mv mdms-ringojs-master/ mdms3; rm mdms.zip",
+            "startCommand" : "cd ~; sudo bash mdms4/run.sh"
+        },
+        "required" : [{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RingoRequired4",
+            "portNumber" : "0",
+			"isRemote" : true,
+			"isOptional" : false
+		},{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RedisRequired4",
+            "portNumber" : "6397",
+			"isRemote" : true,
+			"isOptional" : false
+		}],
+		"provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "MDMSProvided4",
+			"isRemote" : false,
+            "portNumber" : "8083"
+        }]
+	},{
+        "eClass" : "net.cloudml.core:Artefact",
+        "name" : "MDMS5",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "MdmsZip",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/mdms/mdms.zip; cd ~; unzip mdms.zip; mv mdms-ringojs-master/ mdms3; rm mdms.zip",
+            "startCommand" : "cd ~; sudo bash mdms5/run.sh"
+        },
+        "required" : [{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RingoRequired5",
+            "portNumber" : "0",
+			"isRemote" : true,
+			"isOptional" : false
+		},{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "RedisRequired5",
+            "portNumber" : "6397",
+			"isRemote" : true,
+			"isOptional" : false
+		}],
+		"provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "MDMSProvided5",
+			"isRemote" : false,
+            "portNumber" : "8084"
+        }]
+	},{
+        "eClass" : "net.cloudml.core:Artefact",
+        "name" : "LoadBalancer",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "LBZip",
+            "retrievingCommand" : "sudo rm -f /var/www/client/meta/*.txt; rm -f ~/lb-config*",
+			"startCommand" : ""
+        },
+        "required" : [{
+			"eClass" : "net.cloudml.core:ClientPort",
+            "name" : "MDMSRequired",
+            "portNumber" : "8080",
+			"isRemote" : true,
+			"isOptional" : false
+		}]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/ringojs.zip; cd ~; unzip ringojs.zip; mv ringojs-0.10/ ringojs; rm ringojs.zip"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "Redis",
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RedisProvided",
+			"isRemote" : true,
+            "portNumber" : "6397"
+        }],
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RedisNull",
+            "retrievingCommand" : ""
+        }
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS5",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip6",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip; cd ~; unzip factory_and_indirection_on_RhinoEnginerhino8.zip; mv factory_and_indirection_on_RhinoEnginerhino8/ ringojs5; rm factory_and_indirection_on_RhinoEnginerhino8.zip; sudo chmod a+x ringojs5/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided5",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS2",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip2",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip; cd ~; unzip indirection_on_Streamrhino15.zip; mv indirection_on_Streamrhino15/ ringojs2; rm indirection_on_Streamrhino15.zip; sudo chmod a+x ringojs2/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided2",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS6",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip2",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip; cd ~; unzip indirection_on_Streamrhino15.zip; mv indirection_on_Streamrhino15/ ringojs2; rm indirection_on_Streamrhino15.zip; sudo chmod a+x ringojs2/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided6",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS7",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip2",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip; cd ~; unzip indirection_on_Streamrhino15.zip; mv indirection_on_Streamrhino15/ ringojs2; rm indirection_on_Streamrhino15.zip; sudo chmod a+x ringojs2/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided7",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS8",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip2",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip; cd ~; unzip indirection_on_Streamrhino15.zip; mv indirection_on_Streamrhino15/ ringojs2; rm indirection_on_Streamrhino15.zip; sudo chmod a+x ringojs2/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided8",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS9",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip2",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip; cd ~; unzip indirection_on_Streamrhino15.zip; mv indirection_on_Streamrhino15/ ringojs2; rm indirection_on_Streamrhino15.zip; sudo chmod a+x ringojs2/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided9",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS10",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip2",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip; cd ~; unzip indirection_on_Streamrhino15.zip; mv indirection_on_Streamrhino15/ ringojs2; rm indirection_on_Streamrhino15.zip; sudo chmod a+x ringojs2/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided10",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS3",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip3",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino4.zip; cd ~; unzip indirection_on_Streamrhino4.zip; mv indirection_on_Streamrhino4/ ringojs3; rm indirection_on_Streamrhino4.zip; sudo chmod a+x ringojs3/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided3",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "RingoJS4",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "RingoZip4",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/ringojs/ringojs.zip; cd ~; unzip ringojs.zip; mv ringojs-0.10/ ringojs4; rm ringojs.zip; sudo chmod a+x ringojs4/bin/*"
+        },
+        "provided" : [{
+			"eClass" : "net.cloudml.core:ServerPort",
+            "name" : "RingoProvided4",
+			"isRemote" : false,
+            "portNumber" : "0"
+        }]
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "OpenJDK",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "OpenJDK-Alternative",
+            "deployingCommand" : "sudo update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java"
+        }
+	},{
+		"eClass" : "net.cloudml.core:Artefact",
+        "name" : "IBMJDK",
+		"resource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "IBMJDK-Alternative",
+            "deployingCommand" : "sudo update-alternatives --set java /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+	}
+	],
+	"nodeTypes" : [{
+        "eClass" : "net.cloudml.core:Node",
+        "name" : "mdms-diversify",
+        "minRam" : "500",
+        "minCore" : "1",
+        "minDisk" : "20",
+        "location" : "us-east-1a",
+        "OS" : "ubuntu",
+		"imageID" : "us-east-1/ami-b1447fd8",
+        "sshKey" : "diversify",
+        "securityGroup" : "diversify",
+        "groupName" : "cloudmlsensappgui",
+        "privateKey" : "diversify.pem",
+        "is64os" : true,
+        "cloudProvider" : "providers[aws-ec2]",
+        "properties" : [{
+            "eClass" : "net.cloudml.core:Property",
+            "name" : "KeyPath",
+            "value" : "path-to-cloudml.pem"
+        }
+        ]
+    },{
+        "eClass" : "net.cloudml.core:Node",
+        "name" : "mdms-db",
+        "minRam" : "500",
+        "minCore" : "1",
+        "minDisk" : "20",
+        "location" : "us-east-1a",
+        "OS" : "ubuntu",
+		"imageID" : "us-east-1/ami-b1447fd8",
+        "sshKey" : "diversify",
+        "securityGroup" : "diversify",
+        "groupName" : "cloudmlsensappgui",
+        "privateKey" : "diversify.pem",
+        "is64os" : true,
+        "cloudProvider" : "providers[aws-ec2]",
+        "properties" : [{
+            "eClass" : "net.cloudml.core:Property",
+            "name" : "KeyPath",
+            "value" : "path-to-cloudml.pem"
+        }
+        ]
+    },{
+        "eClass" : "net.cloudml.core:Node",
+        "name" : "diversify-load-balancer",
+        "minRam" : "500",
+        "minCore" : "1",
+        "minDisk" : "20",
+        "location" : "us-east-1a",
+        "OS" : "ubuntu",
+		"imageID" : "us-east-1/ami-b1447fd8",
+        "sshKey" : "diversify",
+        "securityGroup" : "diversify",
+        "groupName" : "cloudmlsensappgui",
+        "privateKey" : "diversify.pem",
+        "is64os" : true,
+        "cloudProvider" : "providers[aws-ec2]",
+        "properties" : [{
+            "eClass" : "net.cloudml.core:Property",
+            "name" : "KeyPath",
+            "value" : "path-to-cloudml.pem"
+        }
+        ]
+    }
+	],
+	"bindingTypes" : [{
+        "name" : "RingoMDMS",
+        "client" : "artefactTypes[MDMS]/required[RingoRequired]",
+        "server" : "artefactTypes[RingoJS]/provided[RingoProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs; mdmspath=mdms; port=8080'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo2MDMS2",
+        "client" : "artefactTypes[MDMS2]/required[RingoRequired2]",
+        "server" : "artefactTypes[RingoJS2]/provided[RingoProvided2]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs2; mdmspath=mdms2; port=8081'; cat mdmsrun.sh) > mdms2/run.sh"
+        }
+    },{
+        "name" : "Ringo3MDMS3",
+        "client" : "artefactTypes[MDMS3]/required[RingoRequired3]",
+        "server" : "artefactTypes[RingoJS3]/provided[RingoProvided3]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs3; mdmspath=mdms3; port=8082'; cat mdmsrun.sh) > mdms3/run.sh"
+        }
+    },{
+        "name" : "Ringo4MDMS4",
+        "client" : "artefactTypes[MDMS4]/required[RingoRequired4]",
+        "server" : "artefactTypes[RingoJS4]/provided[RingoProvided4]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs4; mdmspath=mdms4; port=8083'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo5MDMS5",
+        "client" : "artefactTypes[MDMS5]/required[RingoRequired5]",
+        "server" : "artefactTypes[RingoJS5]/provided[RingoProvided5]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs5; mdmspath=mdms5; port=8084'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo6MDMS",
+        "client" : "artefactTypes[MDMS]/required[RingoRequired]",
+        "server" : "artefactTypes[RingoJS6]/provided[RingoProvided6]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs6; mdmspath=mdms; port=8080'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo7MDMS2",
+        "client" : "artefactTypes[MDMS2]/required[RingoRequired2]",
+        "server" : "artefactTypes[RingoJS7]/provided[RingoProvided7]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs7; mdmspath=mdms2; port=8081'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo8MDMS3",
+        "client" : "artefactTypes[MDMS3]/required[RingoRequired3]",
+        "server" : "artefactTypes[RingoJS8]/provided[RingoProvided8]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs8; mdmspath=mdms3; port=8082'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo9MDMS4",
+        "client" : "artefactTypes[MDMS4]/required[RingoRequired4]",
+        "server" : "artefactTypes[RingoJS9]/provided[RingoProvided9]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs9; mdmspath=mdms4; port=8083'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "Ringo10MDMS5",
+        "client" : "artefactTypes[MDMS5]/required[RingoRequired5]",
+        "server" : "artefactTypes[RingoJS10]/provided[RingoProvided10]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs10; mdmspath=mdms5; port=8084'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "RingoMDMS2",
+        "client" : "artefactTypes[MDMS2]/required[RingoRequired2]",
+        "server" : "artefactTypes[RingoJS]/provided[RingoProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs; mdmspath=mdms2; port=8081'; cat mdmsrun.sh) > mdms2/run.sh"
+        }
+    },{
+        "name" : "RingoMDMS3",
+        "client" : "artefactTypes[MDMS3]/required[RingoRequired3]",
+        "server" : "artefactTypes[RingoJS]/provided[RingoProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs; mdmspath=mdms3; port=8082'; cat mdmsrun.sh) > mdms3/run.sh"
+        }
+    },{
+        "name" : "RingoMDMS4",
+        "client" : "artefactTypes[MDMS4]/required[RingoRequired4]",
+        "server" : "artefactTypes[RingoJS]/provided[RingoProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs; mdmspath=mdms4; port=8083'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "RingoMDMS5",
+        "client" : "artefactTypes[MDMS5]/required[RingoRequired5]",
+        "server" : "artefactTypes[RingoJS]/provided[RingoProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/mdmsrun.sh; cd ~; (echo 'ringopath=ringojs; mdmspath=mdms5; port=8084'; cat mdmsrun.sh) > mdms/run.sh"
+        }
+    },{
+        "name" : "MDMSDB",
+        "client" : "artefactTypes[MDMS]/required[RedisRequired]",
+        "server" : "artefactTypes[Redis]/provided[RedisProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "redisConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/config-port.sh",
+			"configurationCommand" : "cd ~; sudo bash config-port.sh mdms"
+        }
+    },{
+        "name" : "MDMS2DB",
+        "client" : "artefactTypes[MDMS2]/required[RedisRequired2]",
+        "server" : "artefactTypes[Redis]/provided[RedisProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "redisConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/config-port.sh",
+			"configurationCommand" : "cd ~; sudo bash config-port.sh mdms2"
+        }
+    },{
+        "name" : "MDMS3DB",
+        "client" : "artefactTypes[MDMS3]/required[RedisRequired3]",
+        "server" : "artefactTypes[Redis]/provided[RedisProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "redisConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/config-port.sh",
+			"configurationCommand" : "cd ~; sudo bash config-port.sh mdms3"
+        }
+    },{
+        "name" : "MDMS4DB",
+        "client" : "artefactTypes[MDMS4]/required[RedisRequired4]",
+        "server" : "artefactTypes[Redis]/provided[RedisProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "redisConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/config-port.sh",
+			"configurationCommand" : "cd ~; sudo bash config-port.sh mdms3"
+        }
+    },{
+        "name" : "MDMS5DB",
+        "client" : "artefactTypes[MDMS5]/required[RedisRequired5]",
+        "server" : "artefactTypes[Redis]/provided[RedisProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "redisConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/config-port.sh",
+			"configurationCommand" : "cd ~; sudo bash config-port.sh mdms3"
+        }
+    },{
+        "name" : "LBMDMS",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS]/provided[MDMSProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/ringojs.zip /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS2",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS2]/provided[MDMSProvided2]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino15.zip /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS3",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS3]/provided[MDMSProvided3]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/indirection_on_Streamrhino4.zip /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS4",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS4]/provided[MDMSProvided4]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/ringojs.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS5",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS5]/provided[MDMSProvided5]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS6",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS]/provided[MDMSProvided]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS7",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS2]/provided[MDMSProvided2]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS8",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS3]/provided[MDMSProvided3]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS9",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS4]/provided[MDMSProvided4]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    },{
+        "name" : "LBMDMS10",
+        "client" : "artefactTypes[LoadBalancer]/required[MDMSRequired]",
+        "server" : "artefactTypes[MDMS5]/provided[MDMSProvided5]",
+        "clientResource" : {
+            "eClass" : "net.cloudml.core:Resource",
+            "name" : "ringoConfig",
+            "retrievingCommand" : "wget -P ~ http://thingml.org/dist/diversify/scripts/lb-config.sh",
+			"configurationCommand" : "cd ~; sudo bash lb-config.sh http://thingml.org/dist/diversify/mdms/mdms.zip http://thingml.org/dist/diversify/ringojs/factory_and_indirection_on_RhinoEnginerhino8.zip /usr/lib/jvm/ibm-java-x86-71/jre/bin/java"
+        }
+    }
+    ],
+	"artefactInstances" : [
+	{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms",
+        "type" : "artefactTypes[MDMS]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired",
+        	"type" : "artefactTypes[MDMS]/required[RingoRequired]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired",
+        	"type" : "artefactTypes[MDMS]/required[RedisRequired]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided",
+            "type" : "artefactTypes[MDMS]/provided[MDMSProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms2",
+        "type" : "artefactTypes[MDMS2]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired2",
+        	"type" : "artefactTypes[MDMS2]/required[RingoRequired2]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired2",
+        	"type" : "artefactTypes[MDMS2]/required[RedisRequired2]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided2",
+            "type" : "artefactTypes[MDMS2]/provided[MDMSProvided2]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms3",
+        "type" : "artefactTypes[MDMS3]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired3",
+        	"type" : "artefactTypes[MDMS3]/required[RingoRequired3]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired3",
+        	"type" : "artefactTypes[MDMS3]/required[RedisRequired3]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided3",
+            "type" : "artefactTypes[MDMS3]/provided[MDMSProvided3]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms4",
+        "type" : "artefactTypes[MDMS4]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired4",
+        	"type" : "artefactTypes[MDMS4]/required[RingoRequired4]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired4",
+        	"type" : "artefactTypes[MDMS4]/required[RedisRequired4]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided4",
+            "type" : "artefactTypes[MDMS4]/provided[MDMSProvided4]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms5",
+        "type" : "artefactTypes[MDMS5]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired5",
+        	"type" : "artefactTypes[MDMS5]/required[RingoRequired5]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired5",
+        	"type" : "artefactTypes[MDMS5]/required[RedisRequired5]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided5",
+            "type" : "artefactTypes[MDMS5]/provided[MDMSProvided5]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms6",
+        "type" : "artefactTypes[MDMS]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired6",
+        	"type" : "artefactTypes[MDMS]/required[RingoRequired]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired6",
+        	"type" : "artefactTypes[MDMS]/required[RedisRequired]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided6",
+            "type" : "artefactTypes[MDMS]/provided[MDMSProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms7",
+        "type" : "artefactTypes[MDMS2]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired7",
+        	"type" : "artefactTypes[MDMS2]/required[RingoRequired2]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired7",
+        	"type" : "artefactTypes[MDMS2]/required[RedisRequired2]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided7",
+            "type" : "artefactTypes[MDMS2]/provided[MDMSProvided2]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms8",
+        "type" : "artefactTypes[MDMS3]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired8",
+        	"type" : "artefactTypes[MDMS3]/required[RingoRequired3]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired8",
+        	"type" : "artefactTypes[MDMS3]/required[RedisRequired3]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided8",
+            "type" : "artefactTypes[MDMS3]/provided[MDMSProvided3]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms9",
+        "type" : "artefactTypes[MDMS4]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired9",
+        	"type" : "artefactTypes[MDMS4]/required[RingoRequired4]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired9",
+        	"type" : "artefactTypes[MDMS4]/required[RedisRequired4]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided9",
+            "type" : "artefactTypes[MDMS4]/provided[MDMSProvided4]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms10",
+        "type" : "artefactTypes[MDMS5]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "ringoRequired10",
+        	"type" : "artefactTypes[MDMS5]/required[RingoRequired5]"
+        },{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "redisRequired10",
+        	"type" : "artefactTypes[MDMS5]/required[RedisRequired5]"
+        }],
+		"provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "mdmsProvided10",
+            "type" : "artefactTypes[MDMS5]/provided[MDMSProvided5]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "mdms-lb",
+        "type" : "artefactTypes[LoadBalancer]",
+        "destination" : "nodeInstances[diversify-load-balancer]",
+        "required" : [{
+        	"eClass" : "net.cloudml.core:ClientPortInstance",
+        	"name" : "mdmsRequired",
+        	"type" : "artefactTypes[LoadBalancer]/required[MDMSRequired]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs2",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided2",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs3",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided3",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs4",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided4",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{ 
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs5",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided5",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs6",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided6",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs7",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided7",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs8",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided8",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs9",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided9",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ringojs10",
+        "type" : "artefactTypes[RingoJS]",
+        "destination" : "nodeInstances[mdms-diversify2]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "ringoProvided10",
+            "type" : "artefactTypes[RingoJS]/provided[RingoProvided]"
+        }]
+    },{ 
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "redis",
+        "type" : "artefactTypes[Redis]",
+        "destination" : "nodeInstances[mdms-db]",
+        "provided" : [{
+            "eClass" : "net.cloudml.core:ServerPortInstance",
+            "name" : "redisProvided",
+            "type" : "artefactTypes[Redis]/provided[RedisProvided]"
+        }]
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "openjdk",
+        "type" : "artefactTypes[OpenJDK]",
+        "destination" : "nodeInstances[mdms-diversify]"
+    },{
+        "eClass" : "net.cloudml.core:ArtefactInstance",
+        "name" : "ibmjdk",
+        "type" : "artefactTypes[IBMJDK]",
+        "destination" : "nodeInstances[mdms-diversify2]"
+    }
+	],
+	"nodeInstances" : [{
+        "eClass" : "net.cloudml.core:NodeInstance",
+        "name" : "diversify-load-balancer",
+        "type" : "nodeTypes[diversify-load-balancer]"
+    },{
+        "eClass" : "net.cloudml.core:NodeInstance",
+        "name" : "mdms-diversify",
+        "type" : "nodeTypes[mdms-diversify]"
+    },{
+        "eClass" : "net.cloudml.core:NodeInstance",
+        "name" : "mdms-diversify2",
+        "type" : "nodeTypes[mdms-diversify]"
+    },{
+        "eClass" : "net.cloudml.core:NodeInstance",
+        "name" : "mdms-db",
+        "type" : "nodeTypes[mdms-db]"
+    }
+    ],
+    "bindingInstances" : [{
+        "name" : "ringomdms",
+        "type" : "bindingTypes[RingoMDMS]",
+        "client" : "artefactInstances[mdms]/required[ringoRequired]",
+        "server" : "artefactInstances[ringojs]/provided[ringoProvided]"
+    },{
+        "name" : "ringo2mdms2",
+        "type" : "bindingTypes[RingoMDMS2]",
+        "client" : "artefactInstances[mdms2]/required[ringoRequired2]",
+        "server" : "artefactInstances[ringojs2]/provided[ringoProvided2]"
+    },{
+        "name" : "ringo3mdms3",
+        "type" : "bindingTypes[RingoMDMS3]",
+        "client" : "artefactInstances[mdms3]/required[ringoRequired3]",
+        "server" : "artefactInstances[ringojs3]/provided[ringoProvided3]"
+    },
+	{
+        "name" : "ringo4mdms4",
+        "type" : "bindingTypes[RingoMDMS4]",
+        "client" : "artefactInstances[mdms4]/required[ringoRequired4]",
+        "server" : "artefactInstances[ringojs4]/provided[ringoProvided4]"
+    },{
+        "name" : "ringo5mdms5",
+        "type" : "bindingTypes[RingoMDMS5]",
+        "client" : "artefactInstances[mdms5]/required[ringoRequired5]",
+        "server" : "artefactInstances[ringojs5]/provided[ringoProvided5]"
+    },{
+        "name" : "ringo6mdms6",
+        "type" : "bindingTypes[RingoMDMS]",
+        "client" : "artefactInstances[mdms5]/required[ringoRequired5]",
+        "server" : "artefactInstances[ringojs5]/provided[ringoProvided5]"
+    },{
+        "name" : "ringo7mdms7",
+        "type" : "bindingTypes[RingoMDMS2]",
+        "client" : "artefactInstances[mdms7]/required[ringoRequired7]",
+        "server" : "artefactInstances[ringojs7]/provided[ringoProvided7]"
+    },{
+        "name" : "ringo8mdms8",
+        "type" : "bindingTypes[RingoMDMS3]",
+        "client" : "artefactInstances[mdms8]/required[ringoRequired8]",
+        "server" : "artefactInstances[ringojs8]/provided[ringoProvided8]"
+    },{
+        "name" : "ringo9mdms9",
+        "type" : "bindingTypes[RingoMDMS4]",
+        "client" : "artefactInstances[mdms9]/required[ringoRequired9]",
+        "server" : "artefactInstances[ringojs9]/provided[ringoProvided9]"
+    },{
+        "name" : "ringo10mdms10",
+        "type" : "bindingTypes[RingoMDMS5]",
+        "client" : "artefactInstances[mdms10]/required[ringoRequired10]",
+        "server" : "artefactInstances[ringojs10]/provided[ringoProvided10]"
+    },{
+        "name" : "mdmsdb",
+        "type" : "bindingTypes[MDMSDB]",
+        "client" : "artefactInstances[mdms]/required[redisRequired]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms2db",
+        "type" : "bindingTypes[MDMS2DB]",
+        "client" : "artefactInstances[mdms2]/required[redisRequired2]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms3db",
+        "type" : "bindingTypes[MDMS3DB]",
+        "client" : "artefactInstances[mdms3]/required[redisRequired3]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms4db",
+        "type" : "bindingTypes[MDMS4DB]",
+        "client" : "artefactInstances[mdms4]/required[redisRequired4]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms5db",
+        "type" : "bindingTypes[MDMS5DB]",
+        "client" : "artefactInstances[mdms5]/required[redisRequired5]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms6db",
+        "type" : "bindingTypes[MDMSDB]",
+        "client" : "artefactInstances[mdms6]/required[redisRequired6]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms7db",
+        "type" : "bindingTypes[MDMS2DB]",
+        "client" : "artefactInstances[mdms7]/required[redisRequired7]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms8db",
+        "type" : "bindingTypes[MDMS3DB]",
+        "client" : "artefactInstances[mdms8]/required[redisRequired8]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms9db",
+        "type" : "bindingTypes[MDMS4DB]",
+        "client" : "artefactInstances[mdms9]/required[redisRequired9]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "mdms10db",
+        "type" : "bindingTypes[MDMS5DB]",
+        "client" : "artefactInstances[mdms10]/required[redisRequired10]",
+        "server" : "artefactInstances[redis]/provided[redisProvided]"
+    },{
+        "name" : "lbmdms",
+        "type" : "bindingTypes[LBMDMS]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms]/provided[mdmsProvided]"
+    },{
+        "name" : "lbmdms2",
+        "type" : "bindingTypes[LBMDMS2]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms2]/provided[mdmsProvided2]"
+    },{
+        "name" : "lbmdms3",
+        "type" : "bindingTypes[LBMDMS3]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms3]/provided[mdmsProvided3]"
+    },{
+        "name" : "lbmdms4",
+        "type" : "bindingTypes[LBMDMS4]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms4]/provided[mdmsProvided4]"
+    },{
+        "name" : "lbmdms5",
+        "type" : "bindingTypes[LBMDMS5]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms5]/provided[mdmsProvided5]"
+    },{
+        "name" : "lbmdms6",
+        "type" : "bindingTypes[LBMDMS6]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms6]/provided[mdmsProvided6]"
+    },{
+        "name" : "lbmdms7",
+        "type" : "bindingTypes[LBMDMS7]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms7]/provided[mdmsProvided7]"
+    },{
+        "name" : "lbmdms8",
+        "type" : "bindingTypes[LBMDMS8]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms8]/provided[mdmsProvided8]"
+    },{
+        "name" : "lbmdms9",
+        "type" : "bindingTypes[LBMDMS9]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms9]/provided[mdmsProvided9]"
+    },{
+        "name" : "lbmdms10",
+        "type" : "bindingTypes[LBMDMS10]",
+        "client" : "artefactInstances[mdms-lb]/required[mdmsRequired]",
+        "server" : "artefactInstances[mdms10]/provided[mdmsProvided10]"
+    }
+    ]
+}

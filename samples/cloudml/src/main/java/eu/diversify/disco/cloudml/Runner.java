@@ -18,6 +18,7 @@
 
 package eu.diversify.disco.cloudml;
 
+import eu.diversify.disco.cloudml.util.DotPrinter;
 import eu.diversify.disco.controller.problem.Solution;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -64,7 +65,8 @@ public class Runner {
                 model = loadModelFrom(file);
                 Solution solution = controller.applyTo(model);
                 System.out.println(solution);
-
+                new DotPrinter().saveAs(model, file.replace(".json", ".dot")); 
+                        
             } catch (FileNotFoundException ex) {
                 System.out.println(
                         "Error: Unable to access file '" + file + "' (skipped).");
@@ -78,7 +80,7 @@ public class Runner {
         filesToLoad.clear();
         for (String argument : arguments) {
             final String escaped = argument.trim();
-            if (escaped.matches("[^\\.]*\\.json$")) {
+                if (escaped.matches("[^\\.]*\\.json$")) {
                 filesToLoad.add(escaped);
             }
             else if (escaped.matches(
@@ -93,7 +95,7 @@ public class Runner {
 
         if (filesToLoad.isEmpty()) {
             System.out.println(
-                    "Warning: no CloudML file to load, using defaulf file '" + DEFAULT_CLOUDML_MODEL + "'");
+                    "Warning: no CloudML file to load, using default file '" + DEFAULT_CLOUDML_MODEL + "'");
             filesToLoad.add(DEFAULT_CLOUDML_MODEL);
         }
     }

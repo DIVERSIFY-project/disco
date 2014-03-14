@@ -7,14 +7,17 @@
         <artifactId>samples</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
+
     <groupId>eu.diversify.disco</groupId>
     <artifactId>samples.cloudml</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>Disco :: Samples :: CloudML</name>
     <url>http://maven.apache.org</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         
         <dependency>
@@ -60,7 +63,7 @@
             <version>1.3</version>
         </dependency>
         
-          <dependency>
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
             <version>1.3</version>
@@ -71,7 +74,7 @@
             <artifactId>jmock-junit4</artifactId>
             <version>2.6.0</version>
             <scope>test</scope>
-               <exclusions>
+            <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit-dep</artifactId>
@@ -92,4 +95,36 @@
         </dependency>
       
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptorRefs> 
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>eu.diversify.disco.cloudml.Runner</mainClass>
+                        </manifest>
+                    </archive>
+                    <finalName>cloudml-controller</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>          
+            </plugin>
+        </plugins>
+    </build>
+
+
 </project>
