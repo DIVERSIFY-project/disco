@@ -2,33 +2,33 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  */
 package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.controller.problem.Solution;
+import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class Gui extends javax.swing.JFrame implements ControllerListener {
-    
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private final DiversityController controller;
 
     /**
@@ -46,7 +46,7 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
 
     private void refresh() {
         try {
-            
+
             this.controller.setDiversity(getSetPoint());
 
         } catch (FileNotFoundException ex) {
@@ -62,9 +62,18 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         }
     }
 
+    public void setFileToLoad(String file) {
+        this.fileToLoad.setText(file);
+        loadModel();
+    }
+
+    public void setSetPoint(double reference) {
+        this.setPoint.setValue((int) Math.round(reference * 100));
+    }
+
     @Override
     public void onSolution(Solution solution) {
-        console.append("\n\n-----\n");
+        console.append("\n-----\n");
         console.append(solution.toString());
         console.repaint();
     }
@@ -74,7 +83,6 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         final String fileName = context.getFileNameWithExtension(".png");
         ImageIcon icon = new ImageIcon(fileName);
         icon.getImage().flush();
-        System.out.println(fileName);
         visualisation.setText("");
         visualisation.setIcon(icon);
         this.repaint();
@@ -121,6 +129,11 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
 
         fileToLoad.setText("c:\\Users\\franckc\\mdms.json");
         fileToLoad.setToolTipText("path to the CloudML model you want to load");
+        fileToLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileToLoadUpdated(evt);
+            }
+        });
 
         chooseModel.setText("Choose");
         chooseModel.addActionListener(new java.awt.event.ActionListener() {
@@ -201,16 +214,6 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         if (result == JFileChooser.APPROVE_OPTION) {
             final String fileName = chooser.getSelectedFile().getAbsolutePath();
             fileToLoad.setText(fileName);
-            try {
-                this.controller.loadDeployment(fileName);
-
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this,
-                                              ex.getMessage(),
-                                              "Unable to load the given deployment model!",
-                                              JOptionPane.ERROR_MESSAGE);
-
-            }
             refresh();
         }
     }//GEN-LAST:event_handleChooseButtonPressed
@@ -219,7 +222,9 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         refresh();
     }//GEN-LAST:event_updateSetPoint
 
-
+    private void fileToLoadUpdated(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileToLoadUpdated
+        loadModel();
+    }//GEN-LAST:event_fileToLoadUpdated
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chooseModel;
     private javax.swing.JTextArea console;
@@ -231,4 +236,18 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
     private javax.swing.JSlider setPoint;
     private javax.swing.JLabel visualisation;
     // End of variables declaration//GEN-END:variables
+
+    private void loadModel() throws HeadlessException {
+        try {
+            this.controller.loadDeployment(fileToLoad.getText());
+
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this,
+                                          ex.getMessage(),
+                                          "Unable to load the given deployment model!",
+                                          JOptionPane.ERROR_MESSAGE);
+
+        }
+        refresh();
+    }
 }

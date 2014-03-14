@@ -41,26 +41,14 @@ public class Runner {
             + "License LGPLv3+: GNU LGPL version 3 or later <http://gnu.org/licenses/lgpl.html>\n"
             + "This is free software: you are free to change and redistribute it.\n"
             + "There is NO WARRANTY, to the extent permitted by law.\n";
-    public static final double DEFAULT_DIVERSITY_REFERENCE = 0.25;
-    public static final String DEFAULT_CLOUDML_MODEL = "sensapp.json";
 
     public static void main(String[] args) {
         Runner runner = new Runner();
         runner.run(args);
     }
 
-    private ArrayList<String> filesToLoad;
-    private double diversity;
-
-    public Runner() {
-        this.filesToLoad = new ArrayList<String>();
-        this.filesToLoad.add(DEFAULT_CLOUDML_MODEL);
-        this.diversity = DEFAULT_DIVERSITY_REFERENCE;
-    }
-
     public void run(String[] arguments) {
         System.out.println(DISCLAIMER);
-
         final Options options = Options.fromCommandLineArguments(arguments);
         options.launchDiversityController();
     }

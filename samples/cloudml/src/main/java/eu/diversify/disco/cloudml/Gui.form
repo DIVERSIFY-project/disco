@@ -105,6 +105,9 @@
         <Property name="text" type="java.lang.String" value="c:\u005cUsers\u005cfranckc\u005cmdms.json" containsInvalidXMLChars="true"/>
         <Property name="toolTipText" type="java.lang.String" value="path to the CloudML model you want to load"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fileToLoadUpdated"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="chooseModel">
       <Properties>

@@ -29,8 +29,8 @@ public class CommandLine implements ControllerListener {
  
     @Override
     public void onVisualisation(DiversityController controller) {
-        System.out.println("Results stored in '" + controller.getFileNameWithExtension(".dot"));
-        System.out.println("Results stored in '" + controller.getFileNameWithExtension(".png"));
+        System.out.println("Results stored in '" + controller.getFileNameWithExtension(".dot") + "'");
+        System.out.println("Results stored in '" + controller.getFileNameWithExtension(".png") + "'");
     }
 
     private void loadDeployment(String deployment) {

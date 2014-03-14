@@ -2,7 +2,6 @@
  */
 package eu.diversify.disco.cloudml;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,27 +79,28 @@ public class Options {
     public void launchDiversityController() {
         final DiversityController controller = new DiversityController();
         if (guiEnabled) {
-            startGui(this, controller);
-
+            startGui(controller);
         }
         else {
-            startCommandLine(this, controller);
+            startCommandLine(controller);
         }
     }
 
-    private void startGui(final Options options, final DiversityController controller) {
+    private void startGui(final DiversityController controller) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 final Gui gui = new Gui(controller);
+                gui.setFileToLoad(deploymentModels.get(0));
+                gui.setSetPoint(reference);
                 gui.setVisible(true);
             }
         });
     }
 
-    private void startCommandLine(final Options options, final DiversityController controller) {
+    private void startCommandLine(final DiversityController controller) {
         final CommandLine commandLine = new CommandLine(controller);
-        for (String deployment : options.getDeploymentModels()) {
-            commandLine.controlDiversity(deployment, options.getReference());
+        for (String deployment : getDeploymentModels()) {
+            commandLine.controlDiversity(deployment, reference);
         }
     }
 }
