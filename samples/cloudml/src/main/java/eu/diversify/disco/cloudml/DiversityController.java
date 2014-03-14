@@ -2,23 +2,6 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -34,7 +17,8 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.transformations.BidirectionalTransformation;
+import eu.diversify.disco.cloudml.transformations.ToCloudML;
+import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.cloudml.util.DotPrinter;
 import eu.diversify.disco.controller.AdaptiveHillClimber;
 import eu.diversify.disco.controller.Controller;
@@ -61,55 +45,36 @@ import org.cloudml.core.DeploymentModel;
  */
 public class DiversityController {
 
-    private final DiversityMetric metric;
-    private final Controller controller;
-    private final BidirectionalTransformation transformation;
-    private String fileName;
-    private double reference;
-    private DeploymentModel deployment;
+    public static final String DOT_TO_PNG_COMMAND = "dot -Tpng %s -o %s";
     private ArrayList<ControllerListener> listeners;
+    private String fileName;
+    private DeploymentModel deployment;
 
     /**
      * Create a new diversity controllers which ensure a given diversity level
      *
      * @param reference the diversity level to maintain
      */
-    public DiversityController(double reference) {
-        this.reference = reference;
-        this.metric = new TrueDiversity().normalise();
-        this.controller = new AdaptiveHillClimber();
-        this.transformation = new BidirectionalTransformation();
+    public DiversityController() {
         this.listeners = new ArrayList<ControllerListener>();
     }
-    
+
     public void addListener(ControllerListener listener) {
         this.listeners.add(listener);
     }
 
-    // FIXME: to be tear down
-    public Solution applyTo(DeploymentModel current) {
-        Population population = transformation.toPopulation(current);
-        Problem problem = new ProblemBuilder()
+    private void doControl(double reference) {
+        final Controller controller = new AdaptiveHillClimber();
+        final DiversityMetric metric = new TrueDiversity().normalise();
+        final Population population = new ToPopulation().applyTo(deployment);
+        final Problem problem = new ProblemBuilder()
                 .withInitialPopulation(population)
-                .withDiversityMetric(this.metric)
-                .withReferenceDiversity(this.reference)
+                .withDiversityMetric(metric)
+                .withReferenceDiversity(reference)
                 .make();
-        Solution solution = this.controller.applyTo(problem);
+        final Solution solution = controller.applyTo(problem);
         publishSolution(solution);
-        transformation.toCloudML(current, solution.getPopulation());
-        return solution;
-    }
-
-    private void doControl() {
-        Population population = transformation.toPopulation(deployment);
-        Problem problem = new ProblemBuilder()
-                .withInitialPopulation(population)
-                .withDiversityMetric(this.metric)
-                .withReferenceDiversity(this.reference)
-                .make();
-        Solution solution = this.controller.applyTo(problem);
-        publishSolution(solution);
-        transformation.toCloudML(deployment, solution.getPopulation());
+        new ToCloudML().applyTo(deployment, solution.getPopulation());
     }
 
     public void loadDeployment(String fileName) throws FileNotFoundException {
@@ -120,18 +85,13 @@ public class DiversityController {
     }
 
     public void setDiversity(double setPoint) throws FileNotFoundException {
-        this.reference = setPoint;
-        doControl();
+        doControl(setPoint);
         updateDotFile();
-    }
-
-    void saveDeploymentAs(String temporaryDotFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        updatePngFile();
     }
 
     private void updateDotFile() throws FileNotFoundException {
         new DotPrinter().saveAs(deployment, getFileNameWithExtension(".dot"));
-        updatePngFile();
     }
 
     public void updatePngFile() {
@@ -139,9 +99,8 @@ public class DiversityController {
         try {
             final String pngFileName = getFileNameWithExtension(".png");
             final String dotFileName = getFileNameWithExtension(".dot");
-            Process process = runtime.exec(
-                    String.format(
-                    "dot -Tpng %s -o %s", dotFileName, pngFileName));
+            final String command = String.format(DOT_TO_PNG_COMMAND, dotFileName, pngFileName);
+            Process process = runtime.exec(command);
             final int errorCode = process.waitFor();
             publishVisualisation();
 

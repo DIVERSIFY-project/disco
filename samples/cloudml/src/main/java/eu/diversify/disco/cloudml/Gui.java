@@ -23,19 +23,20 @@ import eu.diversify.disco.controller.problem.Solution;
 import java.io.FileNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-public class ControllerView extends javax.swing.JFrame implements ControllerListener {
+public class Gui extends javax.swing.JFrame implements ControllerListener {
+    
+    private static final long serialVersionUID = 1L;
 
-    private DiversityController controller;
+    private final DiversityController controller;
 
     /**
-     * Creates new form ControllerView
+     * Creates new form Gui
      */
-    public ControllerView() {
+    public Gui(DiversityController controller) {
         initComponents();
-        this.controller = new DiversityController(0.5);
+        this.controller = controller;
         this.controller.addListener(this);
     }
 
@@ -218,19 +219,7 @@ public class ControllerView extends javax.swing.JFrame implements ControllerList
         refresh();
     }//GEN-LAST:event_updateSetPoint
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /*
-         * Create and display the form
-         */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ControllerView().setVisible(true);
-            }
-        });
-    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chooseModel;
     private javax.swing.JTextArea console;
