@@ -37,8 +37,16 @@
 package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.controller.problem.Solution;
+import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -98,12 +106,30 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
     @Override
     public void onVisualisation(DiversityController context) {
         final String fileName = context.getFileNameWithExtension(".png");
-        ImageIcon icon = new ImageIcon(fileName);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File(fileName));
+        } catch (IOException ex) {
+            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        BufferedImage resizedImage=resize(image,visualisation.getWidth(),visualisation.getHeight());//resize the image to 100x100
+        ImageIcon icon = new ImageIcon(resizedImage);
         icon.getImage().flush();
         visualisation.setText("");
         visualisation.setIcon(icon);
         this.repaint();
     }
+    
+    public static BufferedImage resize(BufferedImage image, int width, int height) {
+    BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+    g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+    // Keep the aspect ratio:
+    height = (int) (image.getHeight() * (width*1D / image.getWidth()));
+    g2d.drawImage(image, 0, 0, width, height, null);
+    g2d.dispose();
+    return bi;
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
