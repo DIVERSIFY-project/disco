@@ -113,7 +113,7 @@ public class CbaExperiment implements Experiment {
     }
 
     private DeploymentModel diversifyDeployment(DeploymentModel model, double reference) {
-        DiversityController controller = new DiversityController(reference);
+        DiversityController controller = new DiversityController();
         // FIXME: the following line fails
         // return controller.applyTo(cloudml).getRoot(); 
         return model;

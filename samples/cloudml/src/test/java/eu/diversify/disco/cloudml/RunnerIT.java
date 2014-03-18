@@ -34,7 +34,7 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Before;
 
 @RunWith(JUnit4.class)
-public class RunnerTest extends TestCase {
+public class RunnerIT extends TestCase {
 
     @Before
     public void setUp() throws IOException {
