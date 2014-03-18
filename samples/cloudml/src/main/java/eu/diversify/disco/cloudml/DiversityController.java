@@ -49,6 +49,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.cloudml.codecs.JsonCodec;
 import org.cloudml.core.DeploymentModel;
 
@@ -102,6 +104,7 @@ public class DiversityController {
     }
 
     public void setDiversity(double setPoint) throws FileNotFoundException {
+        reloadDeployment();
         doControl(setPoint);
         updateDotFile();
         updatePngFile();
@@ -148,5 +151,17 @@ public class DiversityController {
         for (ControllerListener listener : listeners) {
             listener.onVisualisation(this);
         }
+    }
+
+    private void reloadDeployment() {
+        try {
+            loadDeployment(fileName);
+        } catch (FileNotFoundException ex) {
+            publishErrorWhileLoadingModel();
+        }
+    }
+
+    private void publishErrorWhileLoadingModel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
