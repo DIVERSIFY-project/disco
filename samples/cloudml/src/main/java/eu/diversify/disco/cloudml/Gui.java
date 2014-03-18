@@ -112,7 +112,7 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         } catch (IOException ex) {
             Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
         }
-        BufferedImage resizedImage=resize(image,visualisation.getWidth(),visualisation.getHeight());//resize the image to 100x100
+        BufferedImage resizedImage=resize(image,visualisation.getWidth(),visualisation.getHeight(), true);//resize the image to 100x100
         ImageIcon icon = new ImageIcon(resizedImage);
         icon.getImage().flush();
         visualisation.setText("");
@@ -120,12 +120,12 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         this.repaint();
     }
     
-    public static BufferedImage resize(BufferedImage image, int width, int height) {
+    public static BufferedImage resize(BufferedImage image, int width, int height, boolean keepAspectRatio) {
     BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
         Graphics2D g2d = (Graphics2D) bi.createGraphics();
     g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
     // Keep the aspect ratio:
-    height = (int) (image.getHeight() * (width*1D / image.getWidth()));
+    if (keepAspectRatio) height = (int) (image.getHeight() * (width*1D / image.getWidth()));
     g2d.drawImage(image, 0, 0, width, height, null);
     g2d.dispose();
     return bi;
