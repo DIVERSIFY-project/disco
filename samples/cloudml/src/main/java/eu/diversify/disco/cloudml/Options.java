@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
+
 package eu.diversify.disco.cloudml;
 
 import java.util.ArrayList;
@@ -107,8 +107,8 @@ public class Options {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 final Gui gui = new Gui(controller);
+                gui.setReference(reference);
                 gui.setFileToLoad(deploymentModels.get(0));
-                gui.setSetPoint(reference);
                 gui.setVisible(true);
             }
         });

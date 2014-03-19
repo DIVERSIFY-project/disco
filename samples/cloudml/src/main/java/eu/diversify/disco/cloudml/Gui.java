@@ -32,8 +32,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
+
 package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.controller.problem.Solution;
@@ -56,9 +56,6 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
     private static final long serialVersionUID = 1L;
     private final DiversityController controller;
 
-    /**
-     * Creates new form Gui
-     */
     public Gui(DiversityController controller) {
         initComponents();
         this.controller = controller;
@@ -69,38 +66,21 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         return this.setPoint.getValue() / 100D;
     }
 
-    private void refresh() {
-        try {
-
-            this.controller.setDiversity(getSetPoint());
-
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(this,
-                                          ex.getMessage(),
-                                          "Error while adjusting the diversity level",
-                                          JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                                          ex.getMessage(),
-                                          "Error while adjusting the diversity level",
-                                          JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     public void setFileToLoad(String file) {
         this.fileToLoad.setText(file);
         loadModel();
     }
 
-    public void setSetPoint(double reference) {
+    public void setReference(double reference) {
         this.setPoint.setValue((int) Math.round(reference * 100));
     }
 
     @Override
     public void onSolution(Solution solution) {
+        setReference(solution.getDiversity());
         console.append("\n-----\n");
         console.append(solution.toString());
-        console.repaint();
+        this.repaint();
     }
 
     @Override
@@ -112,24 +92,27 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         } catch (IOException ex) {
             Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
         }
-        BufferedImage resizedImage=resize(image,visualisation.getWidth(),visualisation.getHeight(), true);//resize the image to 100x100
+        BufferedImage resizedImage = resize(image, visualisation.getWidth(), visualisation.getHeight(), true);//resize the image to 100x100
         ImageIcon icon = new ImageIcon(resizedImage);
         icon.getImage().flush();
         visualisation.setText("");
         visualisation.setIcon(icon);
         this.repaint();
     }
-    
+
+    // FIXME: to move in a proper place 
     public static BufferedImage resize(BufferedImage image, int width, int height, boolean keepAspectRatio) {
-    BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
         Graphics2D g2d = (Graphics2D) bi.createGraphics();
-    g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-    // Keep the aspect ratio:
-    if (keepAspectRatio) height = (int) (image.getHeight() * (width*1D / image.getWidth()));
-    g2d.drawImage(image, 0, 0, width, height, null);
-    g2d.dispose();
-    return bi;
-}
+        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+        // Keep the aspect ratio:
+        if (keepAspectRatio) {
+            height = (int) (image.getHeight() * (width * 1D / image.getWidth()));
+        }
+        g2d.drawImage(image, 0, 0, width, height, null);
+        g2d.dispose();
+        return bi;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -149,6 +132,7 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         container = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         visualisation = new javax.swing.JLabel();
+        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Disco v0.1 - Diversity Controller for CloudML models");
@@ -161,11 +145,6 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         setPoint.setSnapToTicks(true);
         setPoint.setBorder(javax.swing.BorderFactory.createTitledBorder("Diversity (%) :"));
         setPoint.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
-        setPoint.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                updateSetPoint(evt);
-            }
-        });
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText("CloudML model:");
@@ -201,12 +180,20 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 889, Short.MAX_VALUE)
         );
         containerLayout.setVerticalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
+
+        updateButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        updateButton.setText("Update");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -219,7 +206,9 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 1, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,7 +231,11 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -257,17 +250,25 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         if (result == JFileChooser.APPROVE_OPTION) {
             final String fileName = chooser.getSelectedFile().getAbsolutePath();
             fileToLoad.setText(fileName);
-            refresh();
-        }
+            loadModel();
+       }
     }//GEN-LAST:event_handleChooseButtonPressed
-
-    private void updateSetPoint(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_updateSetPoint
-        refresh();
-    }//GEN-LAST:event_updateSetPoint
 
     private void fileToLoadUpdated(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileToLoadUpdated
         loadModel();
     }//GEN-LAST:event_fileToLoadUpdated
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        try {
+            controller.setDiversity(getSetPoint());
+            
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this,
+                                          ex.getMessage(),
+                                          "Error while accessing the selected model",
+                                          JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_updateButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chooseModel;
     private javax.swing.JTextArea console;
@@ -277,6 +278,7 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSlider setPoint;
+    private javax.swing.JButton updateButton;
     private javax.swing.JLabel visualisation;
     // End of variables declaration//GEN-END:variables
 
@@ -291,6 +293,5 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
                                           JOptionPane.ERROR_MESSAGE);
 
         }
-        refresh();
     }
 }

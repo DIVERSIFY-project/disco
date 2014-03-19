@@ -32,6 +32,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.cloudml.transformations.ToCloudML;
@@ -63,11 +80,12 @@ import org.cloudml.core.DeploymentModel;
  * @since 0.1
  */
 public class DiversityController {
-
+    
     public static final String DOT_TO_PNG_COMMAND = "dot -Tpng %s -o %s";
     private ArrayList<ControllerListener> listeners;
     private String fileName;
     private DeploymentModel deployment;
+    private Problem problem;
 
     /**
      * Create a new diversity controllers which ensure a given diversity level
@@ -77,43 +95,50 @@ public class DiversityController {
     public DiversityController() {
         this.listeners = new ArrayList<ControllerListener>();
     }
-
+    
     public void addListener(ControllerListener listener) {
         this.listeners.add(listener);
     }
-
-    private void doControl(double reference) {
-        final Controller controller = new AdaptiveHillClimber();
-        final DiversityMetric metric = new TrueDiversity().normalise();
-        final Population population = new ToPopulation().applyTo(deployment);
-        final Problem problem = new ProblemBuilder()
-                .withInitialPopulation(population)
-                .withDiversityMetric(metric)
-                .withReferenceDiversity(reference)
-                .make();
-        final Solution solution = controller.applyTo(problem);
-        publishSolution(solution);
-        new ToCloudML().applyTo(deployment, solution.getPopulation());
+    
+    public Problem getCurrentProblem() {
+        if (problem == null) {
+            final String message = "Error: a CloudML model shall first be loaded!";
+            throw new IllegalStateException(message);
+        }
+        return this.problem;
     }
-
+    
     public void loadDeployment(String fileName) throws FileNotFoundException {
-        JsonCodec jsonCodec = new JsonCodec();
         this.fileName = fileName;
-        deployment = (DeploymentModel) jsonCodec.load(new FileInputStream(fileName));
+        prepareDefaultProblem(fileName);
+        publishSolution(problem.getInitialEvaluation());
         updateDotFile();
+        updatePngFile();
     }
-
+    
+    private void doControl(double reference) {
+        try {
+            final Controller controller = new AdaptiveHillClimber();
+            prepareProblem(fileName, reference);
+            final Solution solution = controller.applyTo(problem);
+            publishSolution(solution);
+            new ToCloudML().applyTo(deployment, solution.getPopulation());
+        } catch (FileNotFoundException ex) {
+            publishErrorWhileLoadingModel();
+        }
+    }
+    
     public void setDiversity(double setPoint) throws FileNotFoundException {
         reloadDeployment();
         doControl(setPoint);
         updateDotFile();
         updatePngFile();
     }
-
+    
     private void updateDotFile() throws FileNotFoundException {
         new DotPrinter().saveAs(deployment, getFileNameWithExtension(".dot"));
     }
-
+    
     public void updatePngFile() {
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -123,45 +148,72 @@ public class DiversityController {
             Process process = runtime.exec(command);
             final int errorCode = process.waitFor();
             publishVisualisation();
-
+            
         } catch (IOException ex) {
             publishErrorWhileGeneratingPngVisualisation(ex);
-
+            
         } catch (InterruptedException ex) {
             publishErrorWhileGeneratingPngVisualisation(ex);
-
+            
         }
     }
-
+    
     public String getFileNameWithExtension(String extension) {
         return fileName.replace(".json", extension);
     }
-
+    
     private void publishSolution(Solution solution) {
         for (ControllerListener listener : listeners) {
             listener.onSolution(solution);
         }
     }
-
+    
     private void publishErrorWhileGeneratingPngVisualisation(Exception ex) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     private void publishVisualisation() {
         for (ControllerListener listener : listeners) {
             listener.onVisualisation(this);
         }
     }
-
+    
     private void reloadDeployment() {
         try {
             loadDeployment(fileName);
+            
         } catch (FileNotFoundException ex) {
             publishErrorWhileLoadingModel();
         }
     }
-
+    
     private void publishErrorWhileLoadingModel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private void prepareDefaultProblem(String fileName) throws FileNotFoundException {
+        JsonCodec jsonCodec = new JsonCodec();
+        deployment = (DeploymentModel) jsonCodec.load(new FileInputStream(fileName));
+        final DiversityMetric metric = new TrueDiversity().normalise();
+        final Population population = new ToPopulation().applyTo(deployment);
+        double reference = metric.applyTo(population);
+        
+        problem = new ProblemBuilder()
+                .withInitialPopulation(population)
+                .withDiversityMetric(metric)
+                .withReferenceDiversity(reference)
+                .make();
+    }
+    
+    private void prepareProblem(String fileName, double reference) throws FileNotFoundException {
+        JsonCodec jsonCodec = new JsonCodec();
+        deployment = (DeploymentModel) jsonCodec.load(new FileInputStream(fileName));
+        final DiversityMetric metric = new TrueDiversity().normalise();
+        final Population population = new ToPopulation().applyTo(deployment);
+        problem = new ProblemBuilder()
+                .withInitialPopulation(population)
+                .withDiversityMetric(metric)
+                .withReferenceDiversity(reference)
+                .make();
     }
 }
