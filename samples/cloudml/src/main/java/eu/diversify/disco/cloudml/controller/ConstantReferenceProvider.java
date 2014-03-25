@@ -19,9 +19,9 @@
  */
 package eu.diversify.disco.cloudml.controller;
 
-import eu.diversify.disco.controller.ReferenceProvider;
+import eu.diversify.disco.controller.Reference;
 
-public class ConstantReferenceProvider implements ReferenceProvider {
+public class ConstantReferenceProvider implements Reference {
 
     private double reference;
 

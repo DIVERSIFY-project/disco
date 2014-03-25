@@ -1,20 +1,3 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
 /*
  */
 
@@ -29,13 +12,13 @@ import eu.diversify.disco.population.PopulationWriter;
 
 public class Facade {
     
-    private final ReferenceProvider reference;
+    private final Reference reference;
     private final PopulationReader source;
     private final Controller strategy;
     private final PopulationWriter target;
     private final ProblemBuilder builder;
 
-    public Facade(ProblemBuilder builder, ReferenceProvider reference, PopulationReader source, Controller strategy, PopulationWriter target) {
+    public Facade(ProblemBuilder builder, Reference reference, PopulationReader source, Controller strategy, PopulationWriter target) {
         this.reference = reference;
         this.source = source;
         this.strategy = strategy;

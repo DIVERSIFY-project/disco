@@ -20,7 +20,7 @@
 package eu.diversify.disco.controller;
 
 
-public interface ReferenceProvider {
+public interface Reference {
     
     public double getReference();
     

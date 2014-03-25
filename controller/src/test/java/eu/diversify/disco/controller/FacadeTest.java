@@ -60,7 +60,7 @@ public class FacadeTest extends TestCase {
                 .make()
                 .getInitialEvaluation();
         
-        final ReferenceProvider user = context.mock(ReferenceProvider.class);
+        final Reference user = context.mock(Reference.class);
         final PopulationReader reader = context.mock(PopulationReader.class);
         final PopulationWriter writer = context.mock(PopulationWriter.class);
         final Controller strategy = context.mock(Controller.class);
