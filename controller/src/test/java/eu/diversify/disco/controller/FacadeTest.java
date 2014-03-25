@@ -23,8 +23,6 @@ import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
-import eu.diversify.disco.population.PopulationReader;
-import eu.diversify.disco.population.PopulationWriter;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import junit.framework.TestCase;
 import org.jmock.Expectations;
@@ -71,7 +69,7 @@ public class FacadeTest extends TestCase {
             exactly(1).of(user).getReference(); will(returnValue(reference));
             exactly(1).of(reader).read(); will(returnValue(input));
             exactly(1).of(strategy).applyTo(with(any(Problem.class))); will(returnValue(output)); 
-            exactly(1).of(writer).write(with(any(Population.class)));
+            exactly(1).of(writer).write(with(any(Solution.class)));
         }});
         
         facade.control();

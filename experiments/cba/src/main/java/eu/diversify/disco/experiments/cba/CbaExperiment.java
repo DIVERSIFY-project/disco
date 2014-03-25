@@ -28,6 +28,7 @@ import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.diversity.MetricFactory;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -113,7 +114,7 @@ public class CbaExperiment implements Experiment {
     }
 
     private DeploymentModel diversifyDeployment(DeploymentModel model, double reference) {
-        CloudMLController controller = new CloudMLController();
+        CloudMLController controller = new CloudMLController(new TrueDiversity().normalise());
         // FIXME: the following line fails
         // return controller.applyTo(cloudml).getRoot(); 
         return model;

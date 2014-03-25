@@ -19,6 +19,7 @@
 
 package eu.diversify.disco.cloudml;
 
+import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 
 
@@ -73,8 +74,8 @@ public class CommandLine implements ControllerUI {
     }
 
     @Override
-    public void onDiversityInjected(Population prescription) {
-        System.out.println("Injection of: " + prescription);
+    public void onDiversityInjected(Solution solution) {
+        System.out.println("After injection : " + solution);
     }
 
     @Override

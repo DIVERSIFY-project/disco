@@ -21,6 +21,7 @@ import eu.diversify.disco.cloudml.controller.ConstantReferenceProvider;
 import eu.diversify.disco.cloudml.controller.DiversityController;
 import eu.diversify.disco.cloudml.transformations.ToCloudML;
 import eu.diversify.disco.cloudml.transformations.ToPopulation;
+import eu.diversify.disco.population.diversity.DiversityMetric;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cloudml.core.DeploymentModel;
@@ -32,11 +33,11 @@ public class CloudMLController {
     private final DiversityController<DeploymentModel> controller;
     private final CloudMLModel target;
 
-    public CloudMLController() {
+    public CloudMLController(DiversityMetric metric) {
         reference = new ConstantReferenceProvider();
         source = new CloudMLModel();
         target = new CloudMLModel();
-        controller = new DiversityController<DeploymentModel>(source, new ToPopulation(), reference, new ToCloudML(), target);
+        controller = new DiversityController<DeploymentModel>(metric, source, new ToPopulation(), reference, new ToCloudML(), target); 
     }
 
     public void setReference(double reference) {

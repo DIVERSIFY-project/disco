@@ -19,6 +19,7 @@
  */
 package eu.diversify.disco.cloudml.controller;
 
+import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 
 /**
@@ -34,7 +35,7 @@ public interface DiversityControllerListener {
     
     public void onErrorWhileControllingDiversity();
     
-    public void onDiversityInjected(Population prescription);
+    public void onDiversityInjected(Solution description);
     
     public void onErrorWhileInjectingDiversity();
     

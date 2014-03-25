@@ -19,6 +19,7 @@
 
 package eu.diversify.disco.cloudml;
 
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -94,7 +95,7 @@ public class Options {
     }
 
     public void launchDiversityController() {
-        final CloudMLController controller = new CloudMLController();
+        final CloudMLController controller = new CloudMLController(new TrueDiversity().normalise());
         if (guiEnabled) {
             startGui(controller);
         }

@@ -16,11 +16,13 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.population;
+package eu.diversify.disco.controller;
+
+import eu.diversify.disco.controller.problem.Solution;
 
 
 public interface PopulationWriter {
 
-    public void write(Population population);
+    public void write(Solution solution);
     
 }

@@ -59,12 +59,14 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel2" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
-                  <Component id="fileToLoad" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
-                  <Component id="chooseModel" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="loadButton" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
-                  <Component id="updateButton" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel2" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                      <Component id="fileToLoad" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                      <Component id="chooseModel" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                      <Component id="updateButton" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
