@@ -17,7 +17,7 @@
  */
 package eu.diversify.disco.experiments.cba;
 
-import eu.diversify.disco.cloudml.DiversityController;
+import eu.diversify.disco.cloudml.CloudMLController;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.indicators.cost.CostAsSize;
 import eu.diversify.disco.cloudml.indicators.diversity.DiversityCalculator;
@@ -113,7 +113,7 @@ public class CbaExperiment implements Experiment {
     }
 
     private DeploymentModel diversifyDeployment(DeploymentModel model, double reference) {
-        DiversityController controller = new DiversityController();
+        CloudMLController controller = new CloudMLController();
         // FIXME: the following line fails
         // return controller.applyTo(cloudml).getRoot(); 
         return model;

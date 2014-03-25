@@ -17,15 +17,11 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml;
-
-import eu.diversify.disco.controller.problem.Solution;
+package eu.diversify.disco.population;
 
 
-public interface ControllerListener {
+public interface PopulationReader {
 
-    public void onSolution(Solution solution);
-
-    public void onVisualisation(DiversityController aThis);
+    public Population read();
     
 }

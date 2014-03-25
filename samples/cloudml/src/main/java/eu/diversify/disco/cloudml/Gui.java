@@ -32,17 +32,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.population.Population;
 import java.awt.Graphics2D;
-import java.awt.HeadlessException;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,24 +47,23 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-public class Gui extends javax.swing.JFrame implements ControllerListener {
+public class Gui extends javax.swing.JFrame implements ControllerUI {
 
     private static final long serialVersionUID = 1L;
-    private final DiversityController controller;
+    private final CloudMLController controller;
 
-    public Gui(DiversityController controller) {
-        initComponents();
+    public Gui(CloudMLController controller) {
         this.controller = controller;
+        this.sourceModelListener = new SourceModelListener();
+        this.targetModelListener = new TargetModelListener();
         this.controller.addListener(this);
+
+        initComponents();
     }
 
-    private double getSetPoint() {
-        return this.setPoint.getValue() / 100D;
-    }
-
-    public void setFileToLoad(String file) {
-        this.fileToLoad.setText(file);
-        loadModel();
+    public void setFileToLoad(String pathToDeploymentModel) {
+        this.fileToLoad.setText(pathToDeploymentModel);
+        controller.load(pathToDeploymentModel);
     }
 
     public void setReference(double reference) {
@@ -76,28 +71,40 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
     }
 
     @Override
-    public void onSolution(Solution solution) {
-        setReference(solution.getDiversity());
-        console.append("\n-----\n");
-        console.append(solution.toString());
-        this.repaint();
+    public void onPopulationExtracted(Population description) {
+        
     }
 
     @Override
-    public void onVisualisation(DiversityController context) {
-        final String fileName = context.getFileNameWithExtension(".png");
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(new File(fileName));
-        } catch (IOException ex) {
-            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        BufferedImage resizedImage = resize(image, visualisation.getWidth(), visualisation.getHeight(), true);//resize the image to 100x100
-        ImageIcon icon = new ImageIcon(resizedImage);
-        icon.getImage().flush();
-        visualisation.setText("");
-        visualisation.setIcon(icon);
-        this.repaint();
+    public void onErrorWhileExtractingPopulation() {
+        JOptionPane.showMessageDialog(Gui.this,
+                                      null,
+                                      "Unable to extract the descriptive population",
+                                      JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public void onPopulationDiversified() {
+    }
+
+    @Override
+    public void onErrorWhileControllingDiversity() {
+         JOptionPane.showMessageDialog(Gui.this,
+                                          null,
+                                          "Unable to adjust the diversity level to " + setPoint.getValue() + " %%",
+                                          JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public void onDiversityInjected(Population prescription) { 
+    }
+
+    @Override
+    public void onErrorWhileInjectingDiversity() {
+         JOptionPane.showMessageDialog(Gui.this,
+                                          null,
+                                          "Unable to enact the prescriptive population!",
+                                          JOptionPane.ERROR_MESSAGE);
     }
 
     // FIXME: to move in a proper place 
@@ -133,6 +140,7 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         jScrollPane1 = new javax.swing.JScrollPane();
         visualisation = new javax.swing.JLabel();
         updateButton = new javax.swing.JButton();
+        loadButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Disco v0.1 - Diversity Controller for CloudML models");
@@ -145,19 +153,19 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         setPoint.setSnapToTicks(true);
         setPoint.setBorder(javax.swing.BorderFactory.createTitledBorder("Diversity (%) :"));
         setPoint.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
+        setPoint.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                referenceUpdated(evt);
+            }
+        });
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText("CloudML model:");
 
         fileToLoad.setText("c:\\Users\\franckc\\mdms.json");
         fileToLoad.setToolTipText("path to the CloudML model you want to load");
-        fileToLoad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileToLoadUpdated(evt);
-            }
-        });
 
-        chooseModel.setText("Choose");
+        chooseModel.setText("Browse");
         chooseModel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 handleChooseButtonPressed(evt);
@@ -180,18 +188,24 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 889, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
         );
         containerLayout.setVerticalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
 
-        updateButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         updateButton.setText("Update");
         updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 updateButtonActionPerformed(evt);
+            }
+        });
+
+        loadButton.setText("Load");
+        loadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadButtonPressed(evt);
             }
         });
 
@@ -206,17 +220,19 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 1, Short.MAX_VALUE)))
+                                .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(fileToLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(chooseModel)
-                                .addGap(0, 236, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(updateButton)
+                                .addContainerGap())
                             .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jScrollPane2)))
         );
@@ -227,18 +243,16 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileToLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chooseModel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(chooseModel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(setPoint, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -250,25 +264,21 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
         if (result == JFileChooser.APPROVE_OPTION) {
             final String fileName = chooser.getSelectedFile().getAbsolutePath();
             fileToLoad.setText(fileName);
-            loadModel();
-       }
+            controller.load(fileName);
+        }
     }//GEN-LAST:event_handleChooseButtonPressed
 
-    private void fileToLoadUpdated(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileToLoadUpdated
-        loadModel();
-    }//GEN-LAST:event_fileToLoadUpdated
-
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        try {
-            controller.setDiversity(getSetPoint());
-            
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(this,
-                                          ex.getMessage(),
-                                          "Error while accessing the selected model",
-                                          JOptionPane.ERROR_MESSAGE);
-        }
+        controller.control();
     }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void referenceUpdated(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_referenceUpdated
+        controller.setReference(setPoint.getValue() / 100D);
+    }//GEN-LAST:event_referenceUpdated
+
+    private void loadButtonPressed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonPressed
+        controller.load(fileToLoad.getText());
+    }//GEN-LAST:event_loadButtonPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chooseModel;
     private javax.swing.JTextArea console;
@@ -277,21 +287,104 @@ public class Gui extends javax.swing.JFrame implements ControllerListener {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton loadButton;
     private javax.swing.JSlider setPoint;
     private javax.swing.JButton updateButton;
     private javax.swing.JLabel visualisation;
     // End of variables declaration//GEN-END:variables
+    private final SourceModelListener sourceModelListener;
+    private final TargetModelListener targetModelListener;
 
-    private void loadModel() throws HeadlessException {
+    @Override
+    public CloudMLModelListener getSourceModelListener() {
+        return sourceModelListener;
+    }
+
+    @Override
+    public CloudMLModelListener getTargetModelListener() {
+        return targetModelListener;
+    }
+
+    private void updateModelImage(String fileName) {
+        BufferedImage image = null;
         try {
-            this.controller.loadDeployment(fileToLoad.getText());
+            image = ImageIO.read(new File(fileName));
+        } catch (IOException ex) {
+            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        BufferedImage resizedImage = resize(image, visualisation.getWidth(), visualisation.getHeight(), true);//resize the image to 100x100
+        ImageIcon icon = new ImageIcon(resizedImage);
+        icon.getImage().flush();
+        visualisation.setText("");
+        visualisation.setIcon(icon);
+        Gui.this.repaint();
+    }
 
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(this,
-                                          ex.getMessage(),
+    private class SourceModelListener implements CloudMLModelListener {
+
+        @Override
+        public void onModelLoaded() {
+        }
+
+        @Override
+        public void onErrorWhileLoadingModel() {
+            JOptionPane.showMessageDialog(Gui.this,
+                                          null,
                                           "Unable to load the given deployment model!",
                                           JOptionPane.ERROR_MESSAGE);
+        }
 
+        @Override
+        public void onModelSaved() {
+        }
+
+        @Override
+        public void onErrorWhileSavingModel() {
+        }
+
+        @Override
+        public void onVisualisationUpdate(String pathToVisualisation) {
+            updateModelImage(pathToVisualisation);
+        }
+
+        @Override
+        public void onErrorWhileGeneratingVisualisation() {
+        }
+    }
+
+    private class TargetModelListener implements CloudMLModelListener {
+
+        @Override
+        public void onModelLoaded() {
+        }
+
+        @Override
+        public void onErrorWhileLoadingModel() {
+        }
+
+        @Override
+        public void onModelSaved() {
+        }
+
+        @Override
+        public void onErrorWhileSavingModel() {
+            JOptionPane.showMessageDialog(Gui.this,
+                                          null,
+                                          "Unable to save the given deployment model!",
+                                          JOptionPane.ERROR_MESSAGE);
+        }
+
+        @Override
+        public void onVisualisationUpdate(String fileName) {
+            updateModelImage(fileName);
+        }
+
+        @Override
+        public void onErrorWhileGeneratingVisualisation() {
+            JOptionPane.showMessageDialog(Gui.this,
+                                          null,
+                                          "Unable to build the visualisation of the adjusted deployment model!",
+                                          JOptionPane.ERROR_MESSAGE);
         }
     }
 }

@@ -18,6 +18,7 @@
 
 package eu.diversify.disco.cloudml.transformations;
 
+import eu.diversify.disco.cloudml.controller.DiversityInjection;
 import eu.diversify.disco.cloudml.util.actions.StandardLibrary;
 import eu.diversify.disco.population.Population;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.cloudml.core.NodeInstance;
  *
  * @since 0.1
  */
-public class ToCloudML {
+public class ToCloudML implements DiversityInjection<DeploymentModel>{
 
     private final StandardLibrary deployer;
 
@@ -44,6 +45,12 @@ public class ToCloudML {
         deployer = new StandardLibrary();
     }
 
+    @Override
+    public DeploymentModel applyTo(Population prescription, DeploymentModel currentModel) {
+        return applyTo(currentModel, prescription);
+    }
+
+    
     public DeploymentModel applyTo(DeploymentModel deployment, Population toBe) {
         abortIfInvalid(deployment);
         abortIfInvalid(toBe);

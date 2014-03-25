@@ -94,7 +94,7 @@ public class Options {
     }
 
     public void launchDiversityController() {
-        final DiversityController controller = new DiversityController();
+        final CloudMLController controller = new CloudMLController();
         if (guiEnabled) {
             startGui(controller);
         }
@@ -103,8 +103,9 @@ public class Options {
         }
     }
 
-    private void startGui(final DiversityController controller) {
+    private void startGui(final CloudMLController controller) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 final Gui gui = new Gui(controller);
                 gui.setReference(reference);
@@ -114,7 +115,7 @@ public class Options {
         });
     }
 
-    private void startCommandLine(final DiversityController controller) {
+    private void startCommandLine(final CloudMLController controller) {
         final CommandLine commandLine = new CommandLine(controller);
         for (String deployment : getDeploymentModels()) {
             commandLine.controlDiversity(deployment, reference);

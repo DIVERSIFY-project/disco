@@ -18,6 +18,7 @@
 
 package eu.diversify.disco.cloudml.transformations;
 
+import eu.diversify.disco.cloudml.controller.DiversityExtraction;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
 import org.cloudml.core.Artefact;
@@ -33,8 +34,9 @@ import org.cloudml.core.visitors.Visitor;
 
 
 
-public class ToPopulation {
+public class ToPopulation implements DiversityExtraction<DeploymentModel> {
 
+    @Override
     public Population applyTo(DeploymentModel deployment) {
         //FIXME: abortIfInvalidModel(deployment);
         return extract(deployment).getExtractedPopulation();
