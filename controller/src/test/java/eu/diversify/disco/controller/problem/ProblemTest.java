@@ -36,7 +36,7 @@ package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import eu.diversify.disco.population.diversity.ShannonIndex;
 import java.util.ArrayList;
@@ -67,31 +67,31 @@ public class ProblemTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreationWithEmptyAsInitialPopulation() {
-        Population population = new PopulationBuilder().withDistribution(0, 0, 0, 0).make();
+        Population population = aPopulation().withDistribution(0, 0, 0, 0).build();
         Problem problem = new Problem(population, 0.25, new TrueDiversity(), new ArrayList<Constraint>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreationWithAReferenceIrrelevantForTheSelectedMetric() {
-        Population population = new PopulationBuilder().withDistribution(3, 4, 5, 6).make();
+        Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
         Problem problem = new Problem(population, 75, new TrueDiversity(), new ArrayList<Constraint>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreationWithNullAsDiversityMetric() {
-        Population population = new PopulationBuilder().withDistribution(3, 4, 5, 6).make();
+        Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
         Problem problem = new Problem(population, 0.25, null, new ArrayList<Constraint>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreationWithNullAsConstraints() {
-        Population population = new PopulationBuilder().withDistribution(3, 4, 5, 6).make();
+        Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
         Problem problem = new Problem(population, 0.25, new TrueDiversity(), null);
     }
 
     @Test
     public void testGetInitialEvaluation() {
-        Population initial = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initial = aPopulation().withDistribution(10, 23).build();
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
@@ -107,7 +107,7 @@ public class ProblemTest extends TestCase {
     // TODO: Test is legal ???
     @Test
     public void testProblemEqualityWithItself() {
-        Population initial = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initial = aPopulation().withDistribution(10, 23).build();
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
@@ -121,7 +121,7 @@ public class ProblemTest extends TestCase {
 
     @Test
     public void testEqualityWithNull() {
-        Population initial = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initial = aPopulation().withDistribution(10, 23).build();
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
@@ -135,7 +135,7 @@ public class ProblemTest extends TestCase {
 
     @Test
     public void testEqualityWithIncompatibleObject() {
-        Population initial = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initial = aPopulation().withDistribution(10, 23).build();
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
@@ -149,14 +149,14 @@ public class ProblemTest extends TestCase {
 
     @Test
     public void testEqualityWithTwoEquivalentProblems() {
-        Population initialA = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialA = aPopulation().withDistribution(10, 23).build();
         Problem problemA = new ProblemBuilder()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
                 .make();
 
-        Population initialB = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialB = aPopulation().withDistribution(10, 23).build();
 
         Problem problemB = new ProblemBuilder()
                 .withInitialPopulation(initialB)
@@ -171,14 +171,14 @@ public class ProblemTest extends TestCase {
 
     @Test
     public void testEqualityWithProblemsWhoseInitialPopulationIsDifferent() {
-        Population initialA = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialA = aPopulation().withDistribution(10, 23).build();
         Problem problemA = new ProblemBuilder()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
                 .make();
 
-        Population initialB = new PopulationBuilder().withDistribution(10, 23, 8).make();
+        Population initialB = aPopulation().withDistribution(10, 23, 8).build();
         Problem problemB = new ProblemBuilder()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
@@ -193,14 +193,14 @@ public class ProblemTest extends TestCase {
 
     @Test
     public void testEqualityWithProblemsWhoseReferenceIsDifferent() {
-        Population initialA = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialA = aPopulation().withDistribution(10, 23).build();
         Problem problemA = new ProblemBuilder()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
                 .make();
 
-        Population initialB = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialB = aPopulation().withDistribution(10, 23).build();
         Problem problemB = new ProblemBuilder()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
@@ -214,14 +214,14 @@ public class ProblemTest extends TestCase {
 
     @Test
     public void testEqualityWithProblemsWhoseMetricIsDifferent() {
-        Population initialA = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialA = aPopulation().withDistribution(10, 23).build();
         Problem problemA = new ProblemBuilder()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
                 .make();
 
-        Population initialB = new PopulationBuilder().withDistribution(10, 23).make();
+        Population initialB = aPopulation().withDistribution(10, 23).build();
 
         Problem problemB = new ProblemBuilder()
                 .withInitialPopulation(initialB)

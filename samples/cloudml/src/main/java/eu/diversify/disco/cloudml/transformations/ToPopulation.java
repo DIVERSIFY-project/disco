@@ -20,7 +20,7 @@ package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.samples.commons.DiversityExtraction;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
@@ -63,7 +63,7 @@ public class ToPopulation implements DiversityExtraction<DeploymentModel> {
         private final Population population;
 
         public PopulationExtractor() {
-            this.population = new PopulationBuilder().make();
+            this.population = aPopulation().build();
         }
 
         @Override

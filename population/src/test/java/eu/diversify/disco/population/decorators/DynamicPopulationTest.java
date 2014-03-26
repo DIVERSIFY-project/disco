@@ -37,6 +37,7 @@
 package eu.diversify.disco.population.decorators;
 
 import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.PopulationTest;
 import java.util.Arrays;
 import static junit.framework.TestCase.assertSame;
@@ -221,7 +222,7 @@ public class DynamicPopulationTest extends PopulationTest {
     }
 
     private DynamicPopulation makePopulation() {
-        DynamicPopulation result = (DynamicPopulation) new PopulationBuilder().dynamic().make();
+        DynamicPopulation result = (DynamicPopulation) aPopulation().dynamic().build();
         Individual i1 = new Animal(SPECIE_HIPPOPOTAMUS);
         i1.join(result);
         Individual i2 = new Animal(SPECIE_LION);
@@ -231,6 +232,6 @@ public class DynamicPopulationTest extends PopulationTest {
 
     @Override
     public PopulationBuilder getBuilder() {
-        return new PopulationBuilder().dynamic();
+        return aPopulation().dynamic();
     }
 }

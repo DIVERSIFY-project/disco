@@ -23,7 +23,7 @@ import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import junit.framework.TestCase;
 import org.jmock.Expectations;
@@ -45,9 +45,9 @@ public class ControllerTest extends TestCase {
     @Test
     public void testControl() {
         
-        final Population input = new PopulationBuilder()
+        final Population input = aPopulation()
                 .withDistribution(5, 4, 3, 2, 1)
-                .make();
+                .build();
         
         final ProblemBuilder builder = new ProblemBuilder()
                 .withDiversityMetric(new TrueDiversity().normalise());

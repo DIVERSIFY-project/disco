@@ -24,7 +24,7 @@ import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.diversity.ShannonIndex;
 import java.util.HashSet;
@@ -41,7 +41,7 @@ public class ActionFinderTest extends TestCase {
     @Test
     public void testImmutabilityOfSolution() {
         Problem problem = new ProblemBuilder()
-                .withInitialPopulation(new PopulationBuilder().withDistribution(5, 5).make())
+                .withInitialPopulation(aPopulation().withDistribution(5, 5).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .make();
@@ -53,14 +53,14 @@ public class ActionFinderTest extends TestCase {
         
         assertEquals(
                 "Action finder shall never modify the population explored",
-                new PopulationBuilder().withDistribution(5, 5).make(),
+                aPopulation().withDistribution(5, 5).build(),
                 problem.getInitialEvaluation().getPopulation());
     }
     
     @Test
     public void testFindAllPermutationsOfIndividualsInMinimalPopulation() {
         Problem problem = new ProblemBuilder()
-                .withInitialPopulation(new PopulationBuilder().withDistribution(1, 1).make())
+                .withInitialPopulation(aPopulation().withDistribution(1, 1).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .make();
@@ -74,8 +74,8 @@ public class ActionFinderTest extends TestCase {
         }
 
         Set<Population> expected = new HashSet<Population>();
-        expected.add(new PopulationBuilder().withDistribution(2, 0).make());
-        expected.add(new PopulationBuilder().withDistribution(0, 2).make());
+        expected.add(aPopulation().withDistribution(2, 0).build());
+        expected.add(aPopulation().withDistribution(0, 2).build());
 
         assertEquals(expected, actual);
     }
@@ -83,7 +83,7 @@ public class ActionFinderTest extends TestCase {
     @Test
     public void testFindAllPermutationsOfIndividualsInMinimalPopulationWithScaleFactor() {
         Problem problem = new ProblemBuilder()
-                .withInitialPopulation(new PopulationBuilder().withDistribution(4, 4).make())
+                .withInitialPopulation(aPopulation().withDistribution(4, 4).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .make();
@@ -97,8 +97,8 @@ public class ActionFinderTest extends TestCase {
         }
 
         Set<Population> expected = new HashSet<Population>();
-        expected.add(new PopulationBuilder().withDistribution(6, 2).make());
-        expected.add(new PopulationBuilder().withDistribution(2, 6).make());
+        expected.add(aPopulation().withDistribution(6, 2).build());
+        expected.add(aPopulation().withDistribution(2, 6).build());
 
         assertEquals(expected, actual);
     }
@@ -106,7 +106,7 @@ public class ActionFinderTest extends TestCase {
     @Test
     public void testFindAllPermutationsOfIndividuals() {
         Problem problem = new ProblemBuilder()
-                .withInitialPopulation(new PopulationBuilder().withDistribution(2, 2, 2).make())
+                .withInitialPopulation(aPopulation().withDistribution(2, 2, 2).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .make();
@@ -120,12 +120,12 @@ public class ActionFinderTest extends TestCase {
         }
 
         Set<Population> expected = new HashSet<Population>();
-        expected.add(new PopulationBuilder().withDistribution(3, 1, 2).make());
-        expected.add(new PopulationBuilder().withDistribution(3, 2, 1).make());
-        expected.add(new PopulationBuilder().withDistribution(2, 3, 1).make());
-        expected.add(new PopulationBuilder().withDistribution(1, 3, 2).make());
-        expected.add(new PopulationBuilder().withDistribution(1, 2, 3).make());
-        expected.add(new PopulationBuilder().withDistribution(2, 1, 3).make());
+        expected.add(aPopulation().withDistribution(3, 1, 2).build());
+        expected.add(aPopulation().withDistribution(3, 2, 1).build());
+        expected.add(aPopulation().withDistribution(2, 3, 1).build());
+        expected.add(aPopulation().withDistribution(1, 3, 2).build());
+        expected.add(aPopulation().withDistribution(1, 2, 3).build());
+        expected.add(aPopulation().withDistribution(2, 1, 3).build());
 
         assertEquals(expected, actual);
     }

@@ -37,6 +37,7 @@ package eu.diversify.disco.controller.problem;
 import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import java.util.ArrayList;
@@ -75,10 +76,10 @@ public class Problem {
         checkIfConstraintsAreValid(constraints);
         this.metric = metric;
         this.reference = reference;
-        this.initialPopulation = new PopulationBuilder()
+        this.initialPopulation = aPopulation()
                 .clonedFrom(initialPopulation)
                 .immutable()
-                .make();
+                .build();
         this.constraints = new ArrayList<Constraint>(constraints);
     }
 

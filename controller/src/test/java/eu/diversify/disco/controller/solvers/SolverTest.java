@@ -34,12 +34,11 @@
  */
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.solvers.IterativeSearch;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public abstract class SolverTest extends TestCase {
     public void testMinimizeDiversity() {
         IterativeSearch controller = factory();
 
-        Population population = new PopulationBuilder().withDistribution(5, 5).make();
+        Population population = aPopulation().withDistribution(5, 5).build();
 
         final double reference = 0.;
 
@@ -107,7 +106,7 @@ public abstract class SolverTest extends TestCase {
     public void testMaximizeDiversity() {
         IterativeSearch controller = factory();
 
-        Population population = new PopulationBuilder().withDistribution(20, 0).make();
+        Population population = aPopulation().withDistribution(20, 0).build();
 
         final double reference = 1.;
 

@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 
 /**
  * Build another of various configurations
@@ -37,41 +38,41 @@ public class PopulationBuilderTest extends TestCase {
     
     @Test
     public void testBuilderWithoutMemory() {
-        Population first = new PopulationBuilder().withDistribution(1, 2, 3, 4).make();
-        Population second = new PopulationBuilder().make();
+        Population first = aPopulation().withDistribution(1, 2, 3, 4).build();
+        Population second = aPopulation().build();
         assertNotSame(first, second);
         assertTrue(second.isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testMissingSpeciesNames() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withDistribution(1, 3, 2, 5)
                 .withSpeciesNamed("s1", "s3")
-                .make();
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testMissingIndividualCounts() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withDistribution(1, 3)
                 .withSpeciesNamed("s1", "s2", "s3")
-                .make();
+                .build();
     }
     
     public void testDuplicateCallToImmuatble() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .immutable()
                 .withDistribution(1, 2, 3)
                 .withSpeciesNamed("s1", "s2", "s3")
                 .immutable()
-                .make();
+                .build();
     }
 
     @Test
     public void testClonePopulation() {
-        Population population = new PopulationBuilder().withDistribution(1, 2, 3, 4).make();
-        Population clone = new PopulationBuilder().clonedFrom(population).make();
+        Population population = aPopulation().withDistribution(1, 2, 3, 4).build();
+        Population clone = aPopulation().clonedFrom(population).build();
         assertNotNull(clone);
         assertNotSame(population, clone);
         assertEquals(population, clone);
@@ -79,9 +80,9 @@ public class PopulationBuilderTest extends TestCase {
 
     @Test
     public void testWithDistribution() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withDistribution(3, 2, 1)
-                .make();
+                .build();
         assertEquals(3, population.getNumberOfSpecies());
         assertEquals(3, population.getNumberOfIndividualsIn(1));
         assertEquals(2, population.getNumberOfIndividualsIn(2));
@@ -90,9 +91,9 @@ public class PopulationBuilderTest extends TestCase {
 
         @Test
     public void testWithSpeciesNames() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
-                .make();
+                .build();
         assertEquals(4, population.getNumberOfSpecies());
         assertEquals(0, population.getNumberOfIndividualsIn(1));
         assertEquals(0, population.getNumberOfIndividualsIn("s1"));
@@ -106,10 +107,10 @@ public class PopulationBuilderTest extends TestCase {
     
     @Test
     public void testWithDistributionAndSpeciesNames() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withDistribution(1, 2, 3, 4)
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
-                .make();
+                .build();
         assertEquals(4, population.getNumberOfSpecies());
         assertEquals(1, population.getNumberOfIndividualsIn(1));
         assertEquals(1, population.getNumberOfIndividualsIn("s1"));
@@ -123,10 +124,10 @@ public class PopulationBuilderTest extends TestCase {
 
     @Test
     public void testWithSpecieNameBeforeDistribution() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(1, 2, 3, 4)
-                .make();
+                .build();
         assertEquals(4, population.getNumberOfSpecies());
         assertEquals(1, population.getNumberOfIndividualsIn(1));
         assertEquals(1, population.getNumberOfIndividualsIn("s1"));
@@ -140,10 +141,10 @@ public class PopulationBuilderTest extends TestCase {
 
     @Test
     public void testWithImmutability() {
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withDistribution(1, 2, 3, 4)
                 .immutable()
-                .make();
+                .build();
 
         Population population2 = population.shiftNumberOfIndividualsIn(1, +2);
         assertNotSame(population, population2);
@@ -153,22 +154,22 @@ public class PopulationBuilderTest extends TestCase {
     
         @Test
     public void testEmptyPopulation() {
-        Population population = new PopulationBuilder().make();
+        Population population = aPopulation().build();
         assertTrue(population.isEmpty());
     }
 
 
     @Test
     public void testEqualsWithImmutableEquivalent() {
-        Population p1 = new PopulationBuilder().withDistribution(1, 2, 3).make();
-        Population p2 = new PopulationBuilder().withDistribution(1, 2, 3).immutable().make();
+        Population p1 = aPopulation().withDistribution(1, 2, 3).build();
+        Population p2 = aPopulation().withDistribution(1, 2, 3).immutable().build();
         assertEquals(p1, p2);
     }
 
     @Test
     public void testEqualsWithDynamicEquivalent() {
-        Population p1 = new PopulationBuilder().withDistribution(1, 2, 3).make();
-        Population p2 = new PopulationBuilder().withDistribution(1, 2, 3).dynamic().make();
+        Population p1 = aPopulation().withDistribution(1, 2, 3).build();
+        Population p2 = aPopulation().withDistribution(1, 2, 3).dynamic().build();
         assertEquals(p1, p2);
     }
 }

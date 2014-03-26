@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.solvers.Solver;
@@ -47,8 +31,7 @@ import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.ConcretePopulation;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +89,7 @@ public class SingleRunExperiment implements Experiment {
     }
 
     private void initialisePopulation(SingleRunSetup setup) {
-        this.population = new PopulationBuilder().make();
+        this.population = aPopulation().build();
         final List<Integer> counts = setup.getPopulation();
         for (int i = 0; i < counts.size(); i++) {
             this.population.addSpecie("s" + (i + 1));

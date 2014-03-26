@@ -23,7 +23,7 @@ import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.random.Profile;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -152,7 +152,7 @@ public class EdaTest extends TestCase {
 
     
     private Population makeMinimalPopulation(int s1, int s2) {
-        Population minimalPopulation = new PopulationBuilder().make();
+        Population minimalPopulation = aPopulation().build();
         minimalPopulation.addSpecie("s1");
         minimalPopulation.setNumberOfIndividualsIn("s1", s1);
         minimalPopulation.addSpecie("s2");

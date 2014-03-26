@@ -21,6 +21,7 @@ package eu.diversify.disco.population;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 
 /**
  * Test the value population class Override all mutators test and check they do
@@ -34,7 +35,7 @@ public class ConcretePopulationTest extends PopulationTest {
 
     @Override
     public PopulationBuilder getBuilder() {
-        return new PopulationBuilder();
+        return aPopulation();
     }
 
     @Override

@@ -36,11 +36,10 @@ package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.Script;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
-import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +61,7 @@ public class SolutionTest extends TestCase {
     @Test
     public void testRefinement() {
         Problem problem = new ProblemBuilder()
-                .withInitialPopulation(new PopulationBuilder().withDistribution(3, 2, 1).make())
+                .withInitialPopulation(aPopulation().withDistribution(3, 2, 1).build())
                 .withReferenceDiversity(2.0)
                 .withDiversityMetric(new TrueDiversity())
                 .make();
@@ -74,12 +73,12 @@ public class SolutionTest extends TestCase {
 
         assertEquals(
                 "Solution shall be immutable!",
-                new PopulationBuilder().withDistribution(3, 2, 1).make(),
+                aPopulation().withDistribution(3, 2, 1).build(),
                 initial.getPopulation());
 
         assertEquals(
                 "Solution shall take into account refinements!",
-                new PopulationBuilder().withDistribution(3, 5, 1).make(),
+                aPopulation().withDistribution(3, 5, 1).build(),
                 next.getPopulation());
     }
 
@@ -88,7 +87,7 @@ public class SolutionTest extends TestCase {
      */
     @Test
     public void testEquality() {
-        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        Population p = aPopulation().withDistribution(5, 4).build();
         Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
         Solution e1 = c.evaluate(p);
         assertTrue(
@@ -101,7 +100,7 @@ public class SolutionTest extends TestCase {
                 "Two evaluations of similar populations for a given case shall be equal",
                 e1.equals(e2));
 
-        Population p2 = new PopulationBuilder().withDistribution(6, 3).make();
+        Population p2 = aPopulation().withDistribution(6, 3).build();
         final Solution e3 = c.evaluate(p2);
         assertFalse(
                 "Two evaluations of two different populations shall not be equal",
@@ -115,10 +114,10 @@ public class SolutionTest extends TestCase {
     @Test
     public void testLinkage() {
 
-        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        Population p = aPopulation().withDistribution(5, 4).build();
         final Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
 
-        Population p2 = new PopulationBuilder().withDistribution(6, 3).make();
+        Population p2 = aPopulation().withDistribution(6, 3).build();
         final Solution e1 = c.evaluate(p2);
         assertFalse(
                 "Shall not have a previous evaluation",
@@ -152,7 +151,7 @@ public class SolutionTest extends TestCase {
      */
     @Test
     public void testFormatting() {
-        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        Population p = aPopulation().withDistribution(5, 4).build();
         Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
 
         Solution result = c.evaluate(p);
@@ -168,7 +167,7 @@ public class SolutionTest extends TestCase {
      */
     @Test
     public void testCollectionUse() {
-        Population p = new PopulationBuilder().withDistribution(5, 4).make();
+        Population p = aPopulation().withDistribution(5, 4).build();
         final Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
 
         final Solution e = c.evaluate(p);

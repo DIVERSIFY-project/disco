@@ -29,7 +29,7 @@ import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,7 +144,7 @@ public class ScalabilityExperiment implements Experiment {
     }
 
     private Population initialisePopulation(int numberOfIndividuals, int numberOfSpecies) {
-        final Population population = new PopulationBuilder().make();
+        final Population population = aPopulation().build();
         population.addSpecie("sp1");
         population.setNumberOfIndividualsIn(1, numberOfIndividuals);
         for (int i = 2; i <= numberOfSpecies; i++) {

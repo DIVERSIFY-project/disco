@@ -37,7 +37,7 @@ package eu.diversify.disco.cloudml.transformations.tocloudml;
 
 import eu.diversify.disco.cloudml.transformations.ToCloudML;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import junit.framework.TestCase;
 import org.cloudml.core.DeploymentModel;
 import org.junit.Test;
@@ -56,10 +56,10 @@ public class ToCloudMLTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testWithNullDeploumentModel() {
-        Population reference = new PopulationBuilder()
+        Population reference = aPopulation()
                 .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
                 .withDistribution(1, 1, 1, 1)
-                .make();
+                .build();
 
         ToCloudML transformation = new ToCloudML();
         transformation.applyTo(null, reference);
@@ -83,10 +83,10 @@ public class ToCloudMLTest extends TestCase {
                 .getTypes()
                 .build();
 
-        Population reference = new PopulationBuilder()
+        Population reference = aPopulation()
                 .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
                 .withDistribution(1, 1, 1, 1)
-                .make();
+                .build();
 
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
@@ -100,10 +100,10 @@ public class ToCloudMLTest extends TestCase {
                 .getOneClientConnectedToOneServer()
                 .build();
 
-        Population reference = new PopulationBuilder()
+        Population reference = aPopulation()
                 .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
                 .withDistribution(3, 1, 1, 1)
-                .make();
+                .build();
 
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
@@ -117,10 +117,10 @@ public class ToCloudMLTest extends TestCase {
                 .getTwoClientsConnectedToOneServer()
                 .build();
 
-        Population reference = new PopulationBuilder()
+        Population reference = aPopulation()
                 .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
                 .withDistribution(1, 1, 1, 1)
-                .make();
+                .build();
 
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
@@ -134,10 +134,10 @@ public class ToCloudMLTest extends TestCase {
                 .getTwoClientsConnectedToOneServer()
                 .build();
 
-        Population reference = new PopulationBuilder()
+        Population reference = aPopulation()
                 .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
                 .withDistribution(1, 1, 5, 1)
-                .make();
+                .build();
 
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);
@@ -151,10 +151,10 @@ public class ToCloudMLTest extends TestCase {
                 .getTwoClientsConnectedToOneServer()
                 .build();
 
-        Population reference = new PopulationBuilder()
+        Population reference = aPopulation()
                 .withSpeciesNamed(LINUX_TYPE, WINDOWS_TYPE, CLIENT_TYPE, SERVER_TYPE)
                 .withDistribution(1, 0, 0, 0)
-                .make();
+                .build();
 
         ToCloudML transformation = new ToCloudML();
         DeploymentModel output = transformation.applyTo(source, reference);

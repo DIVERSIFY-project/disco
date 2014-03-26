@@ -23,7 +23,7 @@ import eu.diversify.disco.controller.solvers.IterativeSearch;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class BreadthFirstSearchTest extends SolverTest {
     @Test
     public void testPushback() {
         final BreadthFirstExplorer explorer = new BreadthFirstExplorer();
-        Population source = new PopulationBuilder().withDistribution(5, 5).make();
+        Population source = aPopulation().withDistribution(5, 5).build();
         Problem problem = new ProblemBuilder()
                 .withInitialPopulation(source)
                 .withDiversityMetric(new NormalisedDiversityMetric(new TrueDiversity()))

@@ -39,7 +39,11 @@ public class PopulationBuilder {
     public static String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
     private final PopulationData preparation;
 
-    public PopulationBuilder() {
+    public static PopulationBuilder aPopulation() {
+        return new PopulationBuilder();
+    }
+    
+    private PopulationBuilder() {
         preparation = new PopulationData();
     }
 
@@ -58,7 +62,7 @@ public class PopulationBuilder {
     /**
      * @return the resulting population
      */
-    public Population make() {
+    public Population build() {
         Population result = preparation.make();
         return result;
     }

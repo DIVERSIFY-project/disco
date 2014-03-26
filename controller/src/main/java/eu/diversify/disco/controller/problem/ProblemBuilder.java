@@ -24,6 +24,7 @@ import eu.diversify.disco.controller.problem.constraints.FixedNumberOfSpecies;
 import eu.diversify.disco.controller.problem.constraints.FixedTotalNumberOfIndividuals;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class ProblemBuilder {
     }
 
     private void setDefaultValues() {
-        initialPopulation = new PopulationBuilder().withDistribution(0).make();
+        initialPopulation = aPopulation().withDistribution(0).build();
         referenceDiversity = DEFAULT_REFERENCE_DIVERSITY_LEVEL;
         metric = DEFAULT_DIVERSITY_METRIC;
         constraints.clear();

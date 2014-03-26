@@ -24,7 +24,7 @@ import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.MetricFactory;
 import java.util.ArrayList;
@@ -112,10 +112,10 @@ public class SensitivityExperiment implements Experiment {
         DataSet dataset = new DataSet(SCHEMA, "distribution");
 
         // Initial population: p = [x, 0] 
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
                 .withDistribution(this.size, 0)
-                .make();
+                .build();
         evaluate(dataset, population);
 
         /*
@@ -142,10 +142,10 @@ public class SensitivityExperiment implements Experiment {
         DataSet dataset = new DataSet(SCHEMA, "species");
 
         // Initial population, p = [x-1, 1]
-        Population population = new PopulationBuilder()
+        Population population = aPopulation()
                 .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
                 .withDistribution(this.size - 1, 1)
-                .make();
+                .build();
         evaluate(dataset, population);
 
         /**
@@ -172,10 +172,10 @@ public class SensitivityExperiment implements Experiment {
         DataSet dataset = new DataSet(SCHEMA, "individuals");
 
         // Initial population
-        Population p = new PopulationBuilder()
+        Population p = aPopulation()
                 .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
                 .withDistribution(this.size, 0)
-                .make();
+                .build();
         evaluate(dataset, p);
 
         /**

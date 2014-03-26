@@ -21,6 +21,7 @@
 package eu.diversify.disco.population.decorators;
 
 import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.PopulationTest;
 import static junit.framework.TestCase.assertNotSame;
 import org.junit.runner.RunWith;
@@ -83,7 +84,7 @@ public class ImmutablePopulationTest extends PopulationTest {
     
     @Override
     public PopulationBuilder getBuilder() {
-        return new PopulationBuilder().immutable();
+        return aPopulation().immutable();
     }
 
 }

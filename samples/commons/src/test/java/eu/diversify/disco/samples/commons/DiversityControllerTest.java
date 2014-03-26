@@ -22,7 +22,7 @@ package eu.diversify.disco.samples.commons;
 import eu.diversify.disco.controller.Reference;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import junit.framework.TestCase;
@@ -45,9 +45,9 @@ public class DiversityControllerTest extends TestCase {
     @Test
     @SuppressWarnings("unchecked")
     public void testInteractions() {
-        final Population input = new PopulationBuilder()
+        final Population input = aPopulation()
                 .withDistribution(1, 3, 2, 10, 3, 0)
-                .make();
+                .build();
         final Population output = input;
         
         final DiversityMetric metric = new TrueDiversity().normalise();

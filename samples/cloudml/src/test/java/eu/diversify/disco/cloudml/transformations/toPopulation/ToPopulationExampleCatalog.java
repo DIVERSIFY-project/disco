@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.transformations.toPopulation;
 
 import eu.diversify.disco.cloudml.transformations.MdmsModelCreator;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Collection;
@@ -103,12 +102,12 @@ public class ToPopulationExampleCatalog {
     }
 
     private static Population populationWithSensApp() {
-        return new PopulationBuilder()
+        return aPopulation()
                 .withSpeciesNamed("cloudmlsensappgui", "cloudmlsensapp",
                                   "SensAppGUIWar", "MongoDB",
                                   "jettyWarContainer", "SensAppWar")
                 .withDistribution(1, 1, 1, 1, 2, 1)
-                .make();
+                .build();
     }
 
     private DeploymentModel cloudmlWithMdms() {
@@ -116,11 +115,11 @@ public class ToPopulationExampleCatalog {
     }
 
     private Population populationWithMdms() {
-        return new PopulationBuilder()
+        return aPopulation()
                 .withSpeciesNamed("EC2", "MySQL", "Balancer", "RingoJS",
                                   "OpenJDK", "Rhino", "MDMS")
                 .withDistribution(3, 1, 1, 1, 1, 1, 1)
-                .make();
+                .build();
     }
 
     private DeploymentModel cloudmlWithHuisFakeModel() {
@@ -163,9 +162,9 @@ public class ToPopulationExampleCatalog {
     }
 
     private Population populationWithHuisFakeModel() {
-        return new PopulationBuilder()
+        return aPopulation()
                 .withSpeciesNamed("huge", "big", "small")
                 .withDistribution(5, 10, 10)
-                .make();
+                .build();
     }
 }

@@ -35,8 +35,7 @@
 package eu.diversify.disco.population.random;
 
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.ConcretePopulation;
-import eu.diversify.disco.population.PopulationBuilder;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -81,7 +80,7 @@ public class Generator {
             distribution[draw] += 1;
         }
 
-        return new PopulationBuilder().withDistribution(distribution).make();
+        return aPopulation().withDistribution(distribution).build();
     }
 
     /**
