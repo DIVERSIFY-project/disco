@@ -60,4 +60,6 @@ public interface DiversityMetric {
      * @return this diversity metric but normalised onto the unit interval [0, 1]
      */
     public DiversityMetric normalise();
+    
+    
 }

@@ -15,33 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
 package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.problem.Solution;
-import eu.diversify.disco.controller.problem.Problem;
 
-/**
- * General Interface for any kind of diversity controller, including iterative
- * search or analytical solutions.
- *
- * @author Franck Chauvel
- * @since 0.1
- */
-public interface Solver {
+
+public interface SolverListener {
+
+    public void onIntermediateSolution(Solution solution);
     
-    /**
-     * Attach the given listener so it receives notification of intermediary solution
-     * @param listener the listener
-     */
-    public void subscribe(SolverListener listener);
-    
-    /**
-     * Solve the given problem if possible.
-     *
-     * @param problem the problem to be solve, including the diversity metric,
-     * the initial population and reference diversity.
-     *
-     * @return the evaluation of the best/first solution found
-     */
-    public Solution solve(Problem problem);
 }

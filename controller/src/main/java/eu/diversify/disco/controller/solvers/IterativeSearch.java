@@ -29,7 +29,7 @@ import eu.diversify.disco.population.actions.Action;
  * @author Franck Chauvel
  * @since 0.1
  */
-public abstract class IterativeSearch implements Solver {
+public abstract class IterativeSearch extends AbstractSolver {
     public static final int DEFAULT_SCALE_FACTOR = 1;
    
     private final ExplorationStrategy finder;
@@ -40,6 +40,7 @@ public abstract class IterativeSearch implements Solver {
      * @param finder the exploration strategy
      */
     public IterativeSearch(ExplorationStrategy finder) {
+        super();
         this.finder = finder;
     }
     
@@ -67,6 +68,7 @@ public abstract class IterativeSearch implements Solver {
     protected Solution search(Solution current) { 
         Solution next = refine(current);
         while (next.getIteration() != current.getIteration()) {
+            publishIntermediateSolution(next);
             current = next;
             next = refine(next);
         }

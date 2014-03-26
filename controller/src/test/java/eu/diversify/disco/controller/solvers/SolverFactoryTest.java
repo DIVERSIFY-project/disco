@@ -17,11 +17,6 @@
  */
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.solvers.HillClimber;
-import eu.diversify.disco.controller.solvers.SolverFactory;
-import eu.diversify.disco.controller.solvers.BreadthFirstExplorer;
-import eu.diversify.disco.controller.solvers.Solver;
-import eu.diversify.disco.controller.solvers.AdaptiveHillClimber;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.exceptions.UnknownStrategyException;
 import junit.framework.TestCase;

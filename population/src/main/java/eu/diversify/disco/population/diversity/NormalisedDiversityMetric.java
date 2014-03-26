@@ -81,5 +81,4 @@ public class NormalisedDiversityMetric implements DiversityMetric {
     }
     
     
-    
 }
