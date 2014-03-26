@@ -21,7 +21,7 @@ package eu.diversify.disco.samples.commons;
 
 import eu.diversify.disco.controller.Reference;
 
-public class ConstantReferenceProvider implements Reference {
+public class ConstantReference implements Reference {
 
     private double reference;
 

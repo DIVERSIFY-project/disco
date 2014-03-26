@@ -18,7 +18,7 @@
 
 package eu.diversify.disco.cloudml.transformations.toPopulation;
 
-import eu.diversify.disco.cloudml.transformations.BidirectionalTransformation;
+import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.population.Population;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,13 +39,13 @@ public class ToPopulationTest extends TestCase {
 
     private final ToPopulationExample example;
     private Population actualOutput;
-    private final BidirectionalTransformation transformation;
+    private final ToPopulation transformation;
 
     
     public ToPopulationTest(ToPopulationExample example) { 
         this.example = example;
         this.actualOutput = null;
-        this.transformation = new BidirectionalTransformation();
+        this.transformation = new ToPopulation();
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ToPopulationTest extends TestCase {
         
          // TODO: Handle expected exceptions
         
-        this.actualOutput = transformation.toPopulation(this.example.getInput());
+        this.actualOutput = transformation.applyTo(this.example.getInput());
         assertEquals(this.example.getExpectedOutput(), this.actualOutput);
     }
 

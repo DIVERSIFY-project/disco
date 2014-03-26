@@ -17,7 +17,7 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.samples.commons.ConstantReferenceProvider;
+import eu.diversify.disco.samples.commons.ConstantReference;
 import eu.diversify.disco.samples.commons.DiversityController;
 import eu.diversify.disco.cloudml.transformations.ToCloudML;
 import eu.diversify.disco.cloudml.transformations.ToPopulation;
@@ -28,13 +28,13 @@ import org.cloudml.core.DeploymentModel;
 
 public class CloudMLController {
 
-    private final ConstantReferenceProvider reference;
+    private final ConstantReference reference;
     private final CloudMLModel source;
     private final DiversityController<DeploymentModel> controller;
     private final CloudMLModel target;
 
     public CloudMLController(DiversityMetric metric) {
-        reference = new ConstantReferenceProvider();
+        reference = new ConstantReference();
         source = new CloudMLModel();
         target = new CloudMLModel();
         controller = new DiversityController<DeploymentModel>(metric, source, new ToPopulation(), reference, new ToCloudML(), target); 
