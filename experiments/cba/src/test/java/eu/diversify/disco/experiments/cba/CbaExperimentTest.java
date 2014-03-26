@@ -19,7 +19,7 @@
  */
 package eu.diversify.disco.experiments.cba;
 
-import com.google.common.io.Files;
+
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import junit.framework.TestCase;
@@ -54,12 +55,12 @@ public class CbaExperimentTest extends TestCase {
     @Before
     public void setupInputFiles() throws IOException {
         Files.copy(
-                Paths.get(TEST_RESOURCES_PATH + SAMPLE_DEPLOYMENT_MODEL).toFile(),
-                Paths.get("./" + SAMPLE_DEPLOYMENT_MODEL).toFile());
+                Paths.get(TEST_RESOURCES_PATH + SAMPLE_DEPLOYMENT_MODEL),
+                Paths.get("./" + SAMPLE_DEPLOYMENT_MODEL));
 
         Files.copy(
-                Paths.get(TEST_RESOURCES_PATH + CREDENTIALS).toFile(),
-                Paths.get("./" + CREDENTIALS).toFile());
+                Paths.get(TEST_RESOURCES_PATH + CREDENTIALS),
+                Paths.get("./" + CREDENTIALS));
     }
 
     @Test

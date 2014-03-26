@@ -87,12 +87,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib</artifactId>
-            <version>2.4.2</version>
-        </dependency>
+ 
       
     </dependencies>
     
