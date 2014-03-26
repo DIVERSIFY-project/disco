@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class Gui extends javax.swing.JFrame implements ControllerUI {
@@ -135,24 +136,20 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
         jLabel2 = new javax.swing.JLabel();
         fileToLoad = new javax.swing.JTextField();
         chooseModel = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        console = new javax.swing.JTextArea();
-        container = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        visualisation = new javax.swing.JLabel();
         updateButton = new javax.swing.JButton();
         loadButton = new javax.swing.JButton();
+        inputVisualisation = new javax.swing.JLabel();
+        outputVisualisation = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Disco v0.1 - Diversity Controller for CloudML models");
 
         setPoint.setMajorTickSpacing(10);
         setPoint.setMinorTickSpacing(1);
-        setPoint.setOrientation(javax.swing.JSlider.VERTICAL);
         setPoint.setPaintLabels(true);
         setPoint.setPaintTicks(true);
         setPoint.setSnapToTicks(true);
-        setPoint.setBorder(javax.swing.BorderFactory.createTitledBorder("Diversity (%) :"));
+        setPoint.setBorder(javax.swing.BorderFactory.createTitledBorder("Desired diversity level (%) :"));
         setPoint.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
         setPoint.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -173,29 +170,6 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
             }
         });
 
-        console.setEditable(false);
-        console.setBackground(new java.awt.Color(240, 240, 240));
-        console.setColumns(20);
-        console.setRows(5);
-        console.setBorder(javax.swing.BorderFactory.createTitledBorder("Controller output"));
-        jScrollPane2.setViewportView(console);
-
-        container.setBorder(javax.swing.BorderFactory.createTitledBorder("Deployment Overview:"));
-
-        visualisation.setText("No model loaded");
-        jScrollPane1.setViewportView(visualisation);
-
-        javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
-        container.setLayout(containerLayout);
-        containerLayout.setHorizontalGroup(
-            containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
-        );
-        containerLayout.setVerticalGroup(
-            containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-        );
-
         updateButton.setText("Update");
         updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -210,6 +184,12 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
             }
         });
 
+        inputVisualisation.setText("No CloudML model loaded");
+        inputVisualisation.setBorder(javax.swing.BorderFactory.createTitledBorder("Input deployment:"));
+
+        outputVisualisation.setText("No CloudML model loaded yet");
+        outputVisualisation.setBorder(javax.swing.BorderFactory.createTitledBorder("Output deployment: "));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,44 +198,52 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 733, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)
+                                .addComponent(updateButton))
                             .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(fileToLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(chooseModel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(updateButton)
-                                .addContainerGap())
-                            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane2)))
+                                .addGap(5, 5, 5)
+                                .addComponent(loadButton)))
+                        .addGap(0, 8, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(inputVisualisation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(outputVisualisation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(loadButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(fileToLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(chooseModel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 1, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fileToLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(loadButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(chooseModel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(inputVisualisation, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(setPoint, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setPoint, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(outputVisualisation, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        setPoint.getAccessibleContext().setAccessibleName("Desired diversity level (%) :");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -283,16 +271,13 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
     }//GEN-LAST:event_loadButtonPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chooseModel;
-    private javax.swing.JTextArea console;
-    private javax.swing.JPanel container;
     private javax.swing.JTextField fileToLoad;
+    private javax.swing.JLabel inputVisualisation;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton loadButton;
+    private javax.swing.JLabel outputVisualisation;
     private javax.swing.JSlider setPoint;
     private javax.swing.JButton updateButton;
-    private javax.swing.JLabel visualisation;
     // End of variables declaration//GEN-END:variables
     private final SourceModelListener sourceModelListener;
     private final TargetModelListener targetModelListener;
@@ -307,7 +292,7 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
         return targetModelListener;
     }
 
-    private void updateModelImage(String fileName) {
+    private void updateModelImage(String fileName, JLabel visualisation) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(new File(fileName));
@@ -346,7 +331,7 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
 
         @Override
         public void onVisualisationUpdate(String pathToVisualisation) {
-            updateModelImage(pathToVisualisation);
+            updateModelImage(pathToVisualisation, inputVisualisation);
         }
 
         @Override
@@ -378,7 +363,7 @@ public class Gui extends javax.swing.JFrame implements ControllerUI {
 
         @Override
         public void onVisualisationUpdate(String fileName) {
-            updateModelImage(fileName);
+            updateModelImage(fileName, outputVisualisation);
         }
 
         @Override
