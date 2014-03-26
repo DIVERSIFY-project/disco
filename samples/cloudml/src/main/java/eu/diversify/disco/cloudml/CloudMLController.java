@@ -17,8 +17,8 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.controller.ConstantReferenceProvider;
-import eu.diversify.disco.cloudml.controller.DiversityController;
+import eu.diversify.disco.samples.commons.ConstantReferenceProvider;
+import eu.diversify.disco.samples.commons.DiversityController;
 import eu.diversify.disco.cloudml.transformations.ToCloudML;
 import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.population.diversity.DiversityMetric;

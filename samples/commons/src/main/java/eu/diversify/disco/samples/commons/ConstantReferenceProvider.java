@@ -17,26 +17,20 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml.controller;
+package eu.diversify.disco.samples.commons;
 
-import eu.diversify.disco.controller.problem.Solution;
-import eu.diversify.disco.population.Population;
+import eu.diversify.disco.controller.Reference;
 
-/**
- * List of events emitted by the diversity controller
- */
-public interface DiversityControllerListener {
-        
-    public void onPopulationExtracted(Population description);
-    
-    public void onErrorWhileExtractingPopulation();
-    
-    public void onPopulationDiversified();
-    
-    public void onErrorWhileControllingDiversity();
-    
-    public void onDiversityInjected(Solution description);
-    
-    public void onErrorWhileInjectingDiversity();
-    
+public class ConstantReferenceProvider implements Reference {
+
+    private double reference;
+
+    public void setReference(double reference) {
+        this.reference = reference;
+    }
+
+    @Override
+    public double getReference() {
+        return this.reference;
+    }
 }

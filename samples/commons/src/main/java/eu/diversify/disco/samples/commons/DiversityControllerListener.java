@@ -17,13 +17,26 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml.controller;
+package eu.diversify.disco.samples.commons;
 
+import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 
-
-public interface DiversityExtraction<T> {
-
-    public Population applyTo(T model);
+/**
+ * List of events emitted by the diversity controller
+ */
+public interface DiversityControllerListener {
+        
+    public void onPopulationExtracted(Population description);
+    
+    public void onErrorWhileExtractingPopulation();
+    
+    public void onPopulationDiversified();
+    
+    public void onErrorWhileControllingDiversity();
+    
+    public void onDiversityInjected(Solution description);
+    
+    public void onErrorWhileInjectingDiversity();
     
 }

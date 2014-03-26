@@ -17,20 +17,14 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml.controller;
+package eu.diversify.disco.samples.commons;
 
-import eu.diversify.disco.controller.Reference;
+import eu.diversify.disco.population.Population;
 
-public class ConstantReferenceProvider implements Reference {
 
-    private double reference;
-
-    public void setReference(double reference) {
-        this.reference = reference;
-    }
-
-    @Override
-    public double getReference() {
-        return this.reference;
-    }
+public interface DiversityInjection<T> {
+    
+    
+    public T applyTo(Population prescription, T currentModel);
+    
 }

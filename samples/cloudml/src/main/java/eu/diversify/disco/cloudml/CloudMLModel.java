@@ -19,8 +19,8 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.controller.ModelReader;
-import eu.diversify.disco.cloudml.controller.ModelWriter;
+import eu.diversify.disco.samples.commons.ModelReader;
+import eu.diversify.disco.samples.commons.ModelWriter;
 import eu.diversify.disco.cloudml.util.DotPrinter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

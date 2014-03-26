@@ -19,7 +19,7 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.controller.DiversityControllerListener;
+import eu.diversify.disco.samples.commons.DiversityControllerListener;
 
 
 public interface ControllerUI extends DiversityControllerListener {

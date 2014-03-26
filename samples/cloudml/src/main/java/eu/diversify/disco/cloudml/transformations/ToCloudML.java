@@ -18,7 +18,7 @@
 
 package eu.diversify.disco.cloudml.transformations;
 
-import eu.diversify.disco.cloudml.controller.DiversityInjection;
+import eu.diversify.disco.samples.commons.DiversityInjection;
 import eu.diversify.disco.cloudml.util.actions.StandardLibrary;
 import eu.diversify.disco.population.Population;
 import java.util.List;

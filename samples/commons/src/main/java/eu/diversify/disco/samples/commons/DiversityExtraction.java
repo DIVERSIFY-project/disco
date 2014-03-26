@@ -15,12 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
+package eu.diversify.disco.samples.commons;
 
-package eu.diversify.disco.cloudml.controller;
+import eu.diversify.disco.population.Population;
 
 
-public interface ModelReader<T> {
-    
-    public T read();
+public interface DiversityExtraction<T> {
+
+    public Population applyTo(T model);
     
 }

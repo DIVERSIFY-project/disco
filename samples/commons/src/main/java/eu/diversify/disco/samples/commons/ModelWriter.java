@@ -17,14 +17,11 @@
  */
 /*
  */
-package eu.diversify.disco.cloudml.controller;
-
-import eu.diversify.disco.population.Population;
+package eu.diversify.disco.samples.commons;
 
 
-public interface DiversityInjection<T> {
-    
-    
-    public T applyTo(Population prescription, T currentModel);
+public interface ModelWriter<T> {
+ 
+    public void write(T model);
     
 }
