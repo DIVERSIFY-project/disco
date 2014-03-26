@@ -16,8 +16,10 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.solvers;
 
+import eu.diversify.disco.controller.solvers.BreadthFirstExplorer;
+import eu.diversify.disco.controller.solvers.IterativeSearch;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.population.Population;
@@ -35,7 +37,7 @@ import org.junit.runners.JUnit4;
  * @since 0.1
  */
 @RunWith(JUnit4.class)
-public class BreadthFirstSearchTest extends ControllerTest {
+public class BreadthFirstSearchTest extends SolverTest {
 
     @Override
     public IterativeSearch factory() {

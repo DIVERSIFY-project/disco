@@ -17,8 +17,8 @@
  */
 package eu.diversify.disco.samples.commons;
 
-import eu.diversify.disco.controller.AdaptiveHillClimber;
-import eu.diversify.disco.controller.Facade;
+import eu.diversify.disco.controller.solvers.AdaptiveHillClimber;
+import eu.diversify.disco.controller.Controller;
 import eu.diversify.disco.controller.Reference;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.population.Population;
@@ -34,7 +34,7 @@ public class DiversityController<T> {
     private final DiversityMetric metric;
     private final ModelReader<T> source;
     private final DiversityExtraction<T> extraction;
-    private final Facade facade;
+    private final Controller facade;
     private final DiversityInjection<T> injection;
     private final ModelWriter<T> target;
     private final ArrayList<DiversityControllerListener> listeners;
@@ -45,7 +45,7 @@ public class DiversityController<T> {
         this.source = source;
         this.extraction = extraction;
         final ProblemBuilder problemBuilder = new ProblemBuilder().withDiversityMetric(metric);
-        this.facade = new Facade(problemBuilder, reference, new Extractor(), new AdaptiveHillClimber(), new Injector());
+        this.facade = new Controller(problemBuilder, reference, new Extractor(), new AdaptiveHillClimber(), new Injector());
         this.injection = injection;
         this.target = target;
         this.listeners = new ArrayList<DiversityControllerListener>();

@@ -17,8 +17,8 @@
  */
 package eu.diversify.disco.experiments.controllers.singlerun;
 
-import eu.diversify.disco.controller.AdaptiveHillClimber;
-import eu.diversify.disco.controller.HillClimber;
+import eu.diversify.disco.controller.solvers.AdaptiveHillClimber;
+import eu.diversify.disco.controller.solvers.HillClimber;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.population.Population;

@@ -15,40 +15,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ */
+
 package eu.diversify.disco.controller;
 
-import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.solvers.Solver;
 import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.diversity.AbstractDiversityMetric;
+import eu.diversify.disco.controller.problem.ProblemBuilder;
+import eu.diversify.disco.controller.problem.Solution;
 
-/**
- * General Interface for any kind of diversity controller, including iterative
- * search or analytical solutions.
- *
- * @author Franck Chauvel
- * @since 0.1
- */
-public interface Controller {
 
-    /**
-     * Solve the given problem if possible.
-     *
-     * @param metric the diversity metric to use
-     * @param population the initial population to start from
-     * @param reference the reference diversity to reach
-     *
-     * @return the evaluation of the best/first solution found
-     */
-    public Solution applyTo(AbstractDiversityMetric metric, Population population, double reference);
+public class Controller {
+    
+    private final Reference reference;
+    private final PopulationReader source;
+    private final Solver strategy;
+    private final PopulationWriter target;
+    private final ProblemBuilder builder;
 
-    /**
-     * Solve the given problem if possible.
-     *
-     * @param problem the problem to be solve, including the diversity metric,
-     * the initial population and reference diversity.
-     *
-     * @return the evaluation of the best/first solution found
-     */
-    public Solution applyTo(Problem problem);
+    public Controller(ProblemBuilder builder, Reference reference, PopulationReader source, Solver strategy, PopulationWriter target) {
+        this.reference = reference;
+        this.source = source;
+        this.strategy = strategy;
+        this.target = target;
+        this.builder = builder;
+    }    
+    
+    public void control() {
+        final Problem problem = builder
+                .withInitialPopulation(source.read())
+                .withReferenceDiversity(reference.getReference())
+                .make();
+        final Solution solution = strategy.solve(problem);
+        System.out.println(solution);
+        target.write(solution);
+    }
+
 }

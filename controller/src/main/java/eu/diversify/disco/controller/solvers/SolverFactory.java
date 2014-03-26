@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.exceptions.UnknownStrategyException;
@@ -27,18 +27,18 @@ import java.util.HashMap;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class ControllerFactory {
+public class SolverFactory {
 
     private final HashMap<String, String> strategies;
 
     /**
-     * Create a new ControllerFactory
+     * Create a new SolverFactory
      */
-    public ControllerFactory() {
+    public SolverFactory() {
         this.strategies = new HashMap<String, String>();
-        this.strategies.put("HILL CLIMBING", "eu.diversify.disco.controller.HillClimber");
-        this.strategies.put("ADAPTIVE HILL CLIMBING", "eu.diversify.disco.controller.AdaptiveHillClimber");
-        this.strategies.put("BREADTH-FIRST SEARCH", "eu.diversify.disco.controller.BreadthFirstExplorer");
+        this.strategies.put("HILL CLIMBING", "eu.diversify.disco.controller.solvers.HillClimber");
+        this.strategies.put("ADAPTIVE HILL CLIMBING", "eu.diversify.disco.controller.solvers.AdaptiveHillClimber");
+        this.strategies.put("BREADTH-FIRST SEARCH", "eu.diversify.disco.controller.solvers.BreadthFirstExplorer");
     }
 
     /**
@@ -49,8 +49,8 @@ public class ControllerFactory {
      *
      * @return an fresh object reflecting the given strategy
      */
-    public Controller instantiate(String strategy) throws ControllerInstantiationException {
-        Controller result = null;
+    public Solver instantiate(String strategy) throws ControllerInstantiationException {
+        Solver result = null;
         final String escaped = strategy.trim().replaceAll("\\s+", " ").toUpperCase();
         final String className = this.strategies.get(escaped);
         if (className == null) {
@@ -58,7 +58,7 @@ public class ControllerFactory {
             
         } else {
             try {
-                result = (Controller) Class.forName(className).newInstance();
+                result = (Solver) Class.forName(className).newInstance();
             
             } catch (ClassNotFoundException cnfe) {
                 throw new ControllerInstantiationException(className, cnfe);

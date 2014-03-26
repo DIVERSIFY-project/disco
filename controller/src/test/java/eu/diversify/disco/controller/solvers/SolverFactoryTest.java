@@ -15,8 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.solvers;
 
+import eu.diversify.disco.controller.solvers.HillClimber;
+import eu.diversify.disco.controller.solvers.SolverFactory;
+import eu.diversify.disco.controller.solvers.BreadthFirstExplorer;
+import eu.diversify.disco.controller.solvers.Solver;
+import eu.diversify.disco.controller.solvers.AdaptiveHillClimber;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.exceptions.UnknownStrategyException;
 import junit.framework.TestCase;
@@ -33,7 +38,7 @@ import org.junit.runners.JUnit4;
  * @since 0.1
  */
 @RunWith(JUnit4.class)
-public class ControllerFactoryTest extends TestCase {
+public class SolverFactoryTest extends TestCase {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -43,22 +48,22 @@ public class ControllerFactoryTest extends TestCase {
      */
     @Test
     public void testUsageScenario() throws ControllerInstantiationException {
-        final ControllerFactory factory = new ControllerFactory();
+        final SolverFactory factory = new SolverFactory();
 
-        final Controller ahc = factory.instantiate("Adaptive Hill Climbing");
+        final Solver ahc = factory.instantiate("Adaptive Hill Climbing");
         assertEquals(
                 "Wrong controller instantiation",
                 AdaptiveHillClimber.class,
                 ahc.getClass());
 
 
-        final Controller bfs = factory.instantiate("Breadth-First Search");
+        final Solver bfs = factory.instantiate("Breadth-First Search");
         assertEquals(
                 "Wrong controller instantiation",
                 BreadthFirstExplorer.class,
                 bfs.getClass());
 
-        final Controller hc = factory.instantiate("Hill Climbing");
+        final Solver hc = factory.instantiate("Hill Climbing");
         assertEquals(
                 "Wrong controller instantiation",
                 HillClimber.class,
@@ -66,7 +71,7 @@ public class ControllerFactoryTest extends TestCase {
 
 
         // Check senstivity to extra spaces and case
-        final Controller hc2 = factory.instantiate(" Hill   CLIMBING ");
+        final Solver hc2 = factory.instantiate(" Hill   CLIMBING ");
         assertEquals(
                 "Wrong controller instantiation",
                 HillClimber.class,
@@ -76,9 +81,9 @@ public class ControllerFactoryTest extends TestCase {
 
     @Test(expected = UnknownStrategyException.class)
     public void testUnknownStrategyDetection() throws ControllerInstantiationException {
-        final ControllerFactory factory = new ControllerFactory();
+        final SolverFactory factory = new SolverFactory();
 
-        final Controller hc = factory.instantiate(" Hill   CLIMBING 2 ");
+        final Solver hc = factory.instantiate(" Hill   CLIMBING 2 ");
         assertEquals(
                 "Wrong controller instantiation",
                 HillClimber.class,

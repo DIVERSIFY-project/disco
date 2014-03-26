@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.problem.Solution;

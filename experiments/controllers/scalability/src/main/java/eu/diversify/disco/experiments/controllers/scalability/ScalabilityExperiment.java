@@ -17,8 +17,8 @@
  */
 package eu.diversify.disco.experiments.controllers.scalability;
 
-import eu.diversify.disco.controller.Controller;
-import eu.diversify.disco.controller.ControllerFactory;
+import eu.diversify.disco.controller.solvers.Solver;
+import eu.diversify.disco.controller.solvers.SolverFactory;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
@@ -61,7 +61,7 @@ public class ScalabilityExperiment implements Experiment {
         DURATION,
         ERROR}), "n/a");
     
-    private final HashMap<String, Controller> controllers;
+    private final HashMap<String, Solver> controllers;
     private final ArrayList<Integer> speciesCounts;
     private final ArrayList<Integer> individualsCounts;
 
@@ -71,14 +71,14 @@ public class ScalabilityExperiment implements Experiment {
      * @param setupFile the file containing the configuration
      */
     public ScalabilityExperiment(ScalabilitySetup setup) throws ControllerInstantiationException {
-        this.controllers = new HashMap<String, Controller>();
+        this.controllers = new HashMap<String, Solver>();
         this.individualsCounts = new ArrayList<Integer>();
         this.speciesCounts = new ArrayList<Integer>();
 
         // Load the configuration file
         this.setIndividualsCount(setup.getIndividualsCounts());
         this.setSpeciesCounts(setup.getSpeciesCounts());
-        final ControllerFactory factory = new ControllerFactory();
+        final SolverFactory factory = new SolverFactory();
         for (String strategy : setup.getStrategies()) {
             this.addController(strategy, factory.instantiate(strategy));
         }
@@ -90,7 +90,7 @@ public class ScalabilityExperiment implements Experiment {
      * @param key the name to identify the given controller
      * @param controller the controller to run during the experiment
      */
-    private void addController(String key, Controller controller) {
+    private void addController(String key, Solver controller) {
         this.controllers.put(key, controller);
     }
 
@@ -156,14 +156,14 @@ public class ScalabilityExperiment implements Experiment {
     }
 
     private Data runControlStrategy(String key, final Population population) {
-        final Controller controller = this.controllers.get(key);
+        final Solver controller = this.controllers.get(key);
         final Problem problem = new ProblemBuilder()
                 .withInitialPopulation(population)
                 .withDiversityMetric(new TrueDiversity().normalise())
                 .withReferenceDiversity(1.0)
                 .make();
         final long start = System.currentTimeMillis();
-        final Solution solution = controller.applyTo(problem);
+        final Solution solution = controller.solve(problem);
         final long duration = System.currentTimeMillis() - start;
         Data data = logPopulationDetails(key, population, solution, duration);
         return data;

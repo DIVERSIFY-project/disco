@@ -34,11 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- *
- * @author Franck Chauvel
- * @since 0.1
- */
+
 @RunWith(JUnit4.class)
 public class ActionFinderTest extends TestCase {
 

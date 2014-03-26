@@ -16,7 +16,7 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 

@@ -34,9 +34,9 @@
  */
 package eu.diversify.disco.experiments.controllers.singlerun;
 
-import eu.diversify.disco.controller.Controller;
-import eu.diversify.disco.controller.ControllerFactory;
-import eu.diversify.disco.controller.IterativeSearch;
+import eu.diversify.disco.controller.solvers.Solver;
+import eu.diversify.disco.controller.solvers.SolverFactory;
+import eu.diversify.disco.controller.solvers.IterativeSearch;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
@@ -71,7 +71,7 @@ public class SingleRunExperiment implements Experiment {
     private static final Field REFERENCE = new Field("reference", Double.class);
     private static final Field ERROR = new Field("error", Double.class);
     private static final Field STRATEGY = new Field("strategy", String.class);
-    private final HashMap<String, Controller> controllers;
+    private final HashMap<String, Solver> controllers;
     private final DataSet result;
     private double reference;
     private Population population;
@@ -83,7 +83,7 @@ public class SingleRunExperiment implements Experiment {
      * 1.
      */
     public SingleRunExperiment() {
-        this.controllers = new HashMap<String, Controller>();
+        this.controllers = new HashMap<String, Solver>();
         this.result = prepareResult();
     }
 
@@ -98,7 +98,7 @@ public class SingleRunExperiment implements Experiment {
         
         this.reference = setup.getReference();
         
-        this.controllers = new HashMap<String, Controller>();
+        this.controllers = new HashMap<String, Solver>();
         initialiseControlStrategies(setup);
         
         this.result = prepareResult();
@@ -116,7 +116,7 @@ public class SingleRunExperiment implements Experiment {
 
     private void initialiseControlStrategies(SingleRunSetup setup) throws IllegalArgumentException {
         try {
-            final ControllerFactory factory = new ControllerFactory();
+            final SolverFactory factory = new SolverFactory();
             for (String strategy : setup.getStrategies()) {
                 this.controllers.put(strategy, factory.instantiate(strategy));
             }
@@ -152,7 +152,7 @@ public class SingleRunExperiment implements Experiment {
      * @return the map of controllers and the name to which they are associated
      * with
      */
-    public Map<String, Controller> getControllers() {
+    public Map<String, Solver> getControllers() {
         return Collections.unmodifiableMap(this.controllers);
     }
 
@@ -195,13 +195,13 @@ public class SingleRunExperiment implements Experiment {
 
         for (String controlStrategy : this.controllers.keySet()) {
             System.out.println("Running '" + controlStrategy + "'");
-            final Controller controller = this.controllers.get(controlStrategy);
+            final Solver controller = this.controllers.get(controlStrategy);
             final Problem problem = new ProblemBuilder()
                     .withInitialPopulation(this.population)
                     .withDiversityMetric(new TrueDiversity().normalise())
                     .withReferenceDiversity(this.reference)
                     .make();
-            final Solution solution = controller.applyTo(problem);
+            final Solution solution = controller.solve(problem);
             recordControllerTrajectory(solution, controlStrategy);
         }
 

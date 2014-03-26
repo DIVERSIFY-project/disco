@@ -16,16 +16,12 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.controller;
+package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.exploration.ExplorationStrategy;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.controller.problem.constraints.Constraint;
-import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;
-import eu.diversify.disco.population.diversity.AbstractDiversityMetric;
-import java.util.ArrayList;
 
 /**
  * Abstract interface of the diversity controller
@@ -33,7 +29,7 @@ import java.util.ArrayList;
  * @author Franck Chauvel
  * @since 0.1
  */
-public abstract class IterativeSearch implements Controller {
+public abstract class IterativeSearch implements Solver {
     public static final int DEFAULT_SCALE_FACTOR = 1;
    
     private final ExplorationStrategy finder;
@@ -55,19 +51,11 @@ public abstract class IterativeSearch implements Controller {
     }
     
     /**
-     * @see eu.diversity.disco.controller.Controller#applyTo
+     * @see eu.diversity.disco.controller.Solver#solve
      */
     @Override
-    public Solution applyTo(Problem problem) {
+    public Solution solve(Problem problem) {
         return search(problem.getInitialEvaluation());
-    }
-
-    /**
-     * @see eu.diversity.disco.controller.Controller#applyTo
-     */
-    @Override
-    public final Solution applyTo(AbstractDiversityMetric metric, Population population, double reference) {
-        return applyTo(new Problem(population, reference, metric, new ArrayList<Constraint>()));
     }
 
     /**
@@ -76,7 +64,7 @@ public abstract class IterativeSearch implements Controller {
      * @param current the evaluation of the current population
      * @return the evaluation resulting from the successive refinements
      */
-    protected Solution search(Solution current) {
+    protected Solution search(Solution current) { 
         Solution next = refine(current);
         while (next.getIteration() != current.getIteration()) {
             current = next;
