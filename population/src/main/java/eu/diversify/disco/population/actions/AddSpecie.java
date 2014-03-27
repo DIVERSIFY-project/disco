@@ -53,5 +53,17 @@ public class AddSpecie implements Action {
     public boolean preserveTheTotalNumberOfIndividuals() {
         return true;
     }
+
+    @Override
+    public int impactOnTheNumberOfSpecies() {
+        return 1;
+    }
+
+    @Override
+    public int impactOnTheNumberOfIndividuals() {
+        return 0;
+    }
+    
+    
     
 }

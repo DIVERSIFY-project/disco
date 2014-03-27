@@ -50,25 +50,33 @@ public class Script implements Action {
 
     @Override
     public boolean preserveTheNumberOfSpecies() {
-        boolean result = true;
-        Iterator<Action> iterator = this.actions.iterator();
-        while (result && iterator.hasNext()) {
-            final Action action = iterator.next();
-            result = result && action.preserveTheNumberOfSpecies();
-        }
-        return result;
+        return impactOnTheNumberOfSpecies() == 0;
     }
 
     @Override
     public boolean preserveTheTotalNumberOfIndividuals() {
-        boolean result = true;
-        Iterator<Action> iterator = this.actions.iterator();
-        while (result && iterator.hasNext()) {
-            final Action action = iterator.next();
-            result = result && action.preserveTheTotalNumberOfIndividuals();
-        }
-        return result;
+       return impactOnTheNumberOfIndividuals() == 0;
     }
+
+    @Override
+    public int impactOnTheNumberOfSpecies() {
+        int impact = 0;
+        for (Action action: actions) {
+            impact += action.impactOnTheNumberOfSpecies();
+        }
+        return impact;
+    }
+
+    @Override
+    public int impactOnTheNumberOfIndividuals() {
+        int impact = 0;
+        for (Action action: actions) {
+            impact += action.impactOnTheNumberOfIndividuals();
+        }
+        return impact;
+    }
+    
+    
 
 
 }

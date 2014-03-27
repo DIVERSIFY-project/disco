@@ -148,6 +148,7 @@ public class SolutionTest extends TestCase {
 
     /**
      * Test the formatting of the result
+     * FIXME: This test is way too brittle
      */
     @Test
     public void testFormatting() {

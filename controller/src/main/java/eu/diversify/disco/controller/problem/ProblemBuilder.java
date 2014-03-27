@@ -23,7 +23,6 @@ import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.controller.problem.constraints.FixedNumberOfSpecies;
 import eu.diversify.disco.controller.problem.constraints.FixedTotalNumberOfIndividuals;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
@@ -48,6 +47,10 @@ public class ProblemBuilder {
     private double referenceDiversity;
     private DiversityMetric metric;
     private final HashSet<Constraint> constraints;
+    
+    public static ProblemBuilder aProblem() {
+        return new ProblemBuilder();
+    } 
 
     public ProblemBuilder() {
         constraints = new HashSet<Constraint>();

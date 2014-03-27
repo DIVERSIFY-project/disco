@@ -37,6 +37,11 @@ public interface Action {
     public Population applyTo(Population subject);
     
     
+    int impactOnTheNumberOfSpecies();
+    
+    int impactOnTheNumberOfIndividuals();
+    
+    
     /**
      * @return true if this action preserve the number of species
      */

@@ -55,4 +55,16 @@ public class ShiftNumberOfIndividualsIn extends SpecieAccess {
         return false;
     }
 
+    @Override
+    public int impactOnTheNumberOfSpecies() {
+        return 0;
+    }
+
+    @Override
+    public int impactOnTheNumberOfIndividuals() {
+        return offset;
+    }
+    
+    
+
 }

@@ -56,5 +56,17 @@ public class SetNumberOfIndividualsIn extends SpecieAccess {
     public boolean preserveTheTotalNumberOfIndividuals() {
         return false;
     }
+
+    @Override
+    public int impactOnTheNumberOfSpecies() {
+        return 0;
+    }
+
+    @Override
+    public int impactOnTheNumberOfIndividuals() {
+        throw new IllegalStateException("Unable to anticipate the impact of set the number of individuals to a particuar value");
+    }
+    
+    
     
 }
