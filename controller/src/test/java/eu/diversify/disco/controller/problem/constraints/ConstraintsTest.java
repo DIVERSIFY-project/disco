@@ -137,21 +137,21 @@ public class ConstraintsTest extends TestCase {
     }
 
     private static Problem withNoConstraint() {
-        Problem problem = sampleProblem().make();
+        Problem problem = sampleProblem().build();
         return problem;
     }
 
     private static Problem withFixedNumberOfSpecies() {
         Problem problem = sampleProblem()
                 .withFixedNumberOfSpecies()
-                .make();
+                .build();
         return problem;
     }
 
     private static Problem withFixedNumberOfIndividuals() {
         Problem problem = sampleProblem()
                 .withFixedTotalNumberOfIndividuals()
-                .make();
+                .build();
         return problem;
     }
 
@@ -159,7 +159,7 @@ public class ConstraintsTest extends TestCase {
         Problem problem = sampleProblem()
                 .withFixedNumberOfSpecies()
                 .withFixedTotalNumberOfIndividuals()
-                .make();
+                .build();
         return problem;
     }
 

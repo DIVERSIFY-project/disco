@@ -44,7 +44,7 @@ public class ActionFinderTest extends TestCase {
                 .withInitialPopulation(aPopulation().withDistribution(5, 5).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
-                .make();
+                .build();
 
         ExplorationStrategy finder = new IndividualPermutationExplorer();
         for (Action action: finder.search(problem.getInitialEvaluation(), 1)) {
@@ -63,7 +63,7 @@ public class ActionFinderTest extends TestCase {
                 .withInitialPopulation(aPopulation().withDistribution(1, 1).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
-                .make();
+                .build();
 
         ExplorationStrategy finder = new IndividualPermutationExplorer();
 
@@ -86,7 +86,7 @@ public class ActionFinderTest extends TestCase {
                 .withInitialPopulation(aPopulation().withDistribution(4, 4).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
-                .make();
+                .build();
 
         ExplorationStrategy finder = new IndividualPermutationExplorer();
 
@@ -109,7 +109,7 @@ public class ActionFinderTest extends TestCase {
                 .withInitialPopulation(aPopulation().withDistribution(2, 2, 2).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
-                .make();
+                .build();
 
         ExplorationStrategy finder = new IndividualPermutationExplorer();
 

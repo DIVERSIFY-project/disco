@@ -46,7 +46,7 @@ public class Controller {
         final Problem problem = builder
                 .withInitialPopulation(source.read())
                 .withReferenceDiversity(reference.getReference())
-                .make();
+                .build();
         final Solution solution = strategy.solve(problem);
         System.out.println(solution);
         target.write(solution);

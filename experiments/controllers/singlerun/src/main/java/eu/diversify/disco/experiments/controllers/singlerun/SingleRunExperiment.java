@@ -183,7 +183,7 @@ public class SingleRunExperiment implements Experiment {
                     .withInitialPopulation(this.population)
                     .withDiversityMetric(new TrueDiversity().normalise())
                     .withReferenceDiversity(this.reference)
-                    .make();
+                    .build();
             final Solution solution = controller.solve(problem);
             recordControllerTrajectory(solution, controlStrategy);
         }

@@ -57,7 +57,7 @@ public class ControllerTest extends TestCase {
         final Solution output = builder
                 .withInitialPopulation(input)
                 .withReferenceDiversity(reference)
-                .make()
+                .build()
                 .getInitialEvaluation();
         
         final Reference user = context.mock(Reference.class);

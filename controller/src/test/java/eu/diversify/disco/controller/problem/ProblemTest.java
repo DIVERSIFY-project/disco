@@ -1,20 +1,3 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 /**
  *
@@ -98,7 +81,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         assertEquals(initial, problem.getInitialEvaluation().getPopulation());
     }
@@ -114,7 +97,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         assertTrue(
                 "A case shall be equal to itself",
@@ -128,7 +111,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         assertFalse(
                 "A case shall not be equal to 'null'",
@@ -142,7 +125,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         assertFalse(
                 "A case shall not be equals to an object with an incompatible type",
@@ -156,7 +139,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         Population initialB = aPopulation().withDistribution(10, 23).build();
 
@@ -164,7 +147,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         assertTrue(
                 "A case shall be equal to an equivalent case",
@@ -178,14 +161,14 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         Population initialB = aPopulation().withDistribution(10, 23, 8).build();
         Problem problemB = aProblem()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         assertFalse(
                 "Two problems shall be different if their population are different",
@@ -200,14 +183,14 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         Population initialB = aPopulation().withDistribution(10, 23).build();
         Problem problemB = aProblem()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.85) // A different reference
-                .make();
+                .build();
 
         assertFalse(
                 "Two problems shall be different is their reference as different",
@@ -221,7 +204,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
-                .make();
+                .build();
 
         Population initialB = aPopulation().withDistribution(10, 23).build();
 
@@ -229,7 +212,7 @@ public class ProblemTest extends TestCase {
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new ShannonIndex()) // A different metric
                 .withReferenceDiversity(0.5) // Needed as the shannon index imply a different scale
-                .make();
+                .build();
 
         assertFalse(
                 "Two problems shall be different if their metrics are different",

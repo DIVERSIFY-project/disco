@@ -45,7 +45,7 @@ public class ProblemBuilderTest extends TestCase {
                 .withInitialPopulation(population)
                 .withReferenceDiversity(0.75)
                 .withDiversityMetric(new ShannonIndex())
-                .make();
+                .build();
         assertEquals(population, problem.getInitialPopulation());
         assertEquals(0.75, problem.getReference());
         assertEquals(new ShannonIndex(), problem.getMetric());
@@ -62,7 +62,7 @@ public class ProblemBuilderTest extends TestCase {
                 .withReferenceDiversity(0.56)
                 .withDiversityMetric(new ShannonIndex())
                 .withFixedTotalNumberOfIndividuals()
-                .make();
+                .build();
         assertFalse(problem.isLegal(new ShiftNumberOfIndividualsIn(1, +3)));
     }
 
@@ -74,7 +74,7 @@ public class ProblemBuilderTest extends TestCase {
                 .withReferenceDiversity(0.56)
                 .withDiversityMetric(new ShannonIndex())
                 .withFixedNumberOfSpecies()
-                .make();
+                .build();
         assertFalse(problem.isLegal(new AddSpecie("Elephants")));
     }
 }

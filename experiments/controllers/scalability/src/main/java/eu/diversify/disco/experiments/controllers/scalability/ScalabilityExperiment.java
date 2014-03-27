@@ -161,7 +161,7 @@ public class ScalabilityExperiment implements Experiment {
                 .withInitialPopulation(population)
                 .withDiversityMetric(new TrueDiversity().normalise())
                 .withReferenceDiversity(1.0)
-                .make();
+                .build();
         final long start = System.currentTimeMillis();
         final Solution solution = controller.solve(problem);
         final long duration = System.currentTimeMillis() - start;

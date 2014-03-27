@@ -65,7 +65,7 @@ public class SolutionTest extends TestCase {
                 .withInitialPopulation(aPopulation().withDistribution(3, 2, 1).build())
                 .withReferenceDiversity(2.0)
                 .withDiversityMetric(new TrueDiversity())
-                .make();
+                .build();
 
         Solution initial = problem.getInitialEvaluation();
 

@@ -89,7 +89,7 @@ public class ProblemBuilder {
         return this;
     }
 
-    public Problem make() {
+    public Problem build() {
         Problem result = new Problem(initialPopulation, referenceDiversity, metric, constraints);
         return result;
     }

@@ -55,7 +55,7 @@ public class BreadthFirstSearchTest extends SolverTest {
                 .withInitialPopulation(source)
                 .withDiversityMetric(new NormalisedDiversityMetric(new TrueDiversity()))
                 .withReferenceDiversity(0.)
-                .make();
+                .build();
         
         explorer.reset(problem.getInitialEvaluation());
         assertTrue(
