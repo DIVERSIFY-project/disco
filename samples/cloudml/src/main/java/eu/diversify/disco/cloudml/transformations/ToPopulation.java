@@ -38,13 +38,12 @@ public class ToPopulation implements DiversityExtraction<DeploymentModel> {
 
     @Override
     public Population applyTo(DeploymentModel deployment) {
-        //FIXME: abortIfInvalidModel(deployment);
+        abortIfInvalidModel(deployment);
         return extract(deployment).getExtractedPopulation();
     }
 
     private void abortIfInvalidModel(DeploymentModel deployment) {
-        DeploymentValidator validator = new DeploymentValidator();
-        final Report validation = validator.validate(deployment);
+        final Report validation = new DeploymentValidator().validate(deployment);
         if (!validation.pass(Report.WITHOUT_WARNING)) {
             throw new IllegalArgumentException("Invalid model: " + validation.toString());
         }
