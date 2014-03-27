@@ -34,6 +34,7 @@
  */
 package eu.diversify.disco.controller.problem;
 
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
@@ -60,7 +61,7 @@ public class SolutionTest extends TestCase {
 
     @Test
     public void testRefinement() {
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(aPopulation().withDistribution(3, 2, 1).build())
                 .withReferenceDiversity(2.0)
                 .withDiversityMetric(new TrueDiversity())

@@ -24,7 +24,7 @@ import eu.diversify.disco.controller.solvers.IterativeSearch;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.controller.problem.ProblemBuilder;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
@@ -179,7 +179,7 @@ public class SingleRunExperiment implements Experiment {
         for (String controlStrategy : this.controllers.keySet()) {
             System.out.println("Running '" + controlStrategy + "'");
             final Solver controller = this.controllers.get(controlStrategy);
-            final Problem problem = new ProblemBuilder()
+            final Problem problem = aProblem()
                     .withInitialPopulation(this.population)
                     .withDiversityMetric(new TrueDiversity().normalise())
                     .withReferenceDiversity(this.reference)

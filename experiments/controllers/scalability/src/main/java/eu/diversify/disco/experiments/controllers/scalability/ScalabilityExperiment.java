@@ -22,7 +22,7 @@ import eu.diversify.disco.controller.solvers.SolverFactory;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.controller.problem.ProblemBuilder;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
@@ -157,7 +157,7 @@ public class ScalabilityExperiment implements Experiment {
 
     private Data runControlStrategy(String key, final Population population) {
         final Solver controller = this.controllers.get(key);
-        final Problem problem = new ProblemBuilder()
+        final Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withDiversityMetric(new TrueDiversity().normalise())
                 .withReferenceDiversity(1.0)

@@ -52,7 +52,7 @@ public class ProblemBuilder {
         return new ProblemBuilder();
     } 
 
-    public ProblemBuilder() {
+    private ProblemBuilder() {
         constraints = new HashSet<Constraint>();
         setDefaultValues();
     }

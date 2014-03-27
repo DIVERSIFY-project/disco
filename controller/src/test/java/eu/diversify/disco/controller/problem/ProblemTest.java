@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  *
  * This file is part of Disco.
@@ -35,6 +36,7 @@
 package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.controller.problem.constraints.Constraint;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
@@ -92,7 +94,7 @@ public class ProblemTest extends TestCase {
     @Test
     public void testGetInitialEvaluation() {
         Population initial = aPopulation().withDistribution(10, 23).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -108,7 +110,7 @@ public class ProblemTest extends TestCase {
     @Test
     public void testProblemEqualityWithItself() {
         Population initial = aPopulation().withDistribution(10, 23).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -122,7 +124,7 @@ public class ProblemTest extends TestCase {
     @Test
     public void testEqualityWithNull() {
         Population initial = aPopulation().withDistribution(10, 23).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -136,7 +138,7 @@ public class ProblemTest extends TestCase {
     @Test
     public void testEqualityWithIncompatibleObject() {
         Population initial = aPopulation().withDistribution(10, 23).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(initial)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -150,7 +152,7 @@ public class ProblemTest extends TestCase {
     @Test
     public void testEqualityWithTwoEquivalentProblems() {
         Population initialA = aPopulation().withDistribution(10, 23).build();
-        Problem problemA = new ProblemBuilder()
+        Problem problemA = aProblem()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -158,7 +160,7 @@ public class ProblemTest extends TestCase {
 
         Population initialB = aPopulation().withDistribution(10, 23).build();
 
-        Problem problemB = new ProblemBuilder()
+        Problem problemB = aProblem()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -172,14 +174,14 @@ public class ProblemTest extends TestCase {
     @Test
     public void testEqualityWithProblemsWhoseInitialPopulationIsDifferent() {
         Population initialA = aPopulation().withDistribution(10, 23).build();
-        Problem problemA = new ProblemBuilder()
+        Problem problemA = aProblem()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
                 .make();
 
         Population initialB = aPopulation().withDistribution(10, 23, 8).build();
-        Problem problemB = new ProblemBuilder()
+        Problem problemB = aProblem()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -194,14 +196,14 @@ public class ProblemTest extends TestCase {
     @Test
     public void testEqualityWithProblemsWhoseReferenceIsDifferent() {
         Population initialA = aPopulation().withDistribution(10, 23).build();
-        Problem problemA = new ProblemBuilder()
+        Problem problemA = aProblem()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
                 .make();
 
         Population initialB = aPopulation().withDistribution(10, 23).build();
-        Problem problemB = new ProblemBuilder()
+        Problem problemB = aProblem()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.85) // A different reference
@@ -215,7 +217,7 @@ public class ProblemTest extends TestCase {
     @Test
     public void testEqualityWithProblemsWhoseMetricIsDifferent() {
         Population initialA = aPopulation().withDistribution(10, 23).build();
-        Problem problemA = new ProblemBuilder()
+        Problem problemA = aProblem()
                 .withInitialPopulation(initialA)
                 .withDiversityMetric(new TrueDiversity())
                 .withReferenceDiversity(1.75)
@@ -223,7 +225,7 @@ public class ProblemTest extends TestCase {
 
         Population initialB = aPopulation().withDistribution(10, 23).build();
 
-        Problem problemB = new ProblemBuilder()
+        Problem problemB = aProblem()
                 .withInitialPopulation(initialB)
                 .withDiversityMetric(new ShannonIndex()) // A different metric
                 .withReferenceDiversity(0.5) // Needed as the shannon index imply a different scale

@@ -21,6 +21,7 @@ package eu.diversify.disco.controller;
 import eu.diversify.disco.controller.solvers.Solver;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
@@ -49,7 +50,7 @@ public class ControllerTest extends TestCase {
                 .withDistribution(5, 4, 3, 2, 1)
                 .build();
         
-        final ProblemBuilder builder = new ProblemBuilder()
+        final ProblemBuilder builder = aProblem()
                 .withDiversityMetric(new TrueDiversity().normalise());
         final double reference = 0.5;
         

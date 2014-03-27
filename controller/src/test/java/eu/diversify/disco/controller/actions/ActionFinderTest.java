@@ -22,7 +22,7 @@ package eu.diversify.disco.controller.actions;
 import eu.diversify.disco.controller.exploration.ExplorationStrategy;
 import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.controller.problem.ProblemBuilder;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
@@ -40,7 +40,7 @@ public class ActionFinderTest extends TestCase {
 
     @Test
     public void testImmutabilityOfSolution() {
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(aPopulation().withDistribution(5, 5).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
@@ -59,7 +59,7 @@ public class ActionFinderTest extends TestCase {
     
     @Test
     public void testFindAllPermutationsOfIndividualsInMinimalPopulation() {
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(aPopulation().withDistribution(1, 1).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
@@ -82,7 +82,7 @@ public class ActionFinderTest extends TestCase {
 
     @Test
     public void testFindAllPermutationsOfIndividualsInMinimalPopulationWithScaleFactor() {
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(aPopulation().withDistribution(4, 4).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
@@ -105,7 +105,7 @@ public class ActionFinderTest extends TestCase {
 
     @Test
     public void testFindAllPermutationsOfIndividuals() {
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(aPopulation().withDistribution(2, 2, 2).build())
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)

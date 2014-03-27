@@ -18,6 +18,7 @@
 package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.population.Population;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.AddSpecie;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
@@ -40,7 +41,7 @@ public class ProblemBuilderTest extends TestCase {
     @Test
     public void testBasicProblem() {
         Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withReferenceDiversity(0.75)
                 .withDiversityMetric(new ShannonIndex())
@@ -56,7 +57,7 @@ public class ProblemBuilderTest extends TestCase {
     @Test
     public void testWithFixedTotalNumberOfIndividuals() {
         Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withReferenceDiversity(0.56)
                 .withDiversityMetric(new ShannonIndex())
@@ -68,7 +69,7 @@ public class ProblemBuilderTest extends TestCase {
     @Test
     public void testWithFixedNumberOfSpecies() {
         Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
-        Problem problem = new ProblemBuilder()
+        Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withReferenceDiversity(0.56)
                 .withDiversityMetric(new ShannonIndex())
