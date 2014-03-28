@@ -27,6 +27,9 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 /**
  * General set of test for each diversity metric.
  *
@@ -137,5 +140,26 @@ public abstract class DiversityMetricTest extends TestCase {
                 "Two instance of the different metric shall not be equal",
                 m1.equals(m3));
 
+    }
+    
+    @Test
+    public void testMonotony() {
+        final DiversityMetric metric = newMetricUnderTest();
+        final Population population = aPopulation()
+                .withDistribution(49, 1)
+                .build();
+        
+        double previous = metric.applyTo(population);
+        while(!isUniformlyDistributed(population)) {
+            population.shiftNumberOfIndividualsIn(1, -1);
+            population.shiftNumberOfIndividualsIn(2, +1);
+            double next = metric.applyTo(population);
+            assertThat("diversity increases", next, is(greaterThan(previous)));
+            previous = next;
+        }
+    }
+    
+    private boolean isUniformlyDistributed(Population population) {
+        return population.getVariance() == 0D;
     }
 }
