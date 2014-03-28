@@ -20,6 +20,8 @@ package eu.diversify.disco.population.diversity;
 
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
+import eu.diversify.disco.population.actions.Action;
+import static eu.diversify.disco.population.actions.ScriptBuilder.*;
 import junit.framework.TestCase;
 import org.junit.Rule;
 import org.junit.Test;
@@ -145,21 +147,22 @@ public abstract class DiversityMetricTest extends TestCase {
     @Test
     public void testMonotony() {
         final DiversityMetric metric = newMetricUnderTest();
-        final Population population = aPopulation()
+     
+        Population population = aPopulation()
                 .withDistribution(49, 1)
                 .build();
         
+        final Action transfert = aScript()
+                .shift(1, -1)
+                .shift(2, +1)
+                .build();
+        
         double previous = metric.applyTo(population);
-        while(!isUniformlyDistributed(population)) {
-            population.shiftNumberOfIndividualsIn(1, -1);
-            population.shiftNumberOfIndividualsIn(2, +1);
+        while(!population.isUniformlyDistributed()) {
+            population = transfert.applyTo(population);
             double next = metric.applyTo(population);
             assertThat("diversity increases", next, is(greaterThan(previous)));
             previous = next;
         }
-    }
-    
-    private boolean isUniformlyDistributed(Population population) {
-        return population.getVariance() == 0D;
     }
 }
