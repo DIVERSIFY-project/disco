@@ -60,6 +60,13 @@ public class RemoveSpecie extends SpecieAccess {
     public int impactOnTheNumberOfIndividuals() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "del. " + getSpecieName();
+    }
+    
+    
     
     
     

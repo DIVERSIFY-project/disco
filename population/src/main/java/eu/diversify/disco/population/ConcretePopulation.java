@@ -15,13 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population;
 
+import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.actions.AddSpecie;
+import eu.diversify.disco.population.actions.RemoveSpecie;
+import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +54,6 @@ import java.util.Map;
 public class ConcretePopulation implements Population {
 
     public static final String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
-    
     // FIXME: Change the implementation of the list of species name to ensure access to species name in O(c) 
     private final ArrayList<String> speciesName;
     private final ArrayList<Integer> distribution;
@@ -284,16 +303,46 @@ public class ConcretePopulation implements Population {
         int s = getNumberOfSpecies();
         double mu = getMeanNumberOfIndividuals();
         double total = 0D;
-        for(int index=1 ; index<=s ; index++) {
+        for (int index = 1; index <= s; index++) {
             total += Math.pow(getNumberOfIndividualsIn(index) - mu, 2);
         }
         return total / s;
     }
 
     @Override
+    public List<Action> differenceWith(Population target) {
+        final ArrayList<Action> actions = new ArrayList<Action>();
+        final List<String> superfluousSpecies = new ArrayList<String>(getSpeciesNames());
+        for (String foreign : target.getSpeciesNames()) {
+            if (this.hasAnySpecieNamed(foreign)) {
+                int delta = target.getNumberOfIndividualsIn(foreign) - this.getNumberOfIndividualsIn(foreign);
+                if (delta != 0) {
+                    actions.add(new ShiftNumberOfIndividualsIn(foreign, delta));
+                }
+            }
+            else {
+                actions.add(new AddSpecie(foreign));
+                actions.add(new ShiftNumberOfIndividualsIn(foreign, target.getNumberOfIndividualsIn(foreign)));
+            }
+            superfluousSpecies.remove(foreign);
+        }
+        for (String specie: superfluousSpecies) {
+            actions.add(new RemoveSpecie(specie));
+        }
+        return actions;
+    }
+
+    @Override
+    public List<String> sortSpeciesNamesAlphabetically() {
+        final List<String> speciesNames = new ArrayList<String>(getSpeciesNames());
+        Collections.sort(speciesNames);
+        return speciesNames;
+    }
+
+    @Override
     public Map<String, Integer> toMap() {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
-        for(int index=0 ; index<this.distribution.size() ; index++) {
+        for (int index = 0; index < this.distribution.size(); index++) {
             map.put(this.speciesName.get(index), this.distribution.get(index));
         }
         return map;

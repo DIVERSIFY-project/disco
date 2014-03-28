@@ -21,6 +21,7 @@
 package eu.diversify.disco.population.decorators;
 
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.actions.Action;
 import java.util.List;
 import java.util.Map;
 
@@ -176,6 +177,17 @@ public abstract class AbstractPopulationDecorator implements Population {
     public final Population shiftNumberOfIndividualsIn(String specieName, int offset) {
         return shiftNumberOfIndividualsIn(getSpecieIndex(specieName), offset);
     }
+
+    @Override
+    public List<Action> differenceWith(Population target) {
+        return delegate.differenceWith(target);
+    }
+
+    @Override
+    public List<String> sortSpeciesNamesAlphabetically() {
+        return delegate.sortSpeciesNamesAlphabetically();
+    }
+       
 
     @Override
     public String toString() {

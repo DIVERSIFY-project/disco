@@ -15,7 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population;
 
 import java.util.Arrays;
@@ -27,8 +43,17 @@ import static junit.framework.TestCase.assertEquals;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import static eu.diversify.disco.population.PopulationBuilder.*;
+import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.actions.AddSpecie;
+import eu.diversify.disco.population.actions.RemoveSpecie;
+import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
+import java.util.ArrayList;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Test operation which update the population
@@ -36,6 +61,7 @@ import static eu.diversify.disco.population.PopulationBuilder.*;
  * @author Franck Chauvel
  * @since 0.1
  */
+@RunWith(JUnit4.class)
 public abstract class PopulationTest extends TestCase {
 
     @Rule
@@ -367,6 +393,40 @@ public abstract class PopulationTest extends TestCase {
         assertEquals(actual, expected);
     }
 
+    @Test
+    public void testDifferenceWith() {
+        Population source = getBuilder()
+                .withSpeciesNamed("s1", "s2", "s3")
+                .withDistribution(1, 2, 3)
+                .build();
+        Population target = aPopulation()
+                .withSpeciesNamed("s1", "s2", "s4")
+                .withDistribution(3, 2, 1)
+                .build();
+
+        List<Action> actualActions = source.differenceWith(target);
+        Action[] expectedActions = new Action[]{
+            new ShiftNumberOfIndividualsIn("s1", +2),
+            new RemoveSpecie("s3"),
+            new AddSpecie("s4"),
+            new ShiftNumberOfIndividualsIn("s4", +1)
+        };
+        assertThat("actions count", actualActions, hasSize(expectedActions.length));
+        assertThat("content", actualActions, containsInAnyOrder(expectedActions)); 
+    }
+
+    @Test
+    public void testSortSpeciesNamesAlphabetically() {
+        Population source = getBuilder()
+                .withSpeciesNamed("s3", "s2", "s1")
+                .withDistribution(1, 2, 3)
+                .build();
+        List<String> actualNames = source.sortSpeciesNamesAlphabetically();
+        List<String> expectedNames = Arrays.asList(new String[]{"s1", "s2", "s3"});
+
+        assertThat("species name order", actualNames, is(equalTo(expectedNames)));
+    }
+
     // Test conversions to other data representation
     @Test
     public void testToString() {
@@ -389,14 +449,14 @@ public abstract class PopulationTest extends TestCase {
         double[] expected = new double[]{0.5D, 1D / 3, 1D / 6};
         assertTrue(Arrays.equals(expected, actual));
     }
-    
+
     @Test
     public void testToMapWhenEmpty() {
         initial = getBuilder().build();
         Map<String, Integer> expected = new HashMap<String, Integer>();
         assertEquals(expected, initial.toMap());
     }
-    
+
     @Test
     public void testToMapWhenFilled() {
         initial = getBuilder()

@@ -51,4 +51,8 @@ public interface Action {
      * @return true if this action preserve the total number of individuals
      */
     public boolean preserveTheTotalNumberOfIndividuals();
+    
+    
+    @Override
+    public String toString();
 }

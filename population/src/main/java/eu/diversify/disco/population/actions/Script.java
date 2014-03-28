@@ -75,6 +75,28 @@ public class Script implements Action {
         }
         return impact;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + (this.actions != null ? this.actions.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Script other = (Script) obj;
+        if (this.actions != other.actions && (this.actions == null || !this.actions.equals(other.actions))) {
+            return false;
+        }
+        return true;
+    }
     
     
 

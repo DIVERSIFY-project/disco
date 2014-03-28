@@ -66,6 +66,30 @@ public class SetNumberOfIndividualsIn extends SpecieAccess {
     public int impactOnTheNumberOfIndividuals() {
         throw new IllegalStateException("Unable to anticipate the impact of set the number of individuals to a particuar value");
     }
+
+    @Override
+    public String toString() {
+        return getSpecieName() + " <- " + numberOfIndividuals ;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + this.numberOfIndividuals;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SetNumberOfIndividualsIn other = (SetNumberOfIndividualsIn) obj;
+        return super.equals(other) && numberOfIndividuals == other.numberOfIndividuals;
+    }
     
     
     

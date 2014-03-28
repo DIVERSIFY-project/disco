@@ -63,7 +63,33 @@ public class AddSpecie implements Action {
     public int impactOnTheNumberOfIndividuals() {
         return 0;
     }
-    
+
+    @Override
+    public String toString() {
+        return "add " + specieName;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + (this.specieName != null ? this.specieName.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AddSpecie other = (AddSpecie) obj;
+        if ((this.specieName == null) ? (other.specieName != null) : !this.specieName.equals(other.specieName)) {
+            return false;
+        }
+        return true;
+    }
     
     
 }

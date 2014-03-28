@@ -34,6 +34,7 @@
  */
 package eu.diversify.disco.population;
 
+import eu.diversify.disco.population.actions.Action;
 import java.util.List;
 import java.util.Map;
 
@@ -234,6 +235,20 @@ public interface Population {
      */
     public Population shiftNumberOfIndividualsIn(String specieName, int offset);
 
+    /**
+     * @param target the population to be compared to
+     * @return a list of actions, which, applied on this population, would
+     * produce the target population.
+     */
+    public List<Action> differenceWith(Population target);
+
+    
+    /**
+     * @return the list of species name by alphabetical order
+     */
+    public List<String> sortSpeciesNamesAlphabetically();
+    
+    
     /**
      * @return a string representing the content of the population
      */

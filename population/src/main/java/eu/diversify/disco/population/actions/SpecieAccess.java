@@ -47,9 +47,49 @@ public abstract class SpecieAccess implements Action {
 
     protected int getSpecieIndex(Population population) {
         int index = specieIndex;
-        if (index == UNDEFINED_INDEX) {
+        if (hasSpecieIndex(index)) {
             index = population.getSpecieIndex(specieName);
         }
         return index;
     }
+    
+    protected String getSpecieName() {
+        return (hasSpecieName()) ? specieName : String.format("s%d", specieIndex);
+    }
+
+    private boolean hasSpecieName() {
+        return !specieName.equals(UNDEFINED_SPECIE_NAME);
+    }
+
+    private boolean hasSpecieIndex(int index) {
+        return index == UNDEFINED_INDEX;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + this.specieIndex;
+        hash = 41 * hash + (this.specieName != null ? this.specieName.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SpecieAccess other = (SpecieAccess) obj;
+        if (this.specieIndex != other.specieIndex) {
+            return false;
+        }
+        if ((this.specieName == null) ? (other.specieName != null) : !this.specieName.equals(other.specieName)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }
