@@ -187,6 +187,11 @@ public abstract class AbstractPopulationDecorator implements Population {
     public List<String> sortSpeciesNamesAlphabetically() {
         return delegate.sortSpeciesNamesAlphabetically();
     }
+
+    @Override
+    public boolean isUniformlyDistributed() {
+        return delegate.isUniformlyDistributed();
+    }
        
 
     @Override

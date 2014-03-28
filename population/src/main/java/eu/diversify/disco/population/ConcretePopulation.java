@@ -309,6 +309,13 @@ public class ConcretePopulation implements Population {
         return total / s;
     }
 
+    
+    @Override
+    public boolean isUniformlyDistributed() {
+        return getVariance() == 0;
+    }
+       
+
     @Override
     public List<Action> differenceWith(Population target) {
         final ArrayList<Action> actions = new ArrayList<Action>();

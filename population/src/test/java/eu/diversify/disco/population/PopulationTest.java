@@ -426,6 +426,25 @@ public abstract class PopulationTest extends TestCase {
 
         assertThat("species name order", actualNames, is(equalTo(expectedNames)));
     }
+    
+    
+    @Test
+    public void testIsUniformlyDistributed() {
+        Population population = getBuilder()
+                .withDistribution(5, 5, 5, 5, 5)
+                .build();
+        
+        assertThat("uniformly distributed", population.isUniformlyDistributed());
+    }
+    
+    @Test
+    public void testIsNotUniformlyDistributed() {
+        Population population = getBuilder()
+                .withDistribution(10, 3, 1, 12, 5)
+                .build();
+        
+        assertThat("uniformly distributed", !population.isUniformlyDistributed());
+    }
 
     // Test conversions to other data representation
     @Test

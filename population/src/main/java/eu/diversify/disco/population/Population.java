@@ -242,13 +242,17 @@ public interface Population {
      */
     public List<Action> differenceWith(Population target);
 
-    
     /**
      * @return the list of species name by alphabetical order
      */
     public List<String> sortSpeciesNamesAlphabetically();
-    
-    
+
+    /**
+     * @return true if the population is uniformly distributed, i.e., if the
+     * variance is 0.
+     */
+    public boolean isUniformlyDistributed();
+
     /**
      * @return a string representing the content of the population
      */
