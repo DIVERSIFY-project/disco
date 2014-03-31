@@ -21,13 +21,13 @@ package eu.diversify.disco.cloudml;
 
 import eu.diversify.disco.samples.commons.ModelReader;
 import eu.diversify.disco.samples.commons.ModelWriter;
-import eu.diversify.disco.cloudml.util.DotPrinter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.cloudml.codecs.JsonCodec;
+import org.cloudml.codecs.DotCodec;
 import org.cloudml.core.DeploymentModel;
 
 public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<DeploymentModel> {
@@ -115,7 +115,7 @@ public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<D
 
     private void updateVisualisation(DeploymentModel model) {
         try {
-            new DotPrinter().saveAs(model, getLocationOfDotVisualisation());
+            new DotCodec().save(model, new FileOutputStream(getLocationOfDotVisualisation()));
 
         } catch (FileNotFoundException ex) {
             for (CloudMLModelListener listener : listeners) {

@@ -34,14 +34,6 @@
  */
 package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.util.DotPrinter;
-import eu.diversify.disco.controller.problem.Solution;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import org.cloudml.codecs.JsonCodec;
-import org.cloudml.core.DeploymentModel;
-
 /**
  * Run the transformation from a DeploymentModel to a population model,
  * diversify the population model, and adjust the DeploymentModel model.

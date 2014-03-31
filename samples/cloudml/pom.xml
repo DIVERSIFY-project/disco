@@ -49,6 +49,13 @@
             <artifactId>codecs.json</artifactId>
             <version>1.5-SNAPSHOT</version>
         </dependency>
+        
+         
+        <dependency>
+            <groupId>org.cloudml</groupId>
+            <artifactId>codecs.dot</artifactId>
+            <version>1.5-SNAPSHOT</version>
+        </dependency>
                 
         <dependency>
             <groupId>org.jmock</groupId>
