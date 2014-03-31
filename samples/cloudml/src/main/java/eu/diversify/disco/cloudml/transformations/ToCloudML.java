@@ -56,11 +56,11 @@ public class ToCloudML implements DiversityInjection<DeploymentModel>{
         abortIfInvalid(toBe);
         // TODO: Check if the model and the population are consistent?
         
-        for (Node nodeType: deployment.getNodes()) {
+        for (Node nodeType: deployment.getNodeTypes()) {
             adjustNodeInstanceCount(deployment, nodeType, toBe.getNumberOfIndividualsIn(nodeType.getName()));
         }
         
-        for (Artefact artefactType: deployment.getArtefacts()) {
+        for (Artefact artefactType: deployment.getArtefactTypes()) {
             adjustArtefactInstanceCount(deployment, artefactType, toBe.getNumberOfIndividualsIn(artefactType.getName()));
         }
 
@@ -81,7 +81,7 @@ public class ToCloudML implements DiversityInjection<DeploymentModel>{
     }
 
     private void adjustNodeInstanceCount(DeploymentModel deployment, final Node nodeType, int desired) {
-        final List<NodeInstance> existings = deployment.findNodeInstancesByType(nodeType); 
+        final List<NodeInstance> existings = deployment.getNodeInstances().ofType(nodeType).toList(); 
         final int error = desired - existings.size();
         if (error < 0) {
             removeExcessiveNodeInstances(existings, Math.abs(error), deployment);
@@ -105,7 +105,7 @@ public class ToCloudML implements DiversityInjection<DeploymentModel>{
     }
 
     private void adjustArtefactInstanceCount(DeploymentModel deployment, Artefact artefact, int desired) {
-        final List<ArtefactInstance> existings = deployment.findArtefactInstancesByType(artefact);
+        final List<ArtefactInstance> existings = deployment.getArtefactInstances().ofType(artefact).toList();
         final int error = desired - existings.size();
         if (error < 0) {
             removeExessiveArtefactInstances(existings, Math.abs(error), deployment);

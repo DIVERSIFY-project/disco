@@ -20,6 +20,7 @@ package eu.diversify.disco.cloudml.util;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.cloudml.core.ArtefactInstance;
@@ -56,12 +57,12 @@ public class DotPrinter {
             builder.append("style=filled;\n");
             builder.append("color=lightgrey;\n");
             builder.append("label=\"").append(escape(nodeInstance.getName())).append("\";");
-            printDotNodes(clusterIndex, model.findArtefactInstancesByDestination(nodeInstance));
+            printDotNodes(clusterIndex, model.getArtefactInstances().hostedBy(nodeInstance));
             builder.append("}");
         }
     }
 
-    private void printDotNodes(int clusterIndex, List<ArtefactInstance> artefactInstances) {
+    private void printDotNodes(int clusterIndex, Collection<ArtefactInstance> artefactInstances) {
         int artefactIndex = 0;
         for (ArtefactInstance artefact : artefactInstances) {
             artefactIndex += 1;

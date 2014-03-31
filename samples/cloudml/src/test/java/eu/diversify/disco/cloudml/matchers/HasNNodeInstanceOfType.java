@@ -46,8 +46,8 @@ public class HasNNodeInstanceOfType extends TypeSafeMatcher<DeploymentModel> {
     
     @Override
     protected boolean matchesSafely(DeploymentModel deployment) {
-        Node type = deployment.findNodeByName(nodeTypeName);
-        List<NodeInstance> instances = deployment.findNodeInstancesByType(type);
+        Node type = deployment.getNodeTypes().named(nodeTypeName);
+        List<NodeInstance> instances = deployment.getNodeInstances().ofType(type).toList();
         return instances.size() == count;
     }
 

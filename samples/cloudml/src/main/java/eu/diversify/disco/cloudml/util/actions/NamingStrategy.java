@@ -51,7 +51,7 @@ public class NamingStrategy {
     public static final String INSTANCE_MARKER = "</instance>";
     public static final String TYPE_NAME_MARKER = "</type-name>";
     public static final String INDEX_MARKER = "%d";
-    public static final String FORMAT = String.format("%s %s %s %s", TYPE_NAME_MARKER, KIND_MARKER, INSTANCE_MARKER, INDEX_MARKER);
+    public static final String FORMAT = String.format("%s %s %s", KIND_MARKER, INSTANCE_MARKER, INDEX_MARKER);
     public static final String DEFAULT_PATTERN = "(\\d+)";
     public static final int ID_GROUP_INDEX = 1;
     public static final String NODE_KIND = "node";

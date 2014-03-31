@@ -57,7 +57,7 @@ public class InstallTest extends TestCase {
                 .getTypes()
                 .build();
 
-        final Artefact artefact = model.findArtefactByName(SshClientServer.CLIENT_TYPE);
+        final Artefact artefact = model.getArtefactTypes().named(SshClientServer.CLIENT_TYPE);
 
 
         new Install(new StandardLibrary(), artefact).applyTo(model);

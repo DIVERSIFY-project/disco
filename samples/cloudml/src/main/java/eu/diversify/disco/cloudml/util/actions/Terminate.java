@@ -18,7 +18,7 @@
 
 package eu.diversify.disco.cloudml.util.actions;
 
-import java.util.List;
+import java.util.Collection;
 import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.NodeInstance;
@@ -34,13 +34,13 @@ public class Terminate extends AbstractAction<Void> {
     } 
     
     @Override
-    public Void applyTo(DeploymentModel target) {
-        final List<ArtefactInstance> hosted = target.findArtefactInstancesByDestination(instance);
+    public Void applyTo(DeploymentModel deployment) {
+        final Collection<ArtefactInstance> hosted = deployment.getArtefactInstances().hostedBy(instance);
         for(ArtefactInstance artefact: hosted) {
-            getLibrary().migrate(target, artefact);
+            getLibrary().migrate(deployment, artefact);
         }
-        getLibrary().stop(target, instance);
-        target.getNodeInstances().remove(instance);
+        getLibrary().stop(deployment, instance);
+        deployment.getNodeInstances().remove(instance);
         return NOTHING;
     }
     

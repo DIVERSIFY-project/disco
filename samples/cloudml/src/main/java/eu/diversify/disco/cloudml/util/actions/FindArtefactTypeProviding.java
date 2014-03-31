@@ -61,7 +61,7 @@ class FindArtefactTypeProviding extends AbstractFind<Artefact> {
     @Override
     protected List<Artefact> collectCandidates(DeploymentModel deployment) {
         List<Artefact> candidates = new ArrayList<Artefact>();
-        for (Artefact artefact : deployment.getArtefacts()) {
+        for (Artefact artefact : deployment.getArtefactTypes()) {
             if (isCandidate(artefact)) {
                 candidates.add(artefact);
             }

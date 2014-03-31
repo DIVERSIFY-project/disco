@@ -45,7 +45,7 @@ public class TerminateTest {
                 .getTwoClientsConnectedToOneServer()
                 .build();
 
-        NodeInstance clientHost = model.findNodeInstanceByName(SshClientServer.HOST_NO_2);
+        NodeInstance clientHost = model.getNodeInstances().named(SshClientServer.HOST_NO_2);
         Terminate command = new Terminate(new StandardLibrary(), clientHost);
 
         command.applyTo(model);

@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.util;
 
 import java.util.ArrayList;
@@ -41,17 +40,17 @@ public class ToolBox {
     }
 
     public static int countNodesOfType(DeploymentModel deployment, String typeName) {
-        final Node type = deployment.findNodeByName(typeName);
-        return deployment.findNodeInstancesByType(type).size();
+        final Node type = deployment.getNodeTypes().named(typeName);
+        return deployment.getNodeInstances().ofType(type).size();
     }
 
     public static int countArtefactsOfType(DeploymentModel deployment, String typeName) {
-        final Artefact type = deployment.findArtefactByName(typeName);
-        return deployment.findArtefactInstancesByType(type).size();
+        final Artefact type = deployment.getArtefactTypes().named(typeName);
+        return deployment.getArtefactInstances().ofType(type).size();
     }
 
     public static int countBindingsOfType(DeploymentModel deployment, String typeName) {
-        final Binding type = deployment.findBindingByName(typeName);
+        final Binding type = deployment.getBindingTypes().named(typeName);
         return findBindingInstancesByType(deployment, type).size();
     }
 }

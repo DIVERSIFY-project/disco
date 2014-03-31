@@ -54,7 +54,7 @@ public class FindBinding extends AbstractFind<Binding> {
     @Override
     protected List<Binding> collectCandidates(DeploymentModel deployment) {
         final ArrayList<Binding> candidates = new ArrayList<Binding>();
-        for (Binding binding : deployment.getBindings()) {
+        for (Binding binding : deployment.getBindingTypes()) {
             if (isRelevant(deployment, clientPort, binding)) {
                 candidates.add(binding);
             }

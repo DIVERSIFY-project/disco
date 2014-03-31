@@ -41,8 +41,8 @@ public class HasNArtefactInstanceOfType extends TypeSafeMatcher<DeploymentModel>
     
     @Override
     protected boolean matchesSafely(DeploymentModel deployment) {
-        Artefact type = deployment.findArtefactByName(artefactTypeName);
-        List<ArtefactInstance> instances = deployment.findArtefactInstancesByType(type);
+        Artefact type = deployment.getArtefactTypes().named(artefactTypeName);
+        List<ArtefactInstance> instances = deployment.getArtefactInstances().ofType(type).toList();
         return instances.size() == count;
     }
 

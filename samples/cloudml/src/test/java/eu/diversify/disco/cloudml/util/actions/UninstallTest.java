@@ -41,7 +41,7 @@ public class UninstallTest extends TestCase {
                 .getOneClientConnectedToOneServer()
                 .build();
 
-        ArtefactInstance artefact = model.findArtefactInstanceByName(SshClientServer.SERVER_NO_1);
+        ArtefactInstance artefact = model.getArtefactInstances().named(SshClientServer.SERVER_NO_1);
         Uninstall command = new Uninstall(new StandardLibrary(), artefact);
 
         command.applyTo(model);
@@ -59,7 +59,7 @@ public class UninstallTest extends TestCase {
                 .getTwoClientsConnectedTwoServers() 
                 .build();
 
-        ArtefactInstance artefact = model.findArtefactInstanceByName(SshClientServer.SERVER_NO_1);
+        ArtefactInstance artefact = model.getArtefactInstances().named(SshClientServer.SERVER_NO_1);
         Uninstall command = new Uninstall(new StandardLibrary(), artefact);
 
         command.applyTo(model);

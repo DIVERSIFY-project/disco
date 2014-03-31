@@ -72,14 +72,14 @@ public class BindTest extends TestCase {
         
        
         final Binding bindingType = model
-                .findBindingByName("Connection");
+                .getBindingTypes().named("Connection");
                 
         final ClientPortInstance clientPort = model
-                .findArtefactInstanceByName("client")
+                .getArtefactInstances().named("client")
                 .findRequiredPortByName("client");
         
         final ServerPortInstance serverPort = model
-                .findArtefactInstanceByName("server")
+                .getArtefactInstances().named("server")
                 .findProvidedPortByName("server");
         
         final StandardLibrary deployer = new StandardLibrary();

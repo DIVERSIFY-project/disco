@@ -43,7 +43,7 @@ public class Provision extends AbstractAction<NodeInstance> {
                 .named(instanceName)
                 .ofType(nodeType.getName());
         builder.integrateIn(deployment);
-        return deployment.findNodeInstanceByName(instanceName);
+        return deployment.getNodeInstances().named(instanceName);
     }
    
 }

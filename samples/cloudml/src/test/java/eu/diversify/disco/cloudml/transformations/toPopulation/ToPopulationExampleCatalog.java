@@ -35,11 +35,7 @@ import org.cloudml.core.NodeInstance;
 import org.cloudml.core.Property;
 import org.cloudml.core.Provider;
 
-/**
- *
- * @author Franck Chauvel
- * @since 0.1
- */
+
 public class ToPopulationExampleCatalog {
 
     
@@ -138,9 +134,9 @@ public class ToPopulationExampleCatalog {
         Node small = new Node("small");
         small.setProvider(bigsmallProvider);
 
-        dm.getNodeTypes().put("huge", huge);
-        dm.getNodeTypes().put("big", big);
-        dm.getNodeTypes().put("small", small);
+        dm.getNodeTypes().add(huge);
+        dm.getNodeTypes().add(big);
+        dm.getNodeTypes().add(small);
 
         for (int i = 0; i < 5; i++) {
             dm.getNodeInstances().add(huge.instanciates("huge" + i));

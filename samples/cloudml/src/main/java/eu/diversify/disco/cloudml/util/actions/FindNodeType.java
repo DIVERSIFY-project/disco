@@ -52,7 +52,7 @@ public class FindNodeType extends AbstractFind<Node> {
     @Override
     protected List<Node> collectCandidates(DeploymentModel deployment) {
         List<Node> candidates = new ArrayList<Node>();
-        for (Node node : deployment.getNodes()) {
+        for (Node node : deployment.getNodeTypes()) {
             if (isCandidate(artefact, node)) {
                 candidates.add(node);
             }

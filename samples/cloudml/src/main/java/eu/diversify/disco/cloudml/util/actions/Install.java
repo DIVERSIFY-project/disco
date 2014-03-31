@@ -44,7 +44,7 @@ public class Install extends AbstractAction<ArtefactInstance> {
                 .ofType(artefactType.getName())
                 .hostedBy(getLibrary().findDestinationFor(target, artefactType).getName());
         builder.integrateIn(target);
-        ArtefactInstance instance = target.findArtefactInstanceByName(instanceName);
+        ArtefactInstance instance = target.getArtefactInstances().named(instanceName);
         for (ClientPortInstance clientPort : instance.getRequired()) {
             getLibrary().bind(target, clientPort);
         }

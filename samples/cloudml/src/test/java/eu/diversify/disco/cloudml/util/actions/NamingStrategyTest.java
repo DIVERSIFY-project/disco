@@ -70,10 +70,10 @@ public class NamingStrategyTest extends TestCase {
                 .ofType(NODE_TYPE_NAME))
                 .build();
 
-        Node type = model.findNodeByName(NODE_TYPE_NAME);
+        Node type = model.getNodeTypes().named(NODE_TYPE_NAME);
         String name = naming.createUniqueNodeInstanceName(model, type);
 
-        verifyInstanceName(name, NODE_KIND, NODE_TYPE_NAME, 3);
+        verifyInstanceName(name, NODE_KIND, 3);
     }
 
     private DeploymentModelBuilder prepareTypes(final String nodeTypeName) {
@@ -85,12 +85,11 @@ public class NamingStrategyTest extends TestCase {
                 .providedBy("EC2"));
     }
 
-    private void verifyInstanceName(String instanceName, String kind, String typeName, int index) {
+    private void verifyInstanceName(String instanceName, String kind, int index) {
         final String description = String.format("%s instance name", kind);;
         assertThat(description, instanceName, containsString(String.valueOf(index)));
         assertThat(description, instanceName, containsString("instance"));
         assertThat(description, instanceName, containsString(kind));
-        assertThat(description, instanceName, containsString(typeName));
     }
 
     @Test
@@ -98,10 +97,10 @@ public class NamingStrategyTest extends TestCase {
         DeploymentModel model = prepareTypes(NODE_TYPE_NAME)
                 .build();
 
-        Node type = model.findNodeByName(NODE_TYPE_NAME);
+        Node type = model.getNodeTypes().named(NODE_TYPE_NAME);
         String name = naming.createUniqueNodeInstanceName(model, type);
 
-        verifyInstanceName(name, NODE_KIND, NODE_TYPE_NAME, 1);
+        verifyInstanceName(name, NODE_KIND, 1);
     }
 
     @Test
@@ -115,9 +114,9 @@ public class NamingStrategyTest extends TestCase {
                 .ofType(NODE_TYPE_NAME))
                 .build();
 
-        Node type = model.findNodeByName(NODE_TYPE_NAME);
+        Node type = model.getNodeTypes().named(NODE_TYPE_NAME);
         String name = naming.createUniqueNodeInstanceName(model, type);
 
-        verifyInstanceName(name, NODE_KIND, NODE_TYPE_NAME, 2);
+        verifyInstanceName(name, NODE_KIND, 2);
     }
 }
