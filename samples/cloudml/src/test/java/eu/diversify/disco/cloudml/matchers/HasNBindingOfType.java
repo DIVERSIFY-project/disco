@@ -44,7 +44,7 @@ public class HasNBindingOfType  extends TypeSafeMatcher<DeploymentModel> {
     @Override
     protected boolean matchesSafely(DeploymentModel deployment) {
         Binding type = deployment.getBindingTypes().named(bindingTypeName);
-        List<BindingInstance> instances = ToolBox.findBindingInstancesByType(deployment, type);
+        List<BindingInstance> instances = deployment.getBindingInstances().ofType(type).toList();
         return instances.size() == count;
     }
 

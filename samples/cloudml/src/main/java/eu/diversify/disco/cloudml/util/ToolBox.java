@@ -18,26 +18,13 @@
 
 package eu.diversify.disco.cloudml.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cloudml.core.Artefact;
 import org.cloudml.core.Binding;
-import org.cloudml.core.BindingInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 
 // FIXME: To be moved in cloudml
 public class ToolBox {
-
-    public static List<BindingInstance> findBindingInstancesByType(DeploymentModel deployment, Binding type) {
-        List<BindingInstance> selection = new ArrayList<BindingInstance>();
-        for (BindingInstance binding : deployment.getBindingInstances()) {
-            if (binding.getType().equals(type)) {
-                selection.add(binding);
-            }
-        }
-        return selection;
-    }
 
     public static int countNodesOfType(DeploymentModel deployment, String typeName) {
         final Node type = deployment.getNodeTypes().named(typeName);
@@ -51,6 +38,6 @@ public class ToolBox {
 
     public static int countBindingsOfType(DeploymentModel deployment, String typeName) {
         final Binding type = deployment.getBindingTypes().named(typeName);
-        return findBindingInstancesByType(deployment, type).size();
+        return deployment.getBindingInstances().ofType(type).size();
     }
 }
