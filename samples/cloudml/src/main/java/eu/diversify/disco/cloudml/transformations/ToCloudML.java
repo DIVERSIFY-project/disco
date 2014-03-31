@@ -19,7 +19,6 @@
 package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.samples.commons.DiversityInjection;
-import eu.diversify.disco.cloudml.util.actions.StandardLibrary;
 import eu.diversify.disco.population.Population;
 import java.util.List;
 import org.cloudml.core.Artefact;
@@ -27,6 +26,7 @@ import org.cloudml.core.ArtefactInstance;
 import org.cloudml.core.DeploymentModel;
 import org.cloudml.core.Node;
 import org.cloudml.core.NodeInstance;
+import org.cloudml.core.actions.StandardLibrary;
 
 
 /**
