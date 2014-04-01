@@ -15,16 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
-package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.problem.Solution;
+package eu.diversify.disco.controller.problem;
 
 
-public interface SolverListener {
-
-    void onIntermediateSolution(Solution solution);
+public interface Cost {
     
-    void onFinalSolution(Solution solution);
 }

@@ -15,7 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.solvers.Solver;
@@ -25,6 +41,7 @@ import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
+import eu.diversify.disco.controller.solvers.SolverListener;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
@@ -78,12 +95,12 @@ public class SingleRunExperiment implements Experiment {
      */
     public SingleRunExperiment(SingleRunSetup setup) {
         initialisePopulation(setup);
-        
+
         this.reference = setup.getReference();
-        
+
         this.controllers = new HashMap<String, Solver>();
         initialiseControlStrategies(setup);
-        
+
         this.result = prepareResult();
 
     }
@@ -176,7 +193,7 @@ public class SingleRunExperiment implements Experiment {
      */
     public List<DataSet> run() {
 
-        for (String controlStrategy : this.controllers.keySet()) {
+        for (final String controlStrategy : this.controllers.keySet()) {
             System.out.println("Running '" + controlStrategy + "'");
             final Solver controller = this.controllers.get(controlStrategy);
             final Problem problem = aProblem()
@@ -184,8 +201,21 @@ public class SingleRunExperiment implements Experiment {
                     .withDiversityMetric(new TrueDiversity().normalise())
                     .withReferenceDiversity(this.reference)
                     .build();
-            final Solution solution = controller.solve(problem);
-            recordControllerTrajectory(solution, controlStrategy);
+            controller.subscribe(new SolverListener() {
+                private int counter = 0;
+                @Override
+                public void onIntermediateSolution(Solution solution) {
+                    recordControllerTrajectory(solution, controlStrategy, counter++);
+                }
+
+                @Override
+                public void onFinalSolution(Solution solution) {
+                    recordControllerTrajectory(solution, controlStrategy, counter++);
+                }
+                
+            });
+
+            controller.solve(problem);
         }
 
         ArrayList<DataSet> output = new ArrayList<DataSet>();
@@ -200,17 +230,13 @@ public class SingleRunExperiment implements Experiment {
         return this.result;
     }
 
-    private void recordControllerTrajectory(final Solution solution, String key) {
-        Solution it = solution;
-        while (it.hasPrevious()) {
-            Data data = result.getSchema().newData();
-            data.set(ITERATION, it.getIteration());
-            data.set(DIVERSITY, it.getDiversity());
-            data.set(REFERENCE, this.reference);
-            data.set(ERROR, it.getError());
-            data.set(STRATEGY, key);
-            this.result.add(data);
-            it = it.getPrevious();
-        }
+    private void recordControllerTrajectory(final Solution solution, String key, int iteration) {
+        Data data = result.getSchema().newData();
+        data.set(ITERATION, iteration);
+        data.set(DIVERSITY, solution.getDiversity());
+        data.set(REFERENCE, solution.getReference());
+        data.set(ERROR, solution.getCost());
+        data.set(STRATEGY, key);
+        this.result.add(data);
     }
 }

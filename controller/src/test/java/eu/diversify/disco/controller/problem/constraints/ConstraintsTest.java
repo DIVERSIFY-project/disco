@@ -28,7 +28,7 @@ import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.AddSpecie;
 import eu.diversify.disco.population.actions.RemoveSpecie;
-import eu.diversify.disco.population.actions.Script;
+import eu.diversify.disco.population.actions.Plan;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.Arrays;
@@ -176,7 +176,7 @@ public class ConstraintsTest extends TestCase {
     }
 
     private static Action moveIndividual() {
-        return new Script(Arrays.asList(
+        return new Plan(Arrays.asList(
                 new Action[]{
             new ShiftNumberOfIndividualsIn("s1", -1),
             new ShiftNumberOfIndividualsIn("s2", +1)

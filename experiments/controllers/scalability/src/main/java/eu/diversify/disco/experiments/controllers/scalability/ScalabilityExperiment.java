@@ -174,7 +174,7 @@ public class ScalabilityExperiment implements Experiment {
         data.set(STRATEGY, key);
         data.set(SPECIES_COUNT, population.getNumberOfSpecies());
         data.set(INDIVIDUALS_COUNT, population.getTotalNumberOfIndividuals());
-        data.set(ERROR, solution.getError());
+        data.set(ERROR, solution.getCost());
         data.set(DURATION, duration);
         System.out.println("\t - " + key + " in " + duration + " ms");
         return data;

@@ -21,7 +21,6 @@ package eu.diversify.disco.population.actions;
 
 import eu.diversify.disco.population.Population;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,11 +30,11 @@ import java.util.List;
  * @author Franck Chauvel
  * @since 0.1
  */
-public class Script implements Action {
+public class Plan implements Action {
 
     private final ArrayList<Action> actions;
 
-    public Script(List<Action> actions) {
+    public Plan(List<Action> actions) {
         this.actions = new ArrayList<Action>(actions);
     }
 
@@ -91,7 +90,7 @@ public class Script implements Action {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Script other = (Script) obj;
+        final Plan other = (Plan) obj;
         if (this.actions != other.actions && (this.actions == null || !this.actions.equals(other.actions))) {
             return false;
         }

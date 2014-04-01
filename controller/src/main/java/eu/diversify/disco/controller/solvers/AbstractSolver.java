@@ -37,6 +37,12 @@ public abstract class AbstractSolver implements Solver {
         listeners.add(listener);
     }
     
+    protected void publishFinalSolution(Solution solution) {
+        for(SolverListener listener: listeners) {
+            listener.onFinalSolution(solution);
+        }
+    }
+    
     protected void publishIntermediateSolution(Solution solution) {
         for (SolverListener listener: listeners) {
             listener.onIntermediateSolution(solution);

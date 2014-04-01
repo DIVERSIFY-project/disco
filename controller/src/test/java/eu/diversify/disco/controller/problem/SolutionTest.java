@@ -39,16 +39,17 @@ import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
-import eu.diversify.disco.population.actions.Script;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Check the behaviour of the result object
@@ -108,48 +109,9 @@ public class SolutionTest extends TestCase {
                 e1.equals(e3));
 
     }
-
-    /**
-     * Test the linkage between evaluation of partial solutions
-     */
-    @Test
-    public void testLinkage() {
-
-        Population p = aPopulation().withDistribution(5, 4).build();
-        final Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
-
-        Population p2 = aPopulation().withDistribution(6, 3).build();
-        final Solution e1 = c.evaluate(p2);
-        assertFalse(
-                "Shall not have a previous evaluation",
-                e1.hasPrevious());
-        assertEquals(
-                "Wrong number of iteration",
-                1,
-                e1.getIteration());
-
-
-        final Action u = new Script(Arrays.asList(new Action[]{
-            new ShiftNumberOfIndividualsIn(1, +1),
-            new ShiftNumberOfIndividualsIn(2, -1)
-        }));
-
-        final Solution e2 = e1.refineWith(u);
-        assertTrue(
-                "Shall have a previous evaluation",
-                e2.hasPrevious());
-        assertNotNull(
-                "The previous shall not be null",
-                e2.getPrevious());
-        assertEquals(
-                "Wrong number of iteration",
-                1,
-                e1.getIteration());
-    }
-
+    
     /**
      * Test the formatting of the result
-     * FIXME: This test is way too brittle
      */
     @Test
     public void testFormatting() {
@@ -158,10 +120,9 @@ public class SolutionTest extends TestCase {
 
         Solution result = c.evaluate(p);
         String text = result.toString();
-        assertEquals(
-                "Wrong formatting of evaluation",
-                " - Iteration count: 1\n - Population: [ sp. #1: 5, sp. #2: 4 ]\n - Reference: 1.65\n - Diversity: 1.9877674693472378\n - Error: 0.11408686334923729\n",
-                text);
+        assertThat("about diversity", text, containsString("Diversity:"));
+        assertThat("about population", text, containsString("Population:"));
+        assertThat("about error", text, containsString("Error:"));
     }
 
     /**

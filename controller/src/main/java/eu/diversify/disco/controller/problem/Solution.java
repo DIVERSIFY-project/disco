@@ -15,11 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.actions.Plan;
+import java.util.ArrayList;
 
 /**
  * Encapsulate the various data outputted by the controller, including the
@@ -31,10 +49,10 @@ import eu.diversify.disco.population.actions.Action;
 public class Solution {
 
     private final Problem problem;
-    private Solution previous;
     private final Population population;
     private final double diversity;
-    private final double error;
+    private final double error; 
+    private final Plan plan;
 
     /**
      * Create a new result object
@@ -46,16 +64,28 @@ public class Solution {
      */
     public Solution(Problem problem, Population population, double diversity, double error) {
         this.problem = problem;
-        this.previous = null;
         this.population = population;
         this.diversity = diversity;
         this.error = error;
+        this.plan = new Plan(new ArrayList<Action>());
+    }
+
+    public Solution(Problem problem, Population population, Plan plan) {
+        this.problem = problem;
+        this.population = population;
+        this.diversity = 0D;
+        this.error = 0D;
+        this.plan = plan;
+    }
+
+    public Plan getPlan() {
+        return this.plan;
     }
 
     public Problem getProblem() {
         return this.problem;
     }
-    
+
     /**
      * Check whether the selected action applies in the context of the problem
      * under resolution
@@ -76,49 +106,11 @@ public class Solution {
      */
     public Solution refineWith(Action action) {
         Solution evaluation = problem.evaluate(action.applyTo(population));
-        evaluation.previous = this;
         return evaluation;
     }
 
-    /**
-     * Check whether this solution is an improvement with respect to its
-     * previous solution if any
-     *
-     * @return true, if this solution has a smaller error than the previous one
-     */
-    public boolean isImprovement() {
-        boolean result = false;
-        if (this.hasPrevious()) {
-            result = this.error < previous.getError();
-        }
-        return result;
-    }
-
-    /**
-     * Check whether this evaluation was refined from another one.
-     *
-     * @return true if this evaluation is a refinement
-     */
-    public boolean hasPrevious() {
-        return this.previous != null;
-    }
-
-    /**
-     * @return the previous evaluation which was refined to obtained this one.
-     */
-    public Solution getPrevious() {
-        return this.previous;
-    }
-
-    /**
-     * @return the current iteration count
-     */
-    public int getIteration() {
-        int count = 1;
-        if (hasPrevious()) {
-            count += this.getPrevious().getIteration();
-        }
-        return count;
+    public boolean isBetterThan(Solution other) {
+        return this.error < other.error;
     }
 
     /**
@@ -145,7 +137,7 @@ public class Solution {
     /**
      * @return the error level of the resulting population
      */
-    public double getError() {
+    public double getCost() {
         return this.error;
     }
 
@@ -172,7 +164,6 @@ public class Solution {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(" - Iteration count: ").append(this.getIteration()).append("\n");
         builder.append(" - Population: ").append(population.toString()).append("\n");
         builder.append(" - Reference: ").append(this.getReference()).append("\n");
         builder.append(" - Diversity: ").append(diversity).append("\n");

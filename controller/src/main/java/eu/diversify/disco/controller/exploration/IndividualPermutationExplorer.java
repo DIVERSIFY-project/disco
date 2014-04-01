@@ -20,7 +20,7 @@ package eu.diversify.disco.controller.exploration;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;
-import eu.diversify.disco.population.actions.Script;
+import eu.diversify.disco.population.actions.Plan;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class IndividualPermutationExplorer implements ExplorationStrategy {
             if (population.getNumberOfIndividualsIn(specie1) >= scaleFactor) {
                 for (int specie2 = 1; specie2 <= population.getNumberOfSpecies(); specie2++) {
                     if (specie1 != specie2) {
-                        final Action action = new Script(Arrays.asList(new Action[]{
+                        final Action action = new Plan(Arrays.asList(new Action[]{
                             new ShiftNumberOfIndividualsIn(specie1, -scaleFactor),
                             new ShiftNumberOfIndividualsIn(specie2, +scaleFactor)
                         }));

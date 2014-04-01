@@ -175,7 +175,7 @@ public class TestAction extends TestCase {
         Population population = aPopulation()
                 .withDistribution(3, 2, 1)
                 .build();
-        Action action = new Script(Arrays.asList(new Action[]{
+        Action action = new Plan(Arrays.asList(new Action[]{
             new ShiftNumberOfIndividualsIn(1, -1),
             new ShiftNumberOfIndividualsIn(2, +1)
         }));

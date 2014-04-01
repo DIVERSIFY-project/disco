@@ -17,14 +17,15 @@
  */
 /*
  */
-package eu.diversify.disco.controller.solvers;
-
-import eu.diversify.disco.controller.problem.Solution;
+package eu.diversify.disco.controller.problem;
 
 
-public interface SolverListener {
+public interface CostFunction {
 
-    void onIntermediateSolution(Solution solution);
+    /**
+     * Calculate the cost of a given solution
+     * @param solution the solution whose cost is needed
+     */
+    double cost(Solution solution);
     
-    void onFinalSolution(Solution solution);
 }

@@ -52,7 +52,7 @@ public class ScriptBuilder {
         return this;
     }
 
-    public Script build() {
-        return new Script(actions);
+    public Plan build() {
+        return new Plan(actions);
     }
 }

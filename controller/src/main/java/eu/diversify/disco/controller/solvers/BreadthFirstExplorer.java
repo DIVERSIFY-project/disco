@@ -88,7 +88,7 @@ public class BreadthFirstExplorer extends IterativeSearch {
         for (Solution from : frontier) {
             for (Action action : getActionFinder().search(from, 1)) {
                 Solution next = from.refineWith(action);
-                if (next.isImprovement() && neverExplored(next)) {
+                if (next.isBetterThan(from)&& neverExplored(next)) {
                     updateBestSolutionIfNeeded(next);
                     newFrontier.add(next);
                 }
@@ -105,7 +105,7 @@ public class BreadthFirstExplorer extends IterativeSearch {
     }
 
     private void updateBestSolutionIfNeeded(Solution next) {
-        if (next.getError() < best.getError()) {
+        if (next.getCost() < best.getCost()) {
             this.best = next;
         }
     }

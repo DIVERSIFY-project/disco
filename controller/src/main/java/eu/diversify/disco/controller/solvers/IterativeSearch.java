@@ -62,16 +62,18 @@ public abstract class IterativeSearch extends AbstractSolver {
     /**
      * Refine the given population until the quality does improve anymore.
      *
-     * @param current the evaluation of the current population
+     * @param startingPoint the evaluation of the current population
      * @return the evaluation resulting from the successive refinements
      */
-    protected Solution search(Solution current) { 
+    protected Solution search(Solution startingPoint) { 
+        Solution current = startingPoint;
         Solution next = refine(current);
-        while (next.getIteration() != current.getIteration()) {
+        while (next.isBetterThan(current)) {
             publishIntermediateSolution(next);
             current = next;
             next = refine(next);
         }
+        publishFinalSolution(next);
         return next;
     }
 
@@ -83,14 +85,14 @@ public abstract class IterativeSearch extends AbstractSolver {
      * @return the new evaluation, after refinement
      */
     protected Solution refine(Solution current) {
-        Solution output = current;
+        Solution best = current;
         for (Action action : finder.search(current, getScaleFactor())) {
             Solution next = current.refineWith(action);
-            if (next.getError() < output.getError()) {
-                output = next;
+            if (next.isBetterThan(best)) {
+                best = next;
             }
         }
-        return output;
+        return best;
     }
     
     protected int getScaleFactor() {

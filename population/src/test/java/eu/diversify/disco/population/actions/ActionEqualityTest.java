@@ -111,13 +111,13 @@ public class ActionEqualityTest {
     
     @Test
     public void testScriptEquality() {
-        Script a1 = new Script(Arrays.asList(new Action[]{
+        Plan a1 = new Plan(Arrays.asList(new Action[]{
             new AddSpecie("s1"),
             new ShiftNumberOfIndividualsIn("s1", +3),
             new RemoveSpecie("s2")
         }));
         
-        Script a2 = new Script(Arrays.asList(new Action[]{
+        Plan a2 = new Plan(Arrays.asList(new Action[]{
             new AddSpecie("s1"),
             new ShiftNumberOfIndividualsIn("s1", +3),
             new RemoveSpecie("s2")
@@ -129,13 +129,13 @@ public class ActionEqualityTest {
 
     @Test
     public void testScriptInEquality() {
-        Script a1 = new Script(Arrays.asList(new Action[]{
+        Plan a1 = new Plan(Arrays.asList(new Action[]{
             new AddSpecie("s1"),
             new ShiftNumberOfIndividualsIn("s1", +3),
             new RemoveSpecie("s2")
         }));
         
-        Script a2 = new Script(Arrays.asList(new Action[]{
+        Plan a2 = new Plan(Arrays.asList(new Action[]{
             new AddSpecie("s1"),
             new RemoveSpecie("s2")
         }));
