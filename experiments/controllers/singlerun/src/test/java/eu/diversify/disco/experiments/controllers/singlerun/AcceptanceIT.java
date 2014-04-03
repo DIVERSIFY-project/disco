@@ -17,109 +17,15 @@
  */
 package eu.diversify.disco.experiments.controllers.singlerun;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
+import eu.diversify.disco.experiments.testing.Tester;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import org.apache.commons.io.IOUtils;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
 import org.junit.Test;
 
 public class AcceptanceIT {
-
-    private String directory;
-    private String standardOutput;
-    private String errorOutput;
-
-    
+   
     @Test
     public void acceptanceTest() throws IOException, InterruptedException {
-        unzipDistribution("singlerun-dist.zip");
-        setUpDirectory("target/singlerun");
-        runCommand("java -jar singlerun-final.jar");
-        checkLicensing();
-        checkCsvOutput();
-        checkPdfOutput();
-        checkNoError();
+       new Tester("singlerun", "results").test();
     }
-    
-    private void unzipDistribution(String archiveName) throws IOException {
-        String fileName = escape(archiveName);
-        ZipFile zipFile = new ZipFile(fileName);
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = entries.nextElement();
-            if (!entry.isDirectory()) {
-                File entryDestination = new File("target/", entry.getName());
-                entryDestination.getParentFile().mkdirs();
-                InputStream in = zipFile.getInputStream(entry);
-                OutputStream out = new FileOutputStream(entryDestination);
-                IOUtils.copy(in, out);
-                IOUtils.closeQuietly(in);
-                IOUtils.closeQuietly(out);
-            }
-        }
-    }
-
-    private void setUpDirectory(String directory) {
-        this.directory = escape(directory);
-    }
-
-    private void runCommand(String command) throws IOException, InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder(escape(command).split("\\s+"));
-        builder.directory(new File(directory));
-        Process p = builder.start();
-
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-        // read the output from the command
-        standardOutput = "";
-        String line = null;
-        while ((line = stdInput.readLine()) != null) {
-            standardOutput += line;
-        }
-
-        // read any errors from the attempted command
-        errorOutput = "";
-        while ((line = stdError.readLine()) != null) {
-            errorOutput = "";
-        }
-        
-        p.waitFor();
-    }
-
-    private void checkCsvOutput() {
-        File csvOutput = new File("target/singlerun/results.csv");
-        assertThat("CSV generated", csvOutput.exists());
-    }
-
-    private void checkPdfOutput() {
-        File pdfOutput = new File("target/singlerun/results.pdf");
-        assertThat("PDF generated", pdfOutput.exists());
-    }
-
-    private void checkNoError() {
-        assertThat("no error reported in stdout", standardOutput, not(containsString("Error")));
-        assertThat("no error reported in stdout", errorOutput, not(containsString("Error")));
-    }
-    
-    
-    private void checkLicensing() {
-        assertThat("copyright displayed", standardOutput, containsString("Copyright (C) 2013 SINTEF ICT"));
-        assertThat("license displayed", standardOutput, containsString("LGPLv3+"));
-    }
-
-    private String escape(String directory) {
-        return directory.replaceAll("\"", "");
-    }
+   
 }
