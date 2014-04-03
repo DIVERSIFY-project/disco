@@ -15,30 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
-package eu.diversify.disco.samples.commons;
 
-import eu.diversify.disco.controller.AbstractReference;
+package eu.diversify.disco.controller;
 
-public class ConstantReference extends AbstractReference {
 
-    private double reference;
-
-    public ConstantReference() {
-        super();
-    }   
+public class Trigger implements Reference.Listener {
     
-    public void setReference(double reference) {
-        this.reference = reference;
-        publish(this.reference);
-    }
+    private final Controller controller;
+
+    public Trigger(Controller controller) {
+        this.controller = controller;
+    }       
 
     @Override
-    public double getReference() {
-        return this.reference;
-    }
-
-    
+    public void onUpdate(double newReference) {
+        this.controller.control();
+    }   
     
 }

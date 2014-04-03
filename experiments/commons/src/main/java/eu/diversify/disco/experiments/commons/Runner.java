@@ -123,7 +123,9 @@ public class Runner {
         try {
             Process process = runtime.exec(String.format("%s %s", R_SCRIPT, VIEW_R));
             final int errorCode = process.waitFor();
-            System.out.println("Error code: " + errorCode);
+            if (errorCode != 0) {
+                System.out.println("Error: R returned code " + errorCode);
+            }
 
         } catch (IOException ex) {
             System.out.println("ERROR: Unable to generate visualisation using R. Is R properly installed?'");

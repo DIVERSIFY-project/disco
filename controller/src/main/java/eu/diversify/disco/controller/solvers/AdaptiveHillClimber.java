@@ -49,7 +49,7 @@ public class AdaptiveHillClimber extends IterativeSearch {
     @Override
     protected Solution search(Solution current) {
         Solution output = refine(current);
-        if (output.getCost() >= current.getCost()) {
+        if (output.getError() >= current.getError()) {
             if (this.stepSize > 1) {
                 this.stepSize /= 2;
                 output = search(current);

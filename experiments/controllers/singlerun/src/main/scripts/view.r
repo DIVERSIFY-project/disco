@@ -8,8 +8,8 @@ goldenRatio <- function(height) {
 }
 
 #png("results.png", height=500, width=goldenRatio(500))
-#pdf("results.pdf", height=5, width=goldenRatio(5))
-win.metafile("results.emf", height=5, width=goldenRatio(5))
+pdf("results.pdf", height=5, width=goldenRatio(5))
+#win.metafile("results.emf", height=5, width=goldenRatio(5))
 
 
 data <- read.table(file="results.csv", header=TRUE, sep=",");

@@ -122,7 +122,7 @@ public abstract class SolverTest extends TestCase {
         assertEquals(
                 "Unacceptable control error",
                 0.,
-                result.getCost(),
+                result.getError(),
                 1e-10);
     }
 
@@ -160,7 +160,7 @@ public abstract class SolverTest extends TestCase {
         assertEquals(
                 "Unacceptable control error",
                 0.,
-                result.getCost(),
+                result.getError(),
                 1e-10);
     }
 

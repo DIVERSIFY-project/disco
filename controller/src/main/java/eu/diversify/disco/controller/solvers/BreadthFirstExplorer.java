@@ -105,7 +105,7 @@ public class BreadthFirstExplorer extends IterativeSearch {
     }
 
     private void updateBestSolutionIfNeeded(Solution next) {
-        if (next.getCost() < best.getCost()) {
+        if (next.getError() < best.getError()) {
             this.best = next;
         }
     }

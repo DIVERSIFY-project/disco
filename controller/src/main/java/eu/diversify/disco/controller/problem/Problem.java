@@ -130,10 +130,7 @@ public class Problem {
         final double error = Math.pow(this.reference - diversity, 2);
         return new Solution(this, p, diversity, error);
     }
-    
-    public Cost evaluate(Solution solution) {
-        throw new UnsupportedOperationException("TODO");
-    }
+   
 
     @Override
     public boolean equals(Object o) {

@@ -235,7 +235,7 @@ public class SingleRunExperiment implements Experiment {
         data.set(ITERATION, iteration);
         data.set(DIVERSITY, solution.getDiversity());
         data.set(REFERENCE, solution.getReference());
-        data.set(ERROR, solution.getCost());
+        data.set(ERROR, solution.getError());
         data.set(STRATEGY, key);
         this.result.add(data);
     }

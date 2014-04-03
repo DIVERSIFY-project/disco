@@ -17,28 +17,31 @@
  */
 /*
  */
-package eu.diversify.disco.samples.commons;
 
-import eu.diversify.disco.controller.AbstractReference;
+package eu.diversify.disco.controller;
 
-public class ConstantReference extends AbstractReference {
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    private double reference;
 
-    public ConstantReference() {
-        super();
-    }   
+public abstract class AbstractReference implements Reference {
+
+    private final ArrayList<Listener> listeners;
     
-    public void setReference(double reference) {
-        this.reference = reference;
-        publish(this.reference);
-    }
-
+    public AbstractReference() {
+        this.listeners = new ArrayList<Listener>();
+    }    
+    
     @Override
-    public double getReference() {
-        return this.reference;
+    public final void subscribe(Listener... listeners) {
+        this.listeners.addAll(Arrays.asList(listeners)); 
     }
 
+    protected void publish(double reference) {
+        for(Listener listener: listeners) {
+            listener.onUpdate(reference);
+        }
+    }
     
     
 }

@@ -36,8 +36,6 @@ package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;
-import eu.diversify.disco.population.actions.Plan;
-import java.util.ArrayList;
 
 /**
  * Encapsulate the various data outputted by the controller, including the
@@ -52,8 +50,7 @@ public class Solution {
     private final Population population;
     private final double diversity;
     private final double error; 
-    private final Plan plan;
-
+    
     /**
      * Create a new result object
      *
@@ -67,19 +64,6 @@ public class Solution {
         this.population = population;
         this.diversity = diversity;
         this.error = error;
-        this.plan = new Plan(new ArrayList<Action>());
-    }
-
-    public Solution(Problem problem, Population population, Plan plan) {
-        this.problem = problem;
-        this.population = population;
-        this.diversity = 0D;
-        this.error = 0D;
-        this.plan = plan;
-    }
-
-    public Plan getPlan() {
-        return this.plan;
     }
 
     public Problem getProblem() {
@@ -137,7 +121,7 @@ public class Solution {
     /**
      * @return the error level of the resulting population
      */
-    public double getCost() {
+    public double getError() {
         return this.error;
     }
 
