@@ -45,6 +45,7 @@ public class AcceptanceIT {
         unzipDistribution("singlerun-dist.zip");
         setUpDirectory("target/singlerun");
         runCommand("java -jar singlerun-final.jar");
+        checkLicensing();
         checkCsvOutput();
         checkPdfOutput();
         checkNoError();
@@ -109,8 +110,14 @@ public class AcceptanceIT {
     }
 
     private void checkNoError() {
-        //FIXME: assertThat("no error reported in stdout", standardOutput, not(containsString("Error")));
+        assertThat("no error reported in stdout", standardOutput, not(containsString("Error")));
         assertThat("no error reported in stdout", errorOutput, not(containsString("Error")));
+    }
+    
+    
+    private void checkLicensing() {
+        assertThat("copyright displayed", standardOutput, containsString("Copyright (C) 2013 SINTEF ICT"));
+        assertThat("license displayed", standardOutput, containsString("LGPLv3+"));
     }
 
     private String escape(String directory) {

@@ -47,6 +47,7 @@ import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
 import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
+import static eu.diversify.disco.experiments.commons.data.SchemaBuilder.*;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
