@@ -61,4 +61,12 @@ public class Schema {
         return this.fields.values();
     }
     
+    public boolean hasField(String fieldName) {
+        return this.fields.containsKey(fieldName);
+    }
+    
+    public Field getField(String fieldName) {
+        return fields.get(fieldName);
+    }
+    
 }
