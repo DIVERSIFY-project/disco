@@ -37,7 +37,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
 /**
- * Generic acceptance test for experiments. The story goes as follows:
+ * Generic acceptance test for experiments.
  */
 public class Tester {
 
@@ -52,10 +52,10 @@ public class Tester {
     public void test() throws IOException, InterruptedException {
         unzipDistribution(getDistributionName());
         final Run execution = new Run(getWorkingDirectory(), getRunCommand());
-        checkLicensing(execution);
-        checkNoError(execution);
-        checkCsvOutput();
-        checkPdfOutput();
+        checkLicenseAndCopyrightAreDisplayed(execution);
+        checkNoErrorIsReported(execution);
+        checkCsvFilesAreGenerated();
+        checkPdfAreGenerated();
     }
 
     private void unzipDistribution(String archiveName) throws IOException {
@@ -76,7 +76,7 @@ public class Tester {
         }
     }
 
-    private void checkCsvOutput() {
+    private void checkCsvFilesAreGenerated() {
         for (String name : expectedFiles) {
             final String path = String.format("target/%s/%s.csv", experimentName, name);
             File csvFile = new File(path);
@@ -84,7 +84,7 @@ public class Tester {
         }
     }
 
-    private void checkPdfOutput() {
+    private void checkPdfAreGenerated() {
         for (String name : expectedFiles) {
             final String path = String.format("target/%s/%s.pdf", experimentName, name);
             File pdfFile = new File(path);
@@ -92,12 +92,12 @@ public class Tester {
         }
     }
 
-    private void checkNoError(Run execution) {
+    private void checkNoErrorIsReported(Run execution) {
         assertThat("no error reported in stdout", execution.getStandardOutput(), not(containsString("Error")));
         assertThat("no error reported in stdout", execution.getStandardError(), not(containsString("Error")));
     }
 
-    private void checkLicensing(Run execution) {
+    private void checkLicenseAndCopyrightAreDisplayed(Run execution) {
         assertThat("copyright displayed", execution.getStandardOutput(), containsString("Copyright (C) 2013 SINTEF ICT"));
         assertThat("license displayed", execution.getStandardOutput(), containsString("LGPLv3+"));
     }
@@ -140,7 +140,7 @@ public class Tester {
             return standardError;
         }
 
-        public StringBuilder readStandardOutput(Process p) throws IOException {
+        private StringBuilder readStandardOutput(Process p) throws IOException {
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line = null;
@@ -150,7 +150,7 @@ public class Tester {
             return output;
         }
 
-        public StringBuilder readStandardError(Process p) throws IOException {
+        private StringBuilder readStandardError(Process p) throws IOException {
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             StringBuilder error = new StringBuilder();
             String line = "";
