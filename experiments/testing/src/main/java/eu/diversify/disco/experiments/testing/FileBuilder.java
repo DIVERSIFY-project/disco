@@ -15,17 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.experiments.population.eda;
+/*
+ */
 
-import eu.diversify.disco.experiments.testing.Tester;
-import java.io.IOException;
-import org.junit.Test;
+package eu.diversify.disco.experiments.testing;
 
-public class AcceptanceIT {
-   
-    @Test
-    public void acceptanceTest() throws IOException, InterruptedException {
-       new Tester("eda", "results.csv", "results.pdf").test();
-    }
-   
+/**
+ *
+ * @author Franck Chauvel
+ * @since 0.1
+ */
+public class FileBuilder {
+
 }

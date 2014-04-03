@@ -25,7 +25,7 @@ public class AcceptanceIT {
    
     @Test
     public void acceptanceTest() throws IOException, InterruptedException {
-       new Tester("singlerun", "results").test();
+       new Tester("singlerun", "results.csv", "results.pdf").test();
     }
    
 }

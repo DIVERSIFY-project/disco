@@ -32,6 +32,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.experiments.testing;
@@ -47,7 +64,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
@@ -61,11 +82,46 @@ import static org.hamcrest.Matchers.not;
 public class Tester {
 
     private final String experimentName;
-    private final ArrayList<String> expectedFiles;
+    private final ArrayList<String> expectedCsvFiles;
+    private final ArrayList<String> expectedPdfFiles;
 
     public Tester(String experimentName, String... expectedFiles) {
         this.experimentName = experimentName;
-        this.expectedFiles = new ArrayList<String>(Arrays.asList(expectedFiles));
+        this.expectedCsvFiles = new ArrayList<String>();
+        this.expectedPdfFiles = new ArrayList<String>();
+        for (String file : expectedFiles) {
+            final String extension = getExtension(file);
+            if (extension.equals(".csv")) {
+                expectedCsvFiles.add(file);
+            }
+            else if (extension.equals(".pdf")) {
+                expectedPdfFiles.add(file);
+            }
+            else {
+                String message = String.format("Unsupported file extension '%s' (file: %s)", extension, file);
+                throw new IllegalArgumentException(message);
+            }
+        }
+    }
+
+    private String getExtension(String file) {
+        final Pattern regex = Pattern.compile("[^\\.]+(\\.\\w+)\\s*$");
+        final Matcher matcher = regex.matcher(file);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        else {
+            final String message = String.format("Unable to extract extension from '%s'", file);
+            throw new IllegalArgumentException(message);
+        }
+    }
+    
+    public List<String> getExpectedCsvFiles() {
+        return Collections.unmodifiableList(expectedCsvFiles);
+    }
+    
+    public List<String> getExpectedPdfFiles() {
+        return Collections.unmodifiableList(expectedPdfFiles);
     }
 
     public void test() throws IOException, InterruptedException {
@@ -115,16 +171,16 @@ public class Tester {
     }
 
     private void checkCsvFilesAreGenerated() {
-        for (String name : expectedFiles) {
-            final String path = String.format("target/%s/%s.csv", experimentName, name);
+        for (String name : expectedCsvFiles) {
+            final String path = String.format("target/%s/%s", experimentName, name);
             File csvFile = new File(path);
             assertThat("CSV generated", csvFile.exists());
         }
     }
 
     private void checkPdfAreGenerated() {
-        for (String name : expectedFiles) {
-            final String path = String.format("target/%s/%s.pdf", experimentName, name);
+        for (String name : expectedPdfFiles) {
+            final String path = String.format("target/%s/%s", experimentName, name);
             File pdfFile = new File(path);
             assertThat("PDF generated", pdfFile.exists());
         }
