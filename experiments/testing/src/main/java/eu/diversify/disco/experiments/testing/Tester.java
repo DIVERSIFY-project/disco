@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.experiments.testing;
@@ -26,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -52,6 +71,7 @@ public class Tester {
     public void test() throws IOException, InterruptedException {
         unzipDistribution(getDistributionName());
         final Run execution = new Run(getWorkingDirectory(), getRunCommand());
+        checkReadMeFile();
         checkLicenseAndCopyrightAreDisplayed(execution);
         checkNoErrorIsReported(execution);
         checkCsvFilesAreGenerated();
@@ -74,6 +94,24 @@ public class Tester {
                 IOUtils.closeQuietly(out);
             }
         }
+    }
+
+    private void checkReadMeFile() throws IOException {
+        File readme = new File(String.format("target/%s/README", experimentName));
+        assertThat("readme provided", readme.exists());
+
+        final String content = readContentOf(readme);
+        assertThat("is about experiment", content, containsString(experimentName));
+        assertThat("explain how to run", content, containsString(getRunCommand()));
+
+    }
+
+    private String readContentOf(File readme) throws IOException {
+        final StringBuffer buffer = new StringBuffer();
+        for (String line : Files.readAllLines(readme.toPath(), Charset.defaultCharset())) {
+            buffer.append(line);
+        }
+        return buffer.toString();
     }
 
     private void checkCsvFilesAreGenerated() {

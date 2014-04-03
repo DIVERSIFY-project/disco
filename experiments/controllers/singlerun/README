@@ -1,13 +1,12 @@
 DISCO v0.1
-Sensitivity Experiment
+Single Run Experiment
 
 
-THE "SENSITIVITY" EXPERIMENT
+THE "Single run" EXPERIMENT
 ---------------------------
 
-This is one of the DIVERSIFY experiment, namely the "sensitivity"
-experiment. It aims at evaluating how diversity metrics react to changes in a
-population.
+This is one of the DIVERSIFY experiment, namely the "singlerun"
+experiment. Which run the all the control strategies against a single case.
 
 Contact: 
   Franck Chauvel
@@ -22,7 +21,7 @@ There are two pieces of software which shall be installed before running this
 experiment:
 
   (a) Java Runtime Environment (JRE), in version 1.7 or higher
-  (b) R, in version 2.13 or higher
+  (a) R, in version 2.13 or higher
 
 The parameters of this experiment can be changed by updating the file 'setup.yml'. 
 Please note that some configurations may lead to long execution times.
@@ -30,10 +29,10 @@ Please note that some configurations may lead to long execution times.
 The experiment is run using the following command:   
 
     On Windows:
-    C:\> java -jar sensitivity-final.jar  
+    C:\> java -jar singlerun-final.jar  
    
     On Unix/Linux:
-    $> java -jar sensitivity-final.jar  
+    $> java -jar singlerun-final.jar  
 
 PDF file, containing visualisations of the results will be generated and 
 available in the directory where the experiment is run.
