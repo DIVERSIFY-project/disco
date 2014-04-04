@@ -15,23 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
@@ -64,22 +47,22 @@ public class AdaptiveHillClimber extends IterativeSearch {
 
     @Override
     protected Solution search(Solution current) {
-        publishIntermediateSolution(current);
-        Solution output = refine(current);
-        if (output.isBetterThan(current)) {
+        Solution next = refine(current);
+        if (next.isBetterThan(current)) {
+            publishIntermediateSolution(next);
             this.stepSize *= 2;
-            output = search(output);
+            next = search(next);
         }
         else {
             if (this.stepSize > 1) {
                 this.stepSize /= 2;
-                output = search(current);
+                next = search(current);
             }
             else {
-                publishFinalSolution(output);
+                publishFinalSolution(next);
             }
         }
-        return output;
+        return next;
     }
 
     @Override
