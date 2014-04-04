@@ -17,7 +17,7 @@
  */
 
 
-package eu.diversify.disco.experiments.controllers.scalability;
+package eu.diversify.disco.experiments.cba;
 
 import eu.diversify.disco.experiments.testing.Tester;
 import java.io.IOException;
@@ -28,10 +28,10 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class AcceptanceIT {
-    
+
     @Test
     public void acceptanceTest() throws IOException, InterruptedException {
-        new Tester("scalability", "results.csv", "individuals.pdf", "species.pdf").test();
+        new Tester("cba", "results.csv", "costs.pdf", "robustness.pdf", "diversity_drift.pdf").test();
     }
 
 }
