@@ -1,7 +1,7 @@
 #
-# Sample setup file
-#
-# Franck Chauvel
+# Configuration of the scalability experiment
+# Pleaase note that some configuration may lead to extended running time 
+# (i.e., hours)
 #
 
 # Set the list of possible control strategies
@@ -10,7 +10,9 @@ strategies:
   - Adaptive Hill Climbing
   
 # The list of species count values to be testded during the experiment
-speciesCounts: [2, 4, 8, 16, 32, 64]
+# e.g., [2, 4, 8, 16, 32, 64]
+speciesCounts: [2, 4, 8]
 
-#The list of individuals counts to be tested during the experiment
-individualsCounts: [25, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800]
+# The individuals counts to be tested during the experiment
+# e.g., [25, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800]
+individualsCounts: [25, 50, 100]
