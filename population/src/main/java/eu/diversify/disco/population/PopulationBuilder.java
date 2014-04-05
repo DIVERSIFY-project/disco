@@ -15,10 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.population;
 
+import eu.diversify.disco.population.constraints.Constraint;
+import eu.diversify.disco.population.constraints.FixedNumberOfIndividuals;
+import eu.diversify.disco.population.constraints.FixedNumberOfSpecies;
+import eu.diversify.disco.population.decorators.ConstrainedPopulation;
 import eu.diversify.disco.population.decorators.ImmutablePopulation;
 import eu.diversify.disco.population.decorators.DynamicPopulation;
 import java.util.ArrayList;
@@ -42,7 +63,7 @@ public class PopulationBuilder {
     public static PopulationBuilder aPopulation() {
         return new PopulationBuilder();
     }
-    
+
     private PopulationBuilder() {
         preparation = new PopulationData();
     }
@@ -89,6 +110,16 @@ public class PopulationBuilder {
         preparation.setSpeciesNames(Arrays.asList(names));
         return this;
     }
+    
+    public PopulationBuilder withFixedNumberOfIndividuals() {
+        preparation.setFixedIndividualCount(true);
+        return this;
+    }
+    
+    public PopulationBuilder withFixedNumberOfSpecies() {
+        preparation.setFixedSpeciesCount(true);
+        return this;
+    }
 
     /**
      * Turn the population under construction into an immutable one
@@ -121,6 +152,8 @@ public class PopulationBuilder {
         private final ArrayList<String> speciesNames;
         private boolean mutable;
         private boolean dynamic;
+        private boolean fixedSpeciesCount;
+        private boolean fixedIndividualCount;
 
         public PopulationData() {
             distribution = new ArrayList<Integer>();
@@ -133,6 +166,24 @@ public class PopulationBuilder {
             speciesNames.clear();
             mutable = true;
             dynamic = false;
+            fixedSpeciesCount = false;
+            fixedIndividualCount = false;
+        }
+
+        public boolean isFixedSpeciesCount() {
+            return fixedSpeciesCount;
+        }
+
+        public void setFixedSpeciesCount(boolean fixedSpeciesCount) {
+            this.fixedSpeciesCount = fixedSpeciesCount;
+        }
+
+        public boolean isFixedIndividualCount() {
+            return fixedIndividualCount;
+        }
+
+        public void setFixedIndividualCount(boolean fixedIndividualCount) {
+            this.fixedIndividualCount = fixedIndividualCount;
         }
 
         public boolean isMutable() {
@@ -171,10 +222,25 @@ public class PopulationBuilder {
             makeDefaultSpeciesNamesIfNeeded();
             makeDefaultDistributionIfNeeded();
             Population result = new ConcretePopulation(speciesNames, distribution);
+            result = setupConstraints(result);
             result = makeDynamicIfNeeded(result);
             result = makeImmutableIfNeeded(result);
             setDefaultValues();
             return result;
+        }
+
+        private Population setupConstraints(Population population) {
+            ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+            if (fixedIndividualCount) {
+                constraints.add(new FixedNumberOfIndividuals());
+            }
+            if (fixedSpeciesCount) {
+                constraints.add(new FixedNumberOfSpecies());
+            }
+            if (!constraints.isEmpty()) {
+                return new ConstrainedPopulation(population, constraints);
+            }
+            return population;
         }
 
         private void checkValidity() {

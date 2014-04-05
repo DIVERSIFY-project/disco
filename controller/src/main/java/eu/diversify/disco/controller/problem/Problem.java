@@ -17,13 +17,10 @@
  */
 package eu.diversify.disco.controller.problem;
 
-import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.diversity.DiversityMetric;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Represent an instance of the control problem including the initial
@@ -39,7 +36,6 @@ public class Problem {
     private final DiversityMetric metric;
     private final double reference;
     private final Population initialPopulation;
-    private final ArrayList<Constraint> constraints;
 
     /**
      * Create a new case from the initial population, the reference diversity
@@ -51,18 +47,16 @@ public class Problem {
      * @param constraints additional constraints, which can reduce the space of
      * potential solutions
      */
-    public Problem(Population initialPopulation, double reference, DiversityMetric metric, Collection<Constraint> constraints) {
+    public Problem(Population initialPopulation, double reference, DiversityMetric metric) {
         checkIfPopulationIsValid(initialPopulation);
         checkIfDiversityMetricIsValid(metric);
         checkIfReferenceIsWithinTheRangeOfTheMetric(initialPopulation, metric, reference);
-        checkIfConstraintsAreValid(constraints);
         this.metric = metric;
         this.reference = reference;
         this.initialPopulation = aPopulation()
                 .clonedFrom(initialPopulation)
                 .immutable()
                 .build();
-        this.constraints = new ArrayList<Constraint>(constraints);
     }
 
     private void checkIfPopulationIsValid(Population population) {
@@ -92,12 +86,6 @@ public class Problem {
         }
     }
     
-    private void checkIfConstraintsAreValid(Collection<Constraint> constraints) {
-        if (constraints == null) {
-            throw new IllegalArgumentException("Constraints cannot be null");
-        }
-    }
-
     /**
      * @return the diversity metric in use
      */
@@ -161,11 +149,7 @@ public class Problem {
     }
 
     public boolean isLegal(Action action) {
-        boolean result = true;
-        for (Constraint constraint : constraints) {
-            result = result && constraint.isLegal(action);
-        }
-        return result;
+       return this.initialPopulation.allows(action);
     }
 
    

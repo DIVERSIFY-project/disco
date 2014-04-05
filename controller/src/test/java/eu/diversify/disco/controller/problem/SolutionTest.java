@@ -35,13 +35,11 @@
 package eu.diversify.disco.controller.problem;
 
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
-import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import eu.diversify.disco.population.diversity.TrueDiversity;
-import java.util.ArrayList;
 import java.util.HashSet;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -89,21 +87,25 @@ public class SolutionTest extends TestCase {
      */
     @Test
     public void testEquality() {
-        Population p = aPopulation().withDistribution(5, 4).build();
-        Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
-        Solution e1 = c.evaluate(p);
+        Population population = aPopulation().withDistribution(5, 4).build();
+        Problem problem = aProblem()
+                .withInitialPopulation(population)
+                .withReferenceDiversity(1.65)
+                .withDiversityMetric(new TrueDiversity())
+                .build();
+        Solution e1 = problem.evaluate(population);
         assertTrue(
                 "An evaluation should equal itself",
                 e1.equals(e1));
 
 
-        final Solution e2 = c.evaluate(p);
+        final Solution e2 = problem.evaluate(population);
         assertTrue(
                 "Two evaluations of similar populations for a given case shall be equal",
                 e1.equals(e2));
 
         Population p2 = aPopulation().withDistribution(6, 3).build();
-        final Solution e3 = c.evaluate(p2);
+        final Solution e3 = problem.evaluate(p2);
         assertFalse(
                 "Two evaluations of two different populations shall not be equal",
                 e1.equals(e3));
@@ -115,10 +117,14 @@ public class SolutionTest extends TestCase {
      */
     @Test
     public void testFormatting() {
-        Population p = aPopulation().withDistribution(5, 4).build();
-        Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
-
-        Solution result = c.evaluate(p);
+        Population population = aPopulation().withDistribution(5, 4).build();
+        Problem problem = aProblem()
+                .withInitialPopulation(population)
+                .withReferenceDiversity(1.65)
+                .withDiversityMetric(new TrueDiversity())
+                .build();
+        
+        Solution result = problem.evaluate(population);
         String text = result.toString();
         assertThat("about diversity", text, containsString("Diversity:"));
         assertThat("about population", text, containsString("Population:"));
@@ -130,12 +136,15 @@ public class SolutionTest extends TestCase {
      */
     @Test
     public void testCollectionUse() {
-        Population p = aPopulation().withDistribution(5, 4).build();
-        final Problem c = new Problem(p, 1.65, new TrueDiversity(), new ArrayList<Constraint>());
-
-        final Solution e = c.evaluate(p);
+        Population population = aPopulation().withDistribution(5, 4).build();
+        Problem problem = aProblem()
+                .withInitialPopulation(population)
+                .withReferenceDiversity(0.25)
+                .withDiversityMetric(new TrueDiversity().normalise())
+                .build();
+        final Solution e = problem.evaluate(population);
         final HashSet<Solution> set = new HashSet<Solution>();
-        set.add(c.evaluate(p));
+        set.add(problem.evaluate(population));
 
         assertTrue(
                 "collections do not recognize the same evaluation",
@@ -143,7 +152,7 @@ public class SolutionTest extends TestCase {
 
         assertTrue(
                 "collections do not recognize similar evaluations",
-                set.contains(c.evaluate(p)));
+                set.contains(problem.evaluate(population)));
 
 
     }

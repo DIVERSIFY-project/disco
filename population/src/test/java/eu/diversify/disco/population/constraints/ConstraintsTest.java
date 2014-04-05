@@ -17,20 +17,17 @@
  */
 /*
  */
-package eu.diversify.disco.controller.problem.constraints;
+package eu.diversify.disco.population.constraints;
 
 import static eu.diversify.disco.population.PopulationBuilder.*;
-import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
-import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.controller.problem.ProblemBuilder;
 import org.junit.runner.RunWith;
-import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.AddSpecie;
 import eu.diversify.disco.population.actions.RemoveSpecie;
 import eu.diversify.disco.population.actions.Plan;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
-import eu.diversify.disco.population.diversity.TrueDiversity;
 import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.TestCase;
@@ -51,7 +48,7 @@ public class ConstraintsTest extends TestCase {
     public static final boolean LEGAL = true;
     public static final boolean ILLEGAL = false;
     private final String name;
-    private final Problem problem;
+    private final Population population;
     private final Action action;
     private final boolean asExpected;
 
@@ -76,39 +73,34 @@ public class ConstraintsTest extends TestCase {
             new Example("si <-> sj / n & s fixed", withBothConstraints(), moveIndividual(), LEGAL).toArray()});
     }
 
-    public ConstraintsTest(String name, Problem problem, Action action, boolean legal) {
+    public ConstraintsTest(String name, Population population, Action action, boolean legal) {
         this.name = name;
-        this.problem = problem;
+        this.population = population;
         this.action = action;
         this.asExpected = legal;
     }
 
     @Test
     public void testConstraintEffectiveness() {
-        Solution initialSolution = problem.getInitialEvaluation();
-        assertThat("is legal ", initialSolution.canBeRefinedWith(action), is(asExpected));
+        assertThat("is legal ", population.allows(action), is(asExpected));
     }
 
-    public static class Example {
+    private static class Example {
 
         private final String name;
-        private final Problem problem;
+        private final Population population;
         private final Action action;
         private final boolean legal;
 
-        public Example(String name, Problem problem, Action action, boolean isLegal) {
+        public Example(String name, Population problem, Action action, boolean isLegal) {
             this.name = name;
-            this.problem = problem;
+            this.population = problem;
             this.action = action;
             this.legal = isLegal;
         }
 
         public String getName() {
             return name;
-        }
-
-        public Solution getInitialSolution() {
-            return problem.getInitialEvaluation();
         }
 
         public Action getAction() {
@@ -121,46 +113,37 @@ public class ConstraintsTest extends TestCase {
 
         public Object[] toArray() {
             return new Object[]{
-                name, problem, action, new Boolean(legal)
-            };
+                name, population, action, legal};
         }
     }
 
-    private static ProblemBuilder sampleProblem() {
-        return aProblem()
-                .withDiversityMetric(new TrueDiversity().normalise())
-                .withInitialPopulation(aPopulation()
+    private static PopulationBuilder samplePopulation() {
+        return aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
-                .withDistribution(3, 6, 0, 1)
-                .build())
-                .withReferenceDiversity(0.5);
+                .withDistribution(3, 6, 0, 1);
     }
 
-    private static Problem withNoConstraint() {
-        Problem problem = sampleProblem().build();
-        return problem;
+    private static Population withNoConstraint() {
+        return samplePopulation().build(); 
     }
 
-    private static Problem withFixedNumberOfSpecies() {
-        Problem problem = sampleProblem()
+    private static Population withFixedNumberOfSpecies() {
+        return samplePopulation()
                 .withFixedNumberOfSpecies()
                 .build();
-        return problem;
     }
 
-    private static Problem withFixedNumberOfIndividuals() {
-        Problem problem = sampleProblem()
-                .withFixedTotalNumberOfIndividuals()
+    private static Population withFixedNumberOfIndividuals() {
+        return samplePopulation()
+                .withFixedNumberOfIndividuals()
                 .build();
-        return problem;
     }
 
-    private static Problem withBothConstraints() {
-        Problem problem = sampleProblem()
+    private static Population withBothConstraints() {
+        return samplePopulation()
                 .withFixedNumberOfSpecies()
-                .withFixedTotalNumberOfIndividuals()
+                .withFixedNumberOfIndividuals()
                 .build();
-        return problem;
     }
 
     private static Action addSpecie() {

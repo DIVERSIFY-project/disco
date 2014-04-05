@@ -15,12 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.controllers.scalability;
 
 import eu.diversify.disco.controller.solvers.Solver;
 import eu.diversify.disco.controller.solvers.SolverFactory;
 import eu.diversify.disco.controller.problem.Solution;
-import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.experiments.commons.Experiment;
@@ -47,8 +63,6 @@ import java.util.List;
 public class ScalabilityExperiment implements Experiment {
 
     // TODO: This experiment should be multi-threaded to reduce the running time
-    
-    
     private static final Field STRATEGY = new Field("strategy", String.class);
     private static final Field INDIVIDUALS_COUNT = new Field("individual count", Integer.class);
     private static final Field SPECIES_COUNT = new Field("species count", Integer.class);
@@ -60,7 +74,6 @@ public class ScalabilityExperiment implements Experiment {
         SPECIES_COUNT,
         DURATION,
         ERROR}), "n/a");
-    
     private final HashMap<String, Solver> controllers;
     private final ArrayList<Integer> speciesCounts;
     private final ArrayList<Integer> individualsCounts;
@@ -70,7 +83,7 @@ public class ScalabilityExperiment implements Experiment {
      *
      * @param setupFile the file containing the configuration
      */
-    public ScalabilityExperiment(ScalabilitySetup setup) throws ControllerInstantiationException {
+    public ScalabilityExperiment(ScalabilitySetup setup) {
         this.controllers = new HashMap<String, Solver>();
         this.individualsCounts = new ArrayList<Integer>();
         this.speciesCounts = new ArrayList<Integer>();

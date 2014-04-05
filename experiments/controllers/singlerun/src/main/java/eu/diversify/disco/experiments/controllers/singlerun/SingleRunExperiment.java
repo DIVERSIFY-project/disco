@@ -32,13 +32,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.controllers.singlerun;
 
 import eu.diversify.disco.controller.solvers.Solver;
 import eu.diversify.disco.controller.solvers.SolverFactory;
-import eu.diversify.disco.controller.solvers.IterativeSearch;
+import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import eu.diversify.disco.controller.problem.Solution;
-import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.controller.problem.Problem;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.controller.solvers.SolverListener;
@@ -116,13 +132,9 @@ public class SingleRunExperiment implements Experiment {
     }
 
     private void initialiseControlStrategies(SingleRunSetup setup) throws IllegalArgumentException {
-        try {
-            final SolverFactory factory = new SolverFactory();
-            for (String strategy : setup.getStrategies()) {
-                this.controllers.put(strategy, factory.instantiate(strategy));
-            }
-        } catch (ControllerInstantiationException cie) {
-            throw new IllegalArgumentException(cie.getMessage());
+        SolverFactory factory = new SolverFactory();
+        for (String strategy : setup.getStrategies()) {
+            this.controllers.put(strategy, factory.instantiate(strategy));
         }
     }
 
@@ -204,6 +216,12 @@ public class SingleRunExperiment implements Experiment {
                     .build();
             controller.subscribe(new SolverListener() {
                 private int counter = 0;
+
+                @Override
+                public void onInitialSolution(Solution solution) {
+                    recordControllerTrajectory(solution, controlStrategy, counter++);
+                }
+
                 @Override
                 public void onIntermediateSolution(Solution solution) {
                     recordControllerTrajectory(solution, controlStrategy, counter++);
@@ -213,7 +231,6 @@ public class SingleRunExperiment implements Experiment {
                 public void onFinalSolution(Solution solution) {
                     recordControllerTrajectory(solution, controlStrategy, counter++);
                 }
-                
             });
 
             controller.solve(problem);

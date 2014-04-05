@@ -15,30 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package eu.diversify.disco.controller.solvers;
-
-import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
-
-/**
- * Implementation of the simple Hill Climbing strategy.
- *
- * The controller tries to refine the given population by searching for an
- * update that reduces the error with respect to the given reference.
- *
- * @author Franck Chauvel
- * @since 0.1
+/*
  */
-public class HillClimber extends IterativeSearch {
 
-    /**
-     * Create a new hill climber controller
-     *
-     * @param metric the diversity metric that the controller shall use
-     */
-    public HillClimber() {
-        super(new IndividualPermutationExplorer());
+package eu.diversify.disco.population.constraints;
+
+import eu.diversify.disco.population.actions.Action;
+
+
+public class FixedNumberOfIndividuals implements Constraint {
+
+    @Override
+    public boolean allows(Action action) {
+        return action.preserveTheTotalNumberOfIndividuals();
     }
-
-   
+    
 }

@@ -15,12 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+package eu.diversify.disco.population.constraints;
 
-package eu.diversify.disco.controller.problem;
+import eu.diversify.disco.population.actions.Action;
 
+/**
+ * Constrain the actions that one can perform on a population
+ */
+public interface Constraint {
 
-public interface Cost {
-    
-    public boolean isLowerThan(Cost other);
-    
+    boolean allows(Action action);
+
 }

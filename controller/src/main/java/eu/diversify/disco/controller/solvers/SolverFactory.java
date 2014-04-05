@@ -15,10 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
-import eu.diversify.disco.controller.exceptions.UnknownStrategyException;
+import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
+import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
+import eu.diversify.disco.controller.solvers.searches.BreadthFirst;
+import eu.diversify.disco.controller.solvers.searches.HillClimbing;
+import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import java.util.HashMap;
 
 /**
@@ -29,16 +49,16 @@ import java.util.HashMap;
  */
 public class SolverFactory {
 
-    private final HashMap<String, String> strategies;
+    private final HashMap<String, Solver> strategies;
 
     /**
      * Create a new SolverFactory
      */
     public SolverFactory() {
-        this.strategies = new HashMap<String, String>();
-        this.strategies.put("HILL CLIMBING", "eu.diversify.disco.controller.solvers.HillClimber");
-        this.strategies.put("ADAPTIVE HILL CLIMBING", "eu.diversify.disco.controller.solvers.AdaptiveHillClimber");
-        this.strategies.put("BREADTH-FIRST SEARCH", "eu.diversify.disco.controller.solvers.BreadthFirstExplorer");
+        this.strategies = new HashMap<String, Solver>();
+        this.strategies.put("HILL CLIMBING", createHillClimbing());
+        this.strategies.put("ADAPTIVE HILL CLIMBING", createAdaptiveHillClimber());
+        this.strategies.put("BREADTH-FIRST SEARCH", createBreadthFirst());
     }
 
     /**
@@ -47,31 +67,29 @@ public class SolverFactory {
      *
      * @param strategy the name of the strategy to instantiate
      *
-     * @return an fresh object reflecting the given strategy
+     * @return a solver object with the needed strategy strategy
      */
-    public Solver instantiate(String strategy) throws ControllerInstantiationException {
-        Solver result = null;
+    public Solver instantiate(String strategy) {
         final String escaped = strategy.trim().replaceAll("\\s+", " ").toUpperCase();
-        final String className = this.strategies.get(escaped);
-        if (className == null) {
-            throw new UnknownStrategyException(strategy);
-            
-        } else {
-            try {
-                result = (Solver) Class.forName(className).newInstance();
-            
-            } catch (ClassNotFoundException cnfe) {
-                throw new ControllerInstantiationException(className, cnfe);
-                
-            } catch (IllegalAccessException iae) {
-                throw new ControllerInstantiationException(className, iae);
-                
-            } catch (InstantiationException ie) {
-                throw new ControllerInstantiationException(className, ie);
-                
-            }
+        final Solver solver = this.strategies.get(escaped);
+        if (solver == null) {
+            final String message = String.format("Unknown resolution strategy: '%s'", strategy);
+            throw new IllegalArgumentException(message);
         }
-        return result;
+        else {
+            return solver;
+        }
     }
-    
+
+    private Solver createHillClimbing() {
+        return new IterativeSearch(new HillClimbing(new IndividualPermutationExplorer()));
+    }
+
+    private Solver createAdaptiveHillClimber() {
+        return new IterativeSearch(new AdaptiveHillClimbing(new IndividualPermutationExplorer()));
+    }
+
+    private Solver createBreadthFirst() {
+        return new IterativeSearch(new BreadthFirst(new IndividualPermutationExplorer()));
+    }
 }

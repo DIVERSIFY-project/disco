@@ -17,12 +17,7 @@
  */
 package eu.diversify.disco.experiments.controllers.singlerun;
 
-import eu.diversify.disco.controller.solvers.AdaptiveHillClimber;
-import eu.diversify.disco.controller.solvers.HillClimber;
-import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.experiments.commons.data.DataSet;
-import eu.diversify.disco.population.Population;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -43,7 +38,7 @@ import org.yaml.snakeyaml.Yaml;
 public class ExperimentTest extends TestCase {
     
     @Test
-    public void testLoadingSetup() throws FileNotFoundException, ControllerInstantiationException {
+    public void testLoadingSetup() throws FileNotFoundException {
         final String testSetup = "../src/test/resources/setup.yml";
                 
         Yaml yaml = new Yaml();

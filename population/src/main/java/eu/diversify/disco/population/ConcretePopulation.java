@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.actions.Action;
@@ -41,15 +25,11 @@ import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A value object representing a population. Intended to be immutable
- *
- * @author Franck Chauvel
- * @since 0.1
+ * A mutable data object representing a population
  */
 public class ConcretePopulation implements Population {
 
@@ -80,6 +60,11 @@ public class ConcretePopulation implements Population {
     private ConcretePopulation(ConcretePopulation model) {
         this.speciesName = new ArrayList<String>(model.speciesName);
         this.distribution = new ArrayList<Integer>(model.distribution);
+    }
+
+    @Override
+    public boolean allows(Action action) {
+        return true;
     }
 
     @Override
@@ -309,12 +294,10 @@ public class ConcretePopulation implements Population {
         return total / s;
     }
 
-    
     @Override
     public boolean isUniformlyDistributed() {
         return getVariance() == 0;
     }
-       
 
     @Override
     public List<Action> differenceWith(Population target) {
@@ -333,7 +316,7 @@ public class ConcretePopulation implements Population {
             }
             superfluousSpecies.remove(foreign);
         }
-        for (String specie: superfluousSpecies) {
+        for (String specie : superfluousSpecies) {
             actions.add(new RemoveSpecie(specie));
         }
         return actions;

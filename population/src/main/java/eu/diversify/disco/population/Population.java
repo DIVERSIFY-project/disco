@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.actions.Action;
@@ -64,6 +48,13 @@ public interface Population {
      * @return a complete copy of the population
      */
     public Population deepCopy();
+    
+    
+    /**
+     * @return true if the given action is permitted on this population
+     * @param action the action which relevance is to be tested
+     */
+    public boolean allows(Action action);
 
     /**
      * @param specieIndex the index of the specie from interest, starting from 1

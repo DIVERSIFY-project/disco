@@ -17,7 +17,6 @@
  */
 package eu.diversify.disco.samples.commons;
 
-import eu.diversify.disco.controller.solvers.AdaptiveHillClimber;
 import eu.diversify.disco.controller.Controller;
 import eu.diversify.disco.controller.Reference;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
@@ -25,7 +24,10 @@ import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.controller.PopulationReader;
 import eu.diversify.disco.controller.PopulationWriter;
+import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
+import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +48,7 @@ public class DiversityController<T> {
         this.source = source;
         this.extraction = extraction;
         final ProblemBuilder problemBuilder = aProblem().withDiversityMetric(metric);
-        this.facade = new Controller(problemBuilder, reference, new Extractor(), new AdaptiveHillClimber(), new Injector());
+        this.facade = new Controller(problemBuilder, reference, new Extractor(), new IterativeSearch(new AdaptiveHillClimbing(new IndividualPermutationExplorer())), new Injector());
         this.injection = injection;
         this.target = target;
         this.listeners = new ArrayList<DiversityControllerListener>();

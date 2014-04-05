@@ -28,6 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 /**
  * Specification of the ProblemBuilder class
  *
@@ -40,12 +43,16 @@ public class ProblemBuilderTest extends TestCase {
 
     @Test
     public void testBasicProblem() {
-        Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
+        Population population = aPopulation()
+                .withDistribution(3, 4, 5, 6)
+                .build();
+        
         Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withReferenceDiversity(0.75)
                 .withDiversityMetric(new ShannonIndex())
                 .build();
+        
         assertEquals(population, problem.getInitialPopulation());
         assertEquals(0.75, problem.getReference());
         assertEquals(new ShannonIndex(), problem.getMetric());
@@ -56,25 +63,34 @@ public class ProblemBuilderTest extends TestCase {
 
     @Test
     public void testWithFixedTotalNumberOfIndividuals() {
-        Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
+        
         Problem problem = aProblem()
-                .withInitialPopulation(population)
+                .withInitialPopulation(aPopulation()
+                    .withDistribution(3, 4, 5, 6)
+                    .withFixedNumberOfIndividuals())
                 .withReferenceDiversity(0.56)
                 .withDiversityMetric(new ShannonIndex())
-                .withFixedTotalNumberOfIndividuals()
                 .build();
-        assertFalse(problem.isLegal(new ShiftNumberOfIndividualsIn(1, +3)));
+        
+        final ShiftNumberOfIndividualsIn shiftNumberOfIndividualsIn = new ShiftNumberOfIndividualsIn(1, +3);
+        
+        assertThat("legal action", problem.isLegal(shiftNumberOfIndividualsIn));
     }
 
     @Test
     public void testWithFixedNumberOfSpecies() {
-        Population population = aPopulation().withDistribution(3, 4, 5, 6).build();
+        
         Problem problem = aProblem()
-                .withInitialPopulation(population)
+                .withInitialPopulation(aPopulation()
+                    .withDistribution(3, 4, 5, 6)
+                    .withFixedNumberOfSpecies())
                 .withReferenceDiversity(0.56)
                 .withDiversityMetric(new ShannonIndex())
-                .withFixedNumberOfSpecies()
                 .build();
-        assertFalse(problem.isLegal(new AddSpecie("Elephants")));
-    }
+ 
+        final AddSpecie addSpecie = new AddSpecie("Elephants");
+ 
+        assertThat("legal action", problem.isLegal(addSpecie));
+        
+     }
 }

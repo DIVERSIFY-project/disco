@@ -15,15 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.controllers.scalability;
 
-import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.Setup;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Store the parameters for the scalability experiment
@@ -107,12 +121,6 @@ public class ScalabilitySetup implements Setup {
 
     @Override
     public Experiment buildExperiment() {
-        try { 
-            return new ScalabilityExperiment(this);
-        
-        } catch (ControllerInstantiationException ex) {
-           throw new IllegalArgumentException(ex);
-        }
+        return new ScalabilityExperiment(this);
     }
-    
 }

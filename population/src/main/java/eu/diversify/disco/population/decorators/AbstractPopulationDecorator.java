@@ -27,9 +27,6 @@ import java.util.Map;
 
 /**
  * Factor the common code out of decorators object, and provide default implementations for some 
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
 public abstract class AbstractPopulationDecorator implements Population {
     
@@ -56,6 +53,11 @@ public abstract class AbstractPopulationDecorator implements Population {
     public int hashCode() {
         return delegate.hashCode();
     }
+
+    @Override
+    public boolean allows(Action action) {
+        return delegate.allows(action);
+    }  
 
     @Override
     public Population deepCopy() {

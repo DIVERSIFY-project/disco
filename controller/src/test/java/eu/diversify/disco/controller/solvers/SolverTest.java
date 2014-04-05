@@ -51,15 +51,13 @@
  */
 package eu.diversify.disco.controller.solvers;
 
+import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.problem.Problem;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
-import eu.diversify.disco.controller.problem.constraints.Constraint;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
-import eu.diversify.disco.population.diversity.NormalisedDiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
-import java.util.ArrayList;
 import junit.framework.TestCase;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -67,7 +65,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import static org.hamcrest.Matchers.*;
 
 /**
  * General set of test which should work for each controller
@@ -77,6 +74,8 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(JUnit4.class)
 public abstract class SolverTest extends TestCase {
+    public static final double MAX_NORMALIZED_DIVERSITY = 1D;
+    public static final double MIN_NORMALIZED_DIVERSITY = 0D;
 
     final Mockery context;
 
@@ -99,10 +98,14 @@ public abstract class SolverTest extends TestCase {
 
         Population population = aPopulation().withDistribution(5, 5).build();
 
-        final double reference = 0.;
-
-        final Problem problem = new Problem(population, reference, new NormalisedDiversityMetric(new TrueDiversity()), new ArrayList<Constraint>());
+        final Problem problem = aProblem()
+                .withInitialPopulation(population)
+                .withReferenceDiversity(MIN_NORMALIZED_DIVERSITY)
+                .withDiversityMetric(new TrueDiversity().normalise())
+                .build();
+        
         Solution result = controller.solve(problem);
+        
         assertEquals(
                 "Illegal update of the population size",
                 population.getTotalNumberOfIndividuals(),
@@ -115,7 +118,7 @@ public abstract class SolverTest extends TestCase {
 
         assertEquals(
                 "Unacceptable diversity error",
-                reference,
+                MIN_NORMALIZED_DIVERSITY,
                 result.getDiversity(),
                 1e-10);
 
@@ -136,9 +139,13 @@ public abstract class SolverTest extends TestCase {
 
         Population population = aPopulation().withDistribution(20, 0).build();
 
-        final double reference = 1.;
 
-        final Problem problem = new Problem(population, reference, new NormalisedDiversityMetric(new TrueDiversity()), new ArrayList<Constraint>());
+        final Problem problem = aProblem()
+                .withInitialPopulation(population)
+                .withReferenceDiversity(MAX_NORMALIZED_DIVERSITY)
+                .withDiversityMetric(new TrueDiversity().normalise())
+                .build();
+        
         Solution result = controller.solve(problem);
 
         assertEquals(
@@ -153,7 +160,7 @@ public abstract class SolverTest extends TestCase {
 
         assertEquals(
                 "Unacceptable diversity error",
-                reference,
+                MAX_NORMALIZED_DIVERSITY,
                 result.getDiversity(),
                 1e-10);
 

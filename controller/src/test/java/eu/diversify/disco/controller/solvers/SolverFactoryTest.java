@@ -15,11 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.exceptions.ControllerInstantiationException;
-import eu.diversify.disco.controller.exceptions.UnknownStrategyException;
+import static eu.diversify.disco.population.PopulationBuilder.*;
+import eu.diversify.disco.controller.problem.Problem;
+import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
+import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
+import eu.diversify.disco.controller.solvers.searches.BreadthFirst;
+import eu.diversify.disco.controller.solvers.searches.HillClimbing;
+import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
+import eu.diversify.disco.controller.solvers.searches.SearchStrategy;
+import eu.diversify.disco.population.diversity.TrueDiversity;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,9 +53,6 @@ import org.junit.runners.JUnit4;
 
 /**
  * Test the behaviour of the controller factory
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public class SolverFactoryTest extends TestCase {
@@ -38,50 +60,58 @@ public class SolverFactoryTest extends TestCase {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    /**
-     * Test the
-     */
     @Test
-    public void testUsageScenario() throws ControllerInstantiationException {
+    public void testAdaptiveHillClimbingInstantiation() {
         final SolverFactory factory = new SolverFactory();
+        final IterativeSearch ahc = (IterativeSearch) factory.instantiate("Adaptive Hill Climbing");
+        SearchStrategy strategy = ahc.getSearchFactory();
 
-        final Solver ahc = factory.instantiate("Adaptive Hill Climbing");
         assertEquals(
                 "Wrong controller instantiation",
-                AdaptiveHillClimber.class,
-                ahc.getClass());
-
-
-        final Solver bfs = factory.instantiate("Breadth-First Search");
-        assertEquals(
-                "Wrong controller instantiation",
-                BreadthFirstExplorer.class,
-                bfs.getClass());
-
-        final Solver hc = factory.instantiate("Hill Climbing");
-        assertEquals(
-                "Wrong controller instantiation",
-                HillClimber.class,
-                hc.getClass());
-
-
-        // Check senstivity to extra spaces and case
-        final Solver hc2 = factory.instantiate(" Hill   CLIMBING ");
-        assertEquals(
-                "Wrong controller instantiation",
-                HillClimber.class,
-                hc2.getClass());
-
+                AdaptiveHillClimbing.class,
+                strategy.getClass());
     }
 
-    @Test(expected = UnknownStrategyException.class)
-    public void testUnknownStrategyDetection() throws ControllerInstantiationException {
+    @Test
+    public void testHillClimbingInstantiation() {
         final SolverFactory factory = new SolverFactory();
+        final IterativeSearch ahc = (IterativeSearch) factory.instantiate("Hill Climbing");
+        SearchStrategy strategy = ahc.getSearchFactory();
 
-        final Solver hc = factory.instantiate(" Hill   CLIMBING 2 ");
         assertEquals(
                 "Wrong controller instantiation",
-                HillClimber.class,
-                hc.getClass());
+                HillClimbing.class,
+                strategy.getClass());
     }
+
+    @Test
+    public void testBreadthFirstInstantiation() {
+        final SolverFactory factory = new SolverFactory();
+        final IterativeSearch ahc = (IterativeSearch) factory.instantiate("Breadth-First Search");
+        SearchStrategy strategy = ahc.getSearchFactory();
+
+        assertEquals(
+                "Wrong controller instantiation",
+                BreadthFirst.class,
+                strategy.getClass());
+    }
+
+    @Test
+    public void testEscapingName() {
+        final SolverFactory factory = new SolverFactory();
+        final IterativeSearch ahc = (IterativeSearch) factory.instantiate(" Hill    ClimBING");
+        SearchStrategy strategy = ahc.getSearchFactory();
+
+        assertEquals(
+                "Wrong controller instantiation",
+                HillClimbing.class,
+                strategy.getClass());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnknownStrategyDetection() {
+        final SolverFactory factory = new SolverFactory();
+        factory.instantiate(" Hill   CLIMBING 2 ");
+    }
+
 }

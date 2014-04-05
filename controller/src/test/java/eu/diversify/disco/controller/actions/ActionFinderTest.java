@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.controller.actions;
@@ -34,33 +51,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 public class ActionFinderTest extends TestCase {
 
     @Test
     public void testImmutabilityOfSolution() {
         Problem problem = aProblem()
-                .withInitialPopulation(aPopulation().withDistribution(5, 5).build())
+                .withInitialPopulation(aPopulation().withDistribution(5, 5))
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .build();
 
         ExplorationStrategy finder = new IndividualPermutationExplorer();
-        for (Action action: finder.search(problem.getInitialEvaluation(), 1)) {
+        for (Action action : finder.search(problem.getInitialEvaluation(), 1)) {
             problem.getInitialEvaluation().refineWith(action);
         }
-        
+
         assertEquals(
                 "Action finder shall never modify the population explored",
                 aPopulation().withDistribution(5, 5).build(),
                 problem.getInitialEvaluation().getPopulation());
     }
-    
+
     @Test
     public void testFindAllPermutationsOfIndividualsInMinimalPopulation() {
         Problem problem = aProblem()
-                .withInitialPopulation(aPopulation().withDistribution(1, 1).build())
+                .withInitialPopulation(aPopulation().withDistribution(1, 1))
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .build();
@@ -83,7 +99,8 @@ public class ActionFinderTest extends TestCase {
     @Test
     public void testFindAllPermutationsOfIndividualsInMinimalPopulationWithScaleFactor() {
         Problem problem = aProblem()
-                .withInitialPopulation(aPopulation().withDistribution(4, 4).build())
+                .withInitialPopulation(aPopulation()
+                    .withDistribution(4, 4))
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .build();
@@ -106,7 +123,7 @@ public class ActionFinderTest extends TestCase {
     @Test
     public void testFindAllPermutationsOfIndividuals() {
         Problem problem = aProblem()
-                .withInitialPopulation(aPopulation().withDistribution(2, 2, 2).build())
+                .withInitialPopulation(aPopulation().withDistribution(2, 2, 2))
                 .withDiversityMetric(new ShannonIndex())
                 .withReferenceDiversity(0.5)
                 .build();

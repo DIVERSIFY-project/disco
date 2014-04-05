@@ -15,51 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.actions.Plan;
+import java.util.ArrayList;
 
 /**
  * Encapsulate the various data outputted by the controller, including the
  * number of iterations, the final error and the resulting population.
- *
- * @author Franck Chauvel
- * @since 0.1
+
  */
 public class Solution {
 
@@ -67,6 +34,7 @@ public class Solution {
     private final Population population;
     private final double diversity;
     private final double error;
+    private final Plan plan;
 
     /**
      * Create a new result object
@@ -81,7 +49,10 @@ public class Solution {
         this.population = population;
         this.diversity = diversity;
         this.error = error;
+        this.plan = new Plan(new ArrayList<Action>());
     }
+    
+    
 
     public Problem getProblem() {
         return this.problem;
@@ -106,17 +77,17 @@ public class Solution {
      * resulting from applying the given update on the population.
      */
     public Solution refineWith(Action action) {
-        Solution evaluation = problem.evaluate(action.applyTo(population));
-        return evaluation;
+        return problem.evaluate(action.applyTo(population));
+    }
+    
+    public Solution orIfStrictlyBetter(Solution other) {
+        return isStrictlyBetterThan(other)? this : other;
     }
 
-    public boolean isBetterThan(Solution other) {
+    public boolean isStrictlyBetterThan(Solution other) {
         return this.error < other.error;
     }
 
-    public boolean isWorthOrEqualsThan(Solution other) {
-        return this.error >= other.error;
-    }
 
     /**
      * @return the resulting population

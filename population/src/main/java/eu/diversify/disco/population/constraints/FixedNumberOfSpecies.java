@@ -15,33 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package eu.diversify.disco.controller.exceptions;
-
-/**
- * Exception raised by the ControllerFactory when given a strategy name which
- * cannot be matched.
- *
- * @author Franck Chauvel
- * @since 0.1
+/*
  */
-public class UnknownStrategyException extends RuntimeException {
-    
-    private final String strategy;
-    
-    /**
-     * Create a new UnknownStrategyException
-     * @param strategy the missing strategy
-     */
-    public UnknownStrategyException(String strategy) {
-        this.strategy = strategy;
-    }
-    
-    /**
-     * @return the strategy
-     */
-    public String getStrategy() {
-        return this.strategy;
+
+package eu.diversify.disco.population.constraints;
+
+import eu.diversify.disco.population.actions.Action;
+
+
+public class FixedNumberOfSpecies implements Constraint {
+
+    @Override
+    public boolean allows(Action action) {
+        return action.preserveTheNumberOfSpecies();
     }
     
 }

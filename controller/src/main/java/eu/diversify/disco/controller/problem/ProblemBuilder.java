@@ -19,14 +19,11 @@
  */
 package eu.diversify.disco.controller.problem;
 
-import eu.diversify.disco.controller.problem.constraints.Constraint;
-import eu.diversify.disco.controller.problem.constraints.FixedNumberOfSpecies;
-import eu.diversify.disco.controller.problem.constraints.FixedTotalNumberOfIndividuals;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
-import java.util.HashSet;
 
 /**
  * Simplifies the construction of Problem object, with all the possible variants
@@ -40,20 +37,17 @@ public class ProblemBuilder {
     public static final DiversityMetric DEFAULT_DIVERSITY_METRIC = new TrueDiversity();
     public static final boolean DEFAULT_TOTAL_NUMBER_OF_INDIVIDUALS_FIXED = false;
     public static final boolean DEFAULT_NUMBER_OF_SPECIES_FIXED = false;
-    private static final Constraint FIXED_NUMBER_OF_INDIVIDUALS = new FixedTotalNumberOfIndividuals();
-    private static final Constraint FIXED_NUMBER_OF_SPECIES = new FixedNumberOfSpecies();
+ 
     // Fields
     private Population initialPopulation;
     private double referenceDiversity;
     private DiversityMetric metric;
-    private final HashSet<Constraint> constraints;
     
     public static ProblemBuilder aProblem() {
         return new ProblemBuilder();
     } 
 
     private ProblemBuilder() {
-        constraints = new HashSet<Constraint>();
         setDefaultValues();
     }
 
@@ -61,11 +55,15 @@ public class ProblemBuilder {
         initialPopulation = aPopulation().withDistribution(0).build();
         referenceDiversity = DEFAULT_REFERENCE_DIVERSITY_LEVEL;
         metric = DEFAULT_DIVERSITY_METRIC;
-        constraints.clear();
     }
 
     public ProblemBuilder withInitialPopulation(Population initialPopulation) {
         this.initialPopulation = initialPopulation;
+        return this;
+    }
+    
+      public ProblemBuilder withInitialPopulation(PopulationBuilder population) {
+        this.initialPopulation = population.build();
         return this;
     }
 
@@ -79,18 +77,8 @@ public class ProblemBuilder {
         return this;
     }
 
-    public ProblemBuilder withFixedTotalNumberOfIndividuals() {
-        constraints.add(FIXED_NUMBER_OF_INDIVIDUALS);
-        return this;
-    }
-
-    public ProblemBuilder withFixedNumberOfSpecies() {
-        constraints.add(FIXED_NUMBER_OF_SPECIES);
-        return this;
-    }
-
     public Problem build() {
-        Problem result = new Problem(initialPopulation, referenceDiversity, metric, constraints);
+        Problem result = new Problem(initialPopulation, referenceDiversity, metric);
         return result;
     }
 }

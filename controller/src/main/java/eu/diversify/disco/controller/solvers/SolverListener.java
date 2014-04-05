@@ -24,6 +24,8 @@ import eu.diversify.disco.controller.problem.Solution;
 
 public interface SolverListener {
 
+    void onInitialSolution(Solution solution);
+    
     void onIntermediateSolution(Solution solution);
     
     void onFinalSolution(Solution solution);

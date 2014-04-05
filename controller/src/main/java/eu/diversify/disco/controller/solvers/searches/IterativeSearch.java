@@ -32,17 +32,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.controller.solvers;
+package eu.diversify.disco.controller.solvers.searches;
 
-import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
-import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
-import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
+import eu.diversify.disco.controller.problem.Solution;
+import eu.diversify.disco.controller.problem.Problem;
+import eu.diversify.disco.controller.solvers.AbstractSolver;
 
+/*
+ * Iterative search for a solution, by succesive improvements
+ */
+public class IterativeSearch extends AbstractSolver {
 
-public class AdaptiveHillClimberTest extends SolverTest {
+    private final SearchStrategy search;
 
-    @Override
-    public IterativeSearch factory() {
-        return new IterativeSearch(new AdaptiveHillClimbing(new IndividualPermutationExplorer()));
+    public IterativeSearch(SearchStrategy search) {
+        super();
+        this.search = search;
     }
+
+    public SearchStrategy getSearchFactory() {
+        return search;
+    }
+ 
+   
+    @Override
+    public Solution solve(Problem problem) {
+        search.setUp(problem);
+        publishInitialSolution(search.getCurrentSolution());
+        while (search.hasMoreImprovement()) {
+            publishIntermediateSolution(search.improve());
+        }
+        publishFinalSolution(search.getCurrentSolution());
+        return search.getCurrentSolution();
+    }
+
+
 }
