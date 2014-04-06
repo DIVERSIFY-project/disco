@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 
 package eu.diversify.disco.population.decorators;
 
@@ -59,6 +57,12 @@ public abstract class AbstractPopulationDecorator implements Population {
         return delegate.allows(action);
     }  
 
+    @Override
+    public List<Action> allLegalActions(int scaleFactor) {
+        return delegate.allLegalActions(scaleFactor);
+    }
+
+    
     @Override
     public Population deepCopy() {
         return delegate.deepCopy();
@@ -139,6 +143,12 @@ public abstract class AbstractPopulationDecorator implements Population {
     public final Population renameSpecie(String oldName, String newName) {
         return renameSpecie(getSpecieIndex(oldName), newName);
     }
+
+    @Override
+    public Population addSpecie() {
+        delegate.addSpecie();
+        return this;
+    } 
     
     @Override
     public Population addSpecie(String specieName) {

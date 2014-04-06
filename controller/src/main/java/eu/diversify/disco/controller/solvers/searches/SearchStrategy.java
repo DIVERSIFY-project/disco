@@ -17,28 +17,18 @@
  */
 package eu.diversify.disco.controller.solvers.searches;
 
-import eu.diversify.disco.controller.exploration.ExplorationStrategy;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.Solution;
 
 public abstract class SearchStrategy {
 
-    private final ExplorationStrategy finder;
     private Solution current;
     protected Solution next;
-
-    public SearchStrategy(ExplorationStrategy finder) {
-        this.finder = finder;
-    }
 
     public void setUp(Problem problem) {
         this.current = problem.getInitialEvaluation();
         this.next = current;
         findImprovement();
-    }
-
-    public ExplorationStrategy getFinder() {
-        return this.finder;
     }
 
     public final Solution getCurrentSolution() {

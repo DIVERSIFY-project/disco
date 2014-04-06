@@ -22,6 +22,7 @@ import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.Plan;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Encapsulate the various data outputted by the controller, including the
@@ -58,6 +59,10 @@ public class Solution {
         return this.problem;
     }
 
+    public List<Action> allLegalActions(int scaleFactor) {
+        return this.population.allLegalActions(scaleFactor);
+    }
+    
     /**
      * Check whether the selected action applies in the context of the problem
      * under resolution

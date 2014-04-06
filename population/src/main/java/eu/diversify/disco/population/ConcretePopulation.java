@@ -15,26 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.diversify.disco.population;
 
+import static eu.diversify.disco.population.Population.DEFAULT_SPECIE_NAME_FORMAT;
+import static eu.diversify.disco.population.actions.ScriptBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.AddSpecie;
 import eu.diversify.disco.population.actions.RemoveSpecie;
+import eu.diversify.disco.population.actions.ScriptBuilder;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A mutable data object representing a population
+ *
+ * FIXME: Change the implementation of the list of species name to ensure access
+ * to species name in O(c)
  */
 public class ConcretePopulation implements Population {
 
-    public static final String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
-    // FIXME: Change the implementation of the list of species name to ensure access to species name in O(c) 
     private final ArrayList<String> speciesName;
     private final ArrayList<Integer> distribution;
 
@@ -65,6 +70,37 @@ public class ConcretePopulation implements Population {
     @Override
     public boolean allows(Action action) {
         return true;
+    }
+
+    @Override
+    public List<Action> allLegalActions(int scaleFactor) {
+        ArrayList<Action> legalActions = new ArrayList<Action>();
+        ScriptBuilder newSpecies = aScript();
+        for (int i = 0; i < scaleFactor; i++) {
+            newSpecies.addSpecie();
+        }
+        legalActions.add(newSpecies.build());
+        for (String specie : getSpeciesNames()) {
+            if (getTotalNumberOfIndividuals() > getNumberOfIndividualsIn(specie)) {
+                legalActions.add(new RemoveSpecie(specie));
+            }
+            legalActions.add(new ShiftNumberOfIndividualsIn(specie, +scaleFactor));
+            if (getTotalNumberOfIndividuals() > scaleFactor && getNumberOfIndividualsIn(specie) >= scaleFactor) {
+                legalActions.add(new ShiftNumberOfIndividualsIn(specie, -scaleFactor));
+            }
+            for (String otherSpecie : getSpeciesNames()) {
+                if (!specie.equals(otherSpecie)) {
+                    if (getNumberOfIndividualsIn(specie) >= scaleFactor) {
+                        legalActions.add(aScript()
+                                .shift(specie, -scaleFactor)
+                                .shift(otherSpecie, +scaleFactor)
+                                .build());
+                    }
+                }
+            }
+        }
+
+        return legalActions;
     }
 
     @Override
@@ -156,6 +192,37 @@ public class ConcretePopulation implements Population {
             }
         }
         return result;
+    }
+
+    @Override
+    public Population addSpecie() {
+        String name = nextSpecieName();
+        return addSpecie(name);
+    }
+
+    private String nextSpecieName() {
+        return String.format(DEFAULT_SPECIE_NAME_FORMAT, minimumUnusedId());
+    }
+
+    private int minimumUnusedId() {
+        ArrayList<Integer> usedId = usedSpecieId();
+        int minimumUnusedId = 1;
+        while (usedId.contains(minimumUnusedId)) {
+            minimumUnusedId++;
+        }
+        return minimumUnusedId;
+    }
+
+    private ArrayList<Integer> usedSpecieId() throws NumberFormatException {
+        final ArrayList<Integer> usedId = new ArrayList<Integer>();
+        for (String specieName : getSpeciesNames()) {
+            Pattern pattern = Pattern.compile(DEFAULT_SPECIE_NAME_REGEX);
+            Matcher matcher = pattern.matcher(specieName);
+            if (matcher.matches()) {
+                usedId.add(Integer.parseInt(matcher.group(1)));
+            }
+        }
+        return usedId;
     }
 
     @Override

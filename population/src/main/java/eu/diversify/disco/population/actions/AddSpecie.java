@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 
 package eu.diversify.disco.population.actions;
 
@@ -24,14 +22,16 @@ import eu.diversify.disco.population.Population;
 
 /**
  * Create a new specie in a given population
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
 public class AddSpecie implements Action {
 
+    private static final String NO_SPECIE_NAME = null;
     private final String specieName;
-    
+
+    public AddSpecie() {
+        specieName = NO_SPECIE_NAME;
+    }
+
     public AddSpecie(String specieName) {
         if (specieName == null) {
             throw new IllegalArgumentException("Specie name shall not be null");
@@ -41,7 +41,12 @@ public class AddSpecie implements Action {
 
     @Override
     public Population applyTo(Population subject) {
-        return subject.addSpecie(specieName);
+        if (hasName()) {
+            return subject.addSpecie(specieName);
+        }
+        else {
+            return subject.addSpecie();
+        }
     }
 
     @Override
@@ -56,7 +61,7 @@ public class AddSpecie implements Action {
 
     @Override
     public int impactOnTheNumberOfSpecies() {
-        return 1;
+        return +1;
     }
 
     @Override
@@ -66,7 +71,11 @@ public class AddSpecie implements Action {
 
     @Override
     public String toString() {
-        return "add " + specieName;
+        if (hasName()) {
+            return "add specie '" +  specieName + "'";
+        } else {
+            return "add 1 specie";
+        }
     }
 
     @Override
@@ -90,6 +99,8 @@ public class AddSpecie implements Action {
         }
         return true;
     }
-    
-    
+
+    private boolean hasName() {
+        return specieName != NO_SPECIE_NAME;
+    }
 }

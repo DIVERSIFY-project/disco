@@ -113,6 +113,8 @@ public class SensitivityExperiment implements Experiment {
 
         // Initial population: p = [x, 0] 
         Population population = aPopulation()
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
                 .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
                 .withDistribution(this.size, 0)
                 .build();
@@ -143,6 +145,8 @@ public class SensitivityExperiment implements Experiment {
 
         // Initial population, p = [x-1, 1]
         Population population = aPopulation()
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
                 .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
                 .withDistribution(this.size - 1, 1)
                 .build();
@@ -173,6 +177,8 @@ public class SensitivityExperiment implements Experiment {
 
         // Initial population
         Population p = aPopulation()
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
                 .withSpeciesNamed(SPECIE_NAME + 1, SPECIE_NAME + 2)
                 .withDistribution(this.size, 0)
                 .build();

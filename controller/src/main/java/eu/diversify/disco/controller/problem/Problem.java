@@ -20,6 +20,7 @@ package eu.diversify.disco.controller.problem;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
+import eu.diversify.disco.population.decorators.ImmutablePopulation;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 
 /**
@@ -53,10 +54,7 @@ public class Problem {
         checkIfReferenceIsWithinTheRangeOfTheMetric(initialPopulation, metric, reference);
         this.metric = metric;
         this.reference = reference;
-        this.initialPopulation = aPopulation()
-                .clonedFrom(initialPopulation)
-                .immutable()
-                .build();
+        this.initialPopulation = new ImmutablePopulation(initialPopulation);
     }
 
     private void checkIfPopulationIsValid(Population population) {

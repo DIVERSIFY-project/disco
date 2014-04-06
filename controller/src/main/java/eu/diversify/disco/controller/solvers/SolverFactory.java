@@ -34,7 +34,6 @@
  */
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
 import eu.diversify.disco.controller.solvers.searches.BreadthFirst;
 import eu.diversify.disco.controller.solvers.searches.HillClimbing;
@@ -82,14 +81,14 @@ public class SolverFactory {
     }
 
     private Solver createHillClimbing() {
-        return new IterativeSearch(new HillClimbing(new IndividualPermutationExplorer()));
+        return new IterativeSearch(new HillClimbing());
     }
 
     private Solver createAdaptiveHillClimber() {
-        return new IterativeSearch(new AdaptiveHillClimbing(new IndividualPermutationExplorer()));
+        return new IterativeSearch(new AdaptiveHillClimbing());
     }
 
     private Solver createBreadthFirst() {
-        return new IterativeSearch(new BreadthFirst(new IndividualPermutationExplorer()));
+        return new IterativeSearch(new BreadthFirst());
     }
 }

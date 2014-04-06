@@ -25,9 +25,6 @@ import java.util.Map;
 /**
  * The general interface of population as a mapping from species names to number
  * of individuals in species.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public interface Population {
 
@@ -35,7 +32,8 @@ public interface Population {
      * FIXME: What is the meaning of a population with no specie? is it an empty
      * population? Is it a legal population?
      */
-    public static final String DEFAULT_SPECIE_NAME_PREFIX = "sp. #";
+    public static final String DEFAULT_SPECIE_NAME_FORMAT = "s%d";
+    public static final String DEFAULT_SPECIE_NAME_REGEX = "^s(\\d+)$";
     public static final Integer DEFAULT_NUMBER_OF_INDIVIDUALS_PER_SPECIE = 0;
 
     @Override
@@ -48,13 +46,18 @@ public interface Population {
      * @return a complete copy of the population
      */
     public Population deepCopy();
-    
-    
+
     /**
      * @return true if the given action is permitted on this population
      * @param action the action which relevance is to be tested
      */
     public boolean allows(Action action);
+
+    /**
+     * @return the list of all legal actions which can be performed on this
+     * populations
+     */
+    public List<Action> allLegalActions(int scaleFactor);
 
     /**
      * @param specieIndex the index of the specie from interest, starting from 1
@@ -162,6 +165,12 @@ public interface Population {
      */
     public Population addSpecie(String specieName);
 
+    /**
+     * @return return this population but where a new specie has been added with a
+     * default name.
+     */
+    public Population addSpecie();
+    
     /**
      * Remove the selected specie from the population
      *

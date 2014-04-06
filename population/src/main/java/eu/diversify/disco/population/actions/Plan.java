@@ -98,6 +98,15 @@ public class Plan implements Action {
     }
     
     
-
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Script {");
+        for(Action action: actions) {
+            builder.append(action);
+            builder.append("; ");
+        }
+        builder.append("}");
+        return builder.toString();
+    }
 
 }

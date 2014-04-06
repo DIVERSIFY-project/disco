@@ -34,7 +34,6 @@
  */
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 
@@ -59,7 +58,7 @@ public class BreadthFirstSearchTest extends SolverTest {
 
     @Override
     public IterativeSearch factory() {
-        return new IterativeSearch(new BreadthFirst(new IndividualPermutationExplorer()));
+        return new IterativeSearch(new BreadthFirst());
     }
 
     /**
@@ -67,14 +66,19 @@ public class BreadthFirstSearchTest extends SolverTest {
      */
     @Test
     public void testPushback() {
-        Population source = aPopulation().withDistribution(5, 5).build();
+        Population source = aPopulation()
+                .withDistribution(5, 5)
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
+                .build();
+        
         Problem problem = aProblem()
                 .withInitialPopulation(source)
                 .withDiversityMetric(new NormalisedDiversityMetric(new TrueDiversity()))
                 .withReferenceDiversity(0.)
                 .build();
 
-        final BreadthFirst search = new BreadthFirst(new IndividualPermutationExplorer());
+        final BreadthFirst search = new BreadthFirst();
         search.setUp(problem);
         assertEquals(
                 "Pushback did not augment properly the set of explored populations",

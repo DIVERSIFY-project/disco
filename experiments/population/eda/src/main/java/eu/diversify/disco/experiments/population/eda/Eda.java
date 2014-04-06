@@ -35,9 +35,6 @@ import java.util.Random;
 /**
  * Experiment where we generate a large number of population, uniformly
  * distributed, and we log various property for exploratory data analysis.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class Eda implements Experiment {
 

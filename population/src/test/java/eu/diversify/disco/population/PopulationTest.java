@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.population;
 
 import java.util.Arrays;
@@ -51,15 +35,11 @@ import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.AddSpecie;
 import eu.diversify.disco.population.actions.RemoveSpecie;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
-import java.util.ArrayList;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
  * Test operation which update the population
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public abstract class PopulationTest extends TestCase {
@@ -87,8 +67,12 @@ public abstract class PopulationTest extends TestCase {
     public Population getExpected() {
         return this.expected;
     }
+    
+    
+    
 
     // Construction from various data types
+    // FIXME: Move to PopulationBuilderTest
     @Test
     public void testCreatingPopulationFromArray() {
         actual = getBuilder().withDistribution(3, 2, 0, 1).build();
@@ -98,6 +82,19 @@ public abstract class PopulationTest extends TestCase {
         assertEquals(2, actual.getNumberOfIndividualsIn(2));
         assertEquals(0, actual.getNumberOfIndividualsIn(3));
         assertEquals(1, actual.getNumberOfIndividualsIn(4));
+    }
+    
+    @Test
+    public void testDeepCopyPreserveConstraint() {
+        Population population = getBuilder()
+                .withFixedNumberOfSpecies()
+                .withDistribution(3, 2, 0, 1)
+                .build();
+        
+        actual = population.deepCopy();
+        final Action action = new AddSpecie();
+        
+        assertThat("illegal addition of specie", actual.allows(action), is(false));   
     }
 
     // Getters test
@@ -205,7 +202,7 @@ public abstract class PopulationTest extends TestCase {
     public void testGetPercentagePerSpecieOnRegularSpecieBySpecieName() {
         initial = getBuilder().withDistribution(1, 1, 1).build();
         expected = getBuilder().clonedFrom(initial).build();
-        double percentage = initial.getFractionIn("sp. #2");
+        double percentage = initial.getFractionIn(2);
         assertEquals(initial, expected);
         assertEquals(1D / 3D, percentage, 1e-9);
     }
@@ -281,6 +278,20 @@ public abstract class PopulationTest extends TestCase {
         actual = initial.shiftNumberOfIndividualsIn("s877", 1);
     }
 
+    @Test
+    public void testAddSpecieWithoutName() {
+        initial = getBuilder()
+                .withDistribution(1, 2, 3)
+                .build();
+        actual = initial.addSpecie(); 
+        
+        expected = getBuilder()
+                .withDistribution(1, 2, 3, 0)
+                .build();
+        
+        assertThat("default name", actual, is(equalTo(expected)));
+    }
+    
     @Test
     public void testAddSpecie() {
         initial = getBuilder()

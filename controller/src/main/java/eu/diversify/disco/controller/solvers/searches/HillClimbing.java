@@ -19,7 +19,6 @@
  */
 package eu.diversify.disco.controller.solvers.searches;
 
-import eu.diversify.disco.controller.exploration.ExplorationStrategy;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.actions.Action;
 
@@ -27,9 +26,6 @@ public class HillClimbing extends SearchStrategy {
 
     public static final int DEFAULT_SCALE_FACTOR = 1;
     
-    public HillClimbing(ExplorationStrategy finder) {
-        super(finder);
-    }
     
     @Override
     public boolean hasMoreImprovement() {
@@ -39,7 +35,7 @@ public class HillClimbing extends SearchStrategy {
     @Override
     protected void findImprovement() {
         Solution best = getCurrentSolution();
-        for (Action action: getFinder().search(getCurrentSolution(), getScaleFactor())) {
+        for (Action action: getCurrentSolution().allLegalActions(getScaleFactor())) {
             Solution candidate = getCurrentSolution().refineWith(action);
             best = candidate.orIfStrictlyBetter(best);
         }

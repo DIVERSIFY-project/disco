@@ -15,40 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
@@ -68,15 +34,12 @@ import org.junit.runners.JUnit4;
 
 /**
  * General set of test which should work for each controller
- *
- * @author Frank Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public abstract class SolverTest extends TestCase {
+
     public static final double MAX_NORMALIZED_DIVERSITY = 1D;
     public static final double MIN_NORMALIZED_DIVERSITY = 0D;
-
     final Mockery context;
 
     public SolverTest() {
@@ -96,16 +59,20 @@ public abstract class SolverTest extends TestCase {
     public void testMinimizeDiversity() {
         IterativeSearch controller = factory();
 
-        Population population = aPopulation().withDistribution(5, 5).build();
+        Population population = aPopulation()
+                .withDistribution(5, 5)
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
+                .build();
 
         final Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withReferenceDiversity(MIN_NORMALIZED_DIVERSITY)
                 .withDiversityMetric(new TrueDiversity().normalise())
                 .build();
-        
+
         Solution result = controller.solve(problem);
-        
+
         assertEquals(
                 "Illegal update of the population size",
                 population.getTotalNumberOfIndividuals(),
@@ -137,15 +104,18 @@ public abstract class SolverTest extends TestCase {
     public void testMaximizeDiversity() {
         IterativeSearch controller = factory();
 
-        Population population = aPopulation().withDistribution(20, 0).build();
-
+        Population population = aPopulation()
+                .withDistribution(20, 0)
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
+                .build();
 
         final Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withReferenceDiversity(MAX_NORMALIZED_DIVERSITY)
                 .withDiversityMetric(new TrueDiversity().normalise())
                 .build();
-        
+
         Solution result = controller.solve(problem);
 
         assertEquals(
@@ -175,6 +145,8 @@ public abstract class SolverTest extends TestCase {
     public void testNotificationOfIntermediateSolutions() {
         Population population = aPopulation()
                 .withDistribution(1, 1, 12)
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
                 .build();
 
         Problem problem = aProblem()
@@ -189,7 +161,7 @@ public abstract class SolverTest extends TestCase {
         context.checking(new Expectations() {
             {
                 atLeast(1).of(listener).onIntermediateSolution(with(aNonNull(Solution.class)));
-                exactly(1).of(listener).onFinalSolution(with(aNonNull(Solution.class))); 
+                exactly(1).of(listener).onFinalSolution(with(aNonNull(Solution.class)));
             }
         });
 

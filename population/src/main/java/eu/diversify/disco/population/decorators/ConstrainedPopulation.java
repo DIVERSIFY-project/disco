@@ -24,6 +24,7 @@ import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.constraints.Constraint;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Attach a set of constraint to the given population, so as to limit the
@@ -38,6 +39,7 @@ public class ConstrainedPopulation extends AbstractPopulationDecorator {
         this.constraints = new ArrayList<Constraint>(constraints);
     }
     
+    @Override
     public boolean allows(Action action) {
         boolean supported = true;
         for (Constraint c: constraints) {
@@ -45,5 +47,25 @@ public class ConstrainedPopulation extends AbstractPopulationDecorator {
         }
         return supported;
     }
+
+    @Override
+    public List<Action> allLegalActions(int scaleFactor) {
+        final ArrayList<Action> legalActions = new ArrayList<Action>();
+        for(Action action: super.allLegalActions(scaleFactor)) {
+            if (allows(action)) {
+                legalActions.add(action);
+            }
+        }
+        return legalActions;
+    }
+
+    @Override
+    public Population deepCopy() {
+        return new ConstrainedPopulation(getDelegate().deepCopy(), constraints);
+    }
+    
+    
+    
+   
             
 }

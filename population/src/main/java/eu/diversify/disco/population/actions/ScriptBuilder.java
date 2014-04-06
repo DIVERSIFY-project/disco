@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 package eu.diversify.disco.population.actions;
 
 import java.util.ArrayList;
@@ -39,6 +37,11 @@ public class ScriptBuilder {
 
     public ScriptBuilder shift(int specieIndex, int offset) {
         actions.add(new ShiftNumberOfIndividualsIn(specieIndex, offset));
+        return this;
+    }
+
+    public ScriptBuilder addSpecie() {
+        actions.add(new AddSpecie());
         return this;
     }
 

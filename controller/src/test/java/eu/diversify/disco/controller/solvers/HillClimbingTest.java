@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.controller.solvers;
 
-import eu.diversify.disco.controller.exploration.IndividualPermutationExplorer;
 import eu.diversify.disco.controller.solvers.searches.HillClimbing;
 import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import org.junit.runner.RunWith;
@@ -30,7 +28,6 @@ public class HillClimbingTest extends SolverTest {
 
     @Override
     public IterativeSearch factory() {
-        return new IterativeSearch(new HillClimbing(new IndividualPermutationExplorer()));
+        return new IterativeSearch(new HillClimbing());
     }
-    
 }

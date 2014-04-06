@@ -84,7 +84,8 @@ public class ShiftNumberOfIndividualsIn extends SpecieAccess {
 
     @Override
     public String toString() {
-        return getSpecieName() + " += " + offset;
+        String operator = (offset < 0) ? " - " : " + " ; 
+        return getSpecieName() + operator + Math.abs(offset);
     }
 
     @Override

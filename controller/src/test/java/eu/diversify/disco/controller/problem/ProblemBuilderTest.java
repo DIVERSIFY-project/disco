@@ -74,7 +74,7 @@ public class ProblemBuilderTest extends TestCase {
         
         final ShiftNumberOfIndividualsIn shiftNumberOfIndividualsIn = new ShiftNumberOfIndividualsIn(1, +3);
         
-        assertThat("legal action", problem.isLegal(shiftNumberOfIndividualsIn));
+        assertThat("legal action", !problem.isLegal(shiftNumberOfIndividualsIn));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ProblemBuilderTest extends TestCase {
  
         final AddSpecie addSpecie = new AddSpecie("Elephants");
  
-        assertThat("legal action", problem.isLegal(addSpecie));
+        assertThat("legal action", !problem.isLegal(addSpecie));
         
      }
 }

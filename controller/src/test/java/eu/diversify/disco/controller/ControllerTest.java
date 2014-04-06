@@ -48,6 +48,8 @@ public class ControllerTest extends TestCase {
         
         final Population input = aPopulation()
                 .withDistribution(5, 4, 3, 2, 1)
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
                 .build();
         
         final ProblemBuilder builder = aProblem()

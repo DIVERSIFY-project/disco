@@ -19,7 +19,6 @@
  */
 package eu.diversify.disco.controller.solvers.searches;
 
-import eu.diversify.disco.controller.exploration.ExplorationStrategy;
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.population.actions.Action;
@@ -32,8 +31,7 @@ public class BreadthFirst extends SearchStrategy {
     private final HashSet<Solution> explored;
     private final HashSet<Solution> frontier;
 
-    public BreadthFirst(ExplorationStrategy finder) {
-        super(finder);
+    public BreadthFirst() {
         this.frontier = new HashSet<Solution>();
         this.explored = new HashSet<Solution>();
     }
@@ -63,7 +61,7 @@ public class BreadthFirst extends SearchStrategy {
     protected void findImprovement() {
         final HashSet<Solution> newFrontier = new HashSet<Solution>();
         for (Solution from : frontier) {
-            for (Action action : getFinder().search(from, 1)) {
+            for (Action action : from.allLegalActions(1)) {
                 Solution candidate = from.refineWith(action);
                 if (neverExplored(candidate) && candidate.isStrictlyBetterThan(from)) {
                     next = candidate.orIfStrictlyBetter(next);
