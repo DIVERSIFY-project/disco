@@ -15,6 +15,7 @@
   <modules>
     <module>singlerun</module>
     <module>scalability</module>
+    <module>decentralised</module>
   </modules>
   
 </project>

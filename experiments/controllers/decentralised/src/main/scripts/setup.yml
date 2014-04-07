@@ -1,0 +1,11 @@
+#
+# Configuration of the scalability experiment
+# Pleaase note that some configuration may lead to extended running time 
+# (i.e., hours)
+#
+
+# Set the list of possible control strategies
+strategies:
+  - Hill Climbing
+  - Adaptive Hill Climbing
+

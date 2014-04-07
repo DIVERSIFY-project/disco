@@ -18,13 +18,21 @@
 /*
  */
 
-package eu.diversify.disco.experiments.testing;
+package eu.diversify.disco.experiments.controllers.decentralised;
 
-/**
- *
- * @author Franck Chauvel
- * @since 0.1
- */
-public class FileBuilder {
+import eu.diversify.disco.experiments.testing.Tester;
+import java.io.IOException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+
+@RunWith(JUnit4.class)
+public class AcceptanceIT {
+    
+    @Test
+    public void acceptanceTest() throws IOException, InterruptedException {
+        new Tester("decentralised", "diversity.csv", "population.csv", "decentralized.pdf").test();
+    }
 
 }

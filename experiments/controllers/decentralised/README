@@ -1,0 +1,40 @@
+
+DISCO v0.1
+Decentralised Control Experiment
+
+
+THE DECENTRALISED CONTROL EXPERIMENT
+------------------------------------
+
+This is one of the DIVERSIFY experiment, namely the decentralised
+control experiment. It aims at evaluating novel decentralised distributed 
+control algorithms.
+
+Contact: 
+  Franck Chauvel
+  SINTEF ICT
+  franck.chauvel@sintef.no
+
+
+RUNNING THE EXPERIMENT:
+-----------------------
+
+There are two pieces of software which shall be installed before running this
+experiment:
+
+  (a) Java Runtime Environment (JRE), in version 1.7 or higher
+  (b) R, in version 2.13 or higher
+
+The parameters of this experiment can be changed by updating the file 'setup.yml'. 
+Please note that some configurations may lead to long execution times.
+
+The experiment is run using the following command:   
+
+    On Windows:
+    C:\> java -jar decentralised-final.jar  
+   
+    On Unix/Linux:
+    $> java -jar decentralised-final.jar  
+
+PDF file, containing visualisations of the results will be generated and 
+available in the directory where the experiment is run.

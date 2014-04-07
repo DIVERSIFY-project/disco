@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.experiments.controllers.scalability;
+/*
+ */
+
+package eu.diversify.disco.experiments.controllers.decentralised;
 
 import eu.diversify.disco.experiments.commons.Runner;
 
-/**
- * Run the various controllers and measure the number of step they use to
- * diversify a given population.
- */
+
 public class Launcher {
 
     /**
@@ -30,6 +30,6 @@ public class Launcher {
      */
     public static void main(String[] args) {
         Runner runner = new Runner();
-        runner.run(ScalabilitySetup.class, args);
+        runner.run(DecentralisedSetup.class, args);
     }
 }
