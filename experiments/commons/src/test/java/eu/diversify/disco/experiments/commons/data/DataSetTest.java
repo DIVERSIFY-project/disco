@@ -34,10 +34,6 @@
  */
 package eu.diversify.disco.experiments.commons.data;
 
-import eu.diversify.disco.experiments.commons.data.Field;
-import eu.diversify.disco.experiments.commons.data.DataSet;
-import eu.diversify.disco.experiments.commons.data.Data;
-import eu.diversify.disco.experiments.commons.data.Schema;
 import java.util.Arrays;
 import java.util.Random;
 import junit.framework.TestCase;
@@ -47,6 +43,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import static eu.diversify.disco.experiments.commons.data.SchemaBuilder.*;
 
 /**
  * Test the behaviour of the result set
@@ -138,17 +136,22 @@ public class DataSetTest extends TestCase {
     public void testMainUsage() {
         final Random generator = new Random();
         
-        Schema schema = new Schema(Arrays.asList(new Field[]{time, random, checked, sparse}), "n/a");
+        Schema schema = aSchema()
+                .with(aField().named("time").ofType(INTEGER))
+                .with(aField().named("random").ofType(DOUBLE))
+                .with(aField().named("checked").ofType(BOOLEAN))
+                .with(aField().named("sparse").ofType(STRING))
+                .build();
 
-        DataSet dataset = new DataSet(schema);
+        DataSet dataset = schema.newDataSet();
 
         for (int i = 0; i < 100; i++) {
-            Data data = schema.newData();
-            data.set(time, i);
-            data.set(random, generator.nextGaussian());
-            data.set(checked, generator.nextBoolean());
+            Data data = dataset.newData();
+            data.set("time", i); 
+            data.set("random", generator.nextGaussian());
+            data.set("checked", generator.nextBoolean());
             if (i % 3 == 0) {
-                data.set(sparse, "coucou");
+                data.set("sparse", "coucou"); 
             }
             dataset.add(data);
         }

@@ -32,6 +32,12 @@ import java.util.ArrayList;
  * The decentralised experiment
  */
 public class DecentralisedExperiment implements Experiment {
+    public static final String FIELD_RUN = "run";
+    public static final String FIELD_STEP = "step";
+    public static final String FIELD_ERROR = "error";
+    public static final String FIELD_X = "x";
+    public static final String FIELD_Y = "y";
+    public static final String FIELD_SPECIE = "specie";
 
     private final Schema diversitySchema;
     private final Schema populationSchema;
@@ -42,6 +48,7 @@ public class DecentralisedExperiment implements Experiment {
                 .with(aField().named("step").ofType(INTEGER))
                 .with(aField().named("error").ofType(DOUBLE))
                 .build();
+        
         populationSchema = aSchema()
                 .with(aField().named("run").ofType(INTEGER))
                 .with(aField().named("step").ofType(INTEGER))
@@ -54,7 +61,7 @@ public class DecentralisedExperiment implements Experiment {
     @Override
     public List<DataSet> run() {
         final ArrayList<DataSet> results = new ArrayList<DataSet>();
-        final DataSet diversity = new DataSet(diversitySchema, "diversity");
+        final DataSet diversity = diversitySchema.newDataSet("diversity");
         
         addDiversityRecord(diversity, 1, 1, 0.50);
         addDiversityRecord(diversity, 1, 2, 0.25);
@@ -63,8 +70,7 @@ public class DecentralisedExperiment implements Experiment {
         
         results.add(diversity);
 
-        final DataSet population = new DataSet(populationSchema, "population");
-        Data d1 = populationSchema.newData();
+        final DataSet population = populationSchema.newDataSet("population");
         addPopulationRecord(population, 1, 1, 10.0, 15.0, 1);
         addPopulationRecord(population, 1, 1, 12.0, 12.0, 2);
         addPopulationRecord(population, 1, 2, 10.0, 14.0, 2);
@@ -78,20 +84,20 @@ public class DecentralisedExperiment implements Experiment {
     }
 
     private void addDiversityRecord(DataSet diversity, int run, int step, double error) {
-        Data dd = diversity.getSchema().newData();
-        dd.set(diversity.getSchema().getField("run"), run);
-        dd.set(diversity.getSchema().getField("step"), step);
-        dd.set(diversity.getSchema().getField("error"), error);
-        diversity.add(dd);
+        Data data = diversity.newData();
+        data.set(FIELD_RUN, run);
+        data.set(FIELD_STEP, step);
+        data.set(FIELD_ERROR, error);
+        diversity.add(data);
     }
 
     private void addPopulationRecord(final DataSet population, int run, int step, double x, double y, int specie) {
-        Data d1 = population.getSchema().newData();
-        d1.set(population.getSchema().getField("run"), run);
-        d1.set(population.getSchema().getField("step"), step);
-        d1.set(population.getSchema().getField("x"), x);
-        d1.set(population.getSchema().getField("y"), y);
-        d1.set(population.getSchema().getField("specie"), specie);
-        population.add(d1);
+        Data data = population.newData();
+        data.set(FIELD_RUN, run);
+        data.set(FIELD_STEP, step);
+        data.set(FIELD_X, x);
+        data.set(FIELD_Y, y);
+        data.set(FIELD_SPECIE, specie);
+        population.add(data);
     }
 }

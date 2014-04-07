@@ -56,6 +56,11 @@ public class DataSet {
         this.schema = schema;
         this.data = new ArrayList<Data>();
     }
+    
+    
+    public Data newData() {
+        return schema.newData();
+    }
 
     /**
      * @param index index of the needed data point

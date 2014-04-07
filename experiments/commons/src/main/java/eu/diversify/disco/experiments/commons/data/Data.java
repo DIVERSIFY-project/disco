@@ -15,13 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.commons.data;
 
 import java.util.HashMap;
 
 /**
- * Represent a single data point (aka an observation) which can be pushed into
- * a data set.
+ * Represent a single data point (aka an observation) which can be pushed into a
+ * data set.
  *
  * @author Franck Chauvel
  * @since 0.1
@@ -69,6 +86,14 @@ public class Data {
         this.values.put(field, value);
     }
 
+    public void set(String fieldName, Object value) {
+        final Field field = schema.getField(fieldName);
+        if (field == null) {
+            throw new IllegalArgumentException("Unknown field '" + fieldName + "'");
+        }
+        set(field, value);
+    }
+
     /**
      * @param field the field of interest
      * @return the value contained in the selected field
@@ -79,6 +104,14 @@ public class Data {
         }
         return this.values.get(field);
     }
+    
+    public Object get(String fieldName) {
+       final Field field = schema.getField(fieldName);
+        if (field == null) {
+            throw new IllegalArgumentException("Unknown field '" + fieldName + "'");
+        }
+        return get(field);
+    }
 
     /**
      * @param field the field whose value may be missing
@@ -87,5 +120,4 @@ public class Data {
     public boolean isMissing(Field field) {
         return this.values.get(field) == null;
     }
-
 }
