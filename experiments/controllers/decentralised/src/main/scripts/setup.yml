@@ -4,8 +4,29 @@
 # (i.e., hours)
 #
 
-# Set the list of possible control strategies
-strategies:
-  - Hill Climbing
-  - Adaptive Hill Climbing
+# The diversity metric of interest
+diversityMetric: True Diversity (theta = 2)
+
+# The mutation rate (the probability that a given individual mutate at each step
+mutationRate: 0.3
+
+# The world is is a square plan, define the length of the side of the plan
+worldSize: 100
+
+# Neighbourhood size (as a percentage of the world size
+neighbourhoodRatio: 0.1
+
+# The number of species available in the population
+speciesCount: 10
+
+# The number of individual in the population
+populationSize: 100
+
+# The number of run (for statistical evidence)
+runCount: 10
+
+# The number of steps in each run
+stepCount: 10
+
+
 
