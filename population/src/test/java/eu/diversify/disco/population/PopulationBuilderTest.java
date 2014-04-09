@@ -44,9 +44,11 @@ public class PopulationBuilderTest extends TestCase {
     @Test
     public void testBuilderWithoutMemory() {
         Population first = aPopulation().withDistribution(1, 2, 3, 4).build();
+        
         Population second = aPopulation().build();
-        assertNotSame(first, second);
-        assertTrue(second.isEmpty());
+        
+        assertThat("not the same", first, is(not(sameInstance(second))));
+        assertThat("default population", second.isEmpty());
     }
     
     @Test

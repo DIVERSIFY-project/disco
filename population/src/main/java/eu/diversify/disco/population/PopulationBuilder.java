@@ -70,6 +70,8 @@ public class PopulationBuilder {
     }
 
     private void setDefaultValues() {
+        distribution.clear();
+        speciesNames.clear();
         immutable = MUTABLE;
         fixedNumberOfSpecies = FREE;
         fixedNumberOfIndividuals = FREE;
