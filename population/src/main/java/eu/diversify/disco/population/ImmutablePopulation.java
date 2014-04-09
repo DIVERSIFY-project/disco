@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.diversify.disco.population.decorators;
+package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.Population;
 import java.util.List;

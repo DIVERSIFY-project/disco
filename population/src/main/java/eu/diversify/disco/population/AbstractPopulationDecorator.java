@@ -16,7 +16,7 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.population.decorators;
+package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.actions.Action;

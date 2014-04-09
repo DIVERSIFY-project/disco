@@ -34,7 +34,7 @@
  */
 /*
  */
-package eu.diversify.disco.population.decorators;
+package eu.diversify.disco.population;
 
 import eu.diversify.disco.population.PopulationBuilder;
 import static eu.diversify.disco.population.PopulationBuilder.*;

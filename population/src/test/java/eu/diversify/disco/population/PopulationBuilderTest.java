@@ -25,6 +25,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static eu.diversify.disco.population.PopulationBuilder.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Build another of various configurations
@@ -43,6 +48,19 @@ public class PopulationBuilderTest extends TestCase {
         assertNotSame(first, second);
         assertTrue(second.isEmpty());
     }
+    
+    @Test
+    public void testFromMap() {    
+        final HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put("s1", 2);
+        map.put("s2", 3);
+        map.put("s3", 4);
+        
+        Map<String, Integer> out = aPopulation().fromMap(map).build().toMap();  
+        
+        assertThat("same entries", out.entrySet(), is(equalTo(map.entrySet())));
+    }
+ 
 
     @Test(expected = IllegalArgumentException.class)
     public void testMissingSpeciesNames() {
@@ -163,13 +181,6 @@ public class PopulationBuilderTest extends TestCase {
     public void testEqualsWithImmutableEquivalent() {
         Population p1 = aPopulation().withDistribution(1, 2, 3).build();
         Population p2 = aPopulation().withDistribution(1, 2, 3).immutable().build();
-        assertEquals(p1, p2);
-    }
-
-    @Test
-    public void testEqualsWithDynamicEquivalent() {
-        Population p1 = aPopulation().withDistribution(1, 2, 3).build();
-        Population p2 = aPopulation().withDistribution(1, 2, 3).dynamic().build();
         assertEquals(p1, p2);
     }
 }

@@ -20,7 +20,7 @@ package eu.diversify.disco.controller.problem;
 import eu.diversify.disco.population.Population;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
-import eu.diversify.disco.population.decorators.ImmutablePopulation;
+import eu.diversify.disco.population.ImmutablePopulation;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 
 /**
