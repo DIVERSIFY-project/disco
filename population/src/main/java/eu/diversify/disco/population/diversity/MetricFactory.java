@@ -15,10 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population.diversity;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,76 +42,14 @@ import java.util.regex.Pattern;
 
 /**
  * Metric factory, which builds diversity metric from a string
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class MetricFactory {
 
-    private final HashMap<String, String> metrics;
-
     public MetricFactory() {
-        this.metrics = new HashMap<String, String>();
-        this.metrics.put("GINI SIMPSON INDEX", "eu.diversify.disco.population.diversity.GiniSimpsonIndex");
-        this.metrics.put("SHANNON INDEX", "eu.diversify.disco.population.diversity.ShannonIndex");
-        this.metrics.put("TRUE DIVERSITY", "eu.diversify.disco.population.diversity.TrueDiversity");
-        this.metrics.put("STANDARD DEVIATION", "eu.diversify.disco.population.diversity.StandardDeviation");
     }
 
-    /**
-     * Instantiate a given description from a textual description
-     *
-     * @param text the textual description of the metric to instantiate
-     * @return the related diversity metric
-     */
-    public AbstractDiversityMetric instantiate(String text) {
-        AbstractDiversityMetric result = null;
-        Parser parser = new Parser();
-        Description description = parser.parse(text);
-        final String escaped = description.getName().trim().replaceAll("\\s+", " ").toUpperCase();
-        final String className = this.metrics.get(escaped);
-        if (className == null) {
-            throw new IllegalArgumentException("Unknown metric name '" + description.getName() + "'");
-        }
-
-        try {
-            Constructor<?>[] constructors = Class.forName(className).getConstructors();
-
-            // Search for the constructor with the good number of parameters
-            int index = 0;
-            Constructor<?> selected = null;
-            while (index < constructors.length && selected == null) {
-                if (description.getParameters().size() == constructors[index].getParameterTypes().length) {
-                    selected = constructors[index];
-                }
-                index++;
-            }
-
-            if (selected == null) {
-                throw new IllegalArgumentException("Unable to instantiate the '" + description.getName() + "' with " + description.getParameters().size() + " parameters ");
-            }
-
-            Object[] actuals = new Object[selected.getParameterTypes().length];
-            index = 0;
-            for (String key : description.getParameters().keySet()) {
-                actuals[index] = description.getParameters().get(key);
-            }
-            result = (AbstractDiversityMetric) selected.newInstance(actuals);
-
-        } catch (ClassNotFoundException ex) {
-            throw new IllegalArgumentException(ex);
-
-        } catch (IllegalAccessException ex) {
-            throw new IllegalArgumentException(ex);
-
-        } catch (InstantiationException ex) {
-            throw new IllegalArgumentException(ex);
-
-        } catch (InvocationTargetException ex) {
-            throw new IllegalArgumentException(ex);
-        }
-
-        return result;
+    public DiversityMetric instantiate(String text) {
+        return new Parser().parse(text).make();
     }
 
     /**
@@ -104,6 +57,13 @@ public class MetricFactory {
      */
     static class Description {
 
+        private static interface Factory {
+
+            public DiversityMetric make();
+        }
+        
+        public static final String MISSING_NAME = "No Name";
+        private final HashMap<String, Factory> factories;
         private String name;
         private final HashMap<String, Double> parameters;
 
@@ -111,15 +71,29 @@ public class MetricFactory {
          * Create a new description of a metric
          */
         public Description() {
-            this.name = "No Name";
+            factories = new HashMap<String, Factory>();
+            addfactoryForTrueDiversity();
+            addFactoryForShannonIndex();
+            addFactoryForGiniSimpsonIndex();
+            addFactoryForStandardDeviation();
+            this.name = MISSING_NAME;
             this.parameters = new HashMap<String, Double>();
         }
 
-        /**
-         * @return the name of the metric of interest
-         */
+        public DiversityMetric make() {
+            if (factories.containsKey(escapedName())) {
+                return factories.get(escapedName()).make();
+            }
+            final String message = String.format("Unknown diversity metric '%s'", escapedName());
+            throw new IllegalArgumentException(message);
+        }
+
         public String getName() {
             return this.name;
+        }
+
+        public String escapedName() {
+            return getName().trim().replaceAll("\\s+", " ").toUpperCase();
         }
 
         /**
@@ -203,14 +177,47 @@ public class MetricFactory {
             builder.append(")");
             return builder.toString();
         }
+
+        private void addfactoryForTrueDiversity() {
+            factories.put("TRUE DIVERSITY", new Factory() {
+                @Override
+                public DiversityMetric make() {
+                    return new TrueDiversity(parameters.get("theta"));
+                }
+            });
+        }
+
+        private void addFactoryForShannonIndex() {
+            factories.put("SHANNON INDEX", new Factory() {
+                @Override
+                public DiversityMetric make() {
+                    return new ShannonIndex();
+                }
+            });
+        }
+
+        private void addFactoryForGiniSimpsonIndex() {
+            factories.put("GINI SIMPSON INDEX", new Factory() {
+                @Override
+                public DiversityMetric make() {
+                    return new GiniSimpsonIndex();
+                }
+            });
+        }
+
+        private void addFactoryForStandardDeviation() {
+            factories.put("STANDARD DEVIATION", new Factory() {
+                @Override
+                public DiversityMetric make() {
+                    return new StandardDeviation();
+                }
+            });
+        }
     }
 
     /**
      * A simple parser which builds a description object from a textual
      * description
-     *
-     * @author Franck Chauvel
-     * @since 0.1
      */
     static class Parser {
 
@@ -228,11 +235,13 @@ public class MetricFactory {
             if (matcher.matches()) {
                 if (matcher.group(4) != null) {
                     result.setName(matcher.group(4).trim());
-                } else {
+                }
+                else {
                     result.setName(matcher.group(2).trim());
                     result.setParameters(parseParameters(matcher.group(3).trim()));
                 }
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException("Illformed description");
             }
             return result;

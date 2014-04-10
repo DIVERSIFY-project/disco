@@ -42,7 +42,7 @@ public class MetricFactoryTest extends TestCase {
     @Test
     public void testNominalUsage() {
         MetricFactory factory = new MetricFactory();
-        AbstractDiversityMetric m1 = factory.instantiate("shannon index");
+        DiversityMetric m1 = factory.instantiate("shannon index");
         assertFalse(
                 "instantiation returns null",
                 m1 == null);
@@ -50,7 +50,7 @@ public class MetricFactoryTest extends TestCase {
                 "instantiation builds the wrong class",
                 m1 instanceof ShannonIndex);
 
-        AbstractDiversityMetric m2 = factory.instantiate("true Diversity (theta = 2)");
+        DiversityMetric m2 = factory.instantiate("true Diversity (theta = 2)");
         assertFalse(
                 "instantiation returns null",
                 m2 == null);
