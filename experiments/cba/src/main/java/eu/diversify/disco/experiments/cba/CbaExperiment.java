@@ -68,8 +68,7 @@ public class CbaExperiment implements Experiment {
 
     public CbaExperiment(CbaSetup setup) {
         this.setup = setup;
-        MetricFactory metrics = new MetricFactory();
-        diversity = new DiversityCalculator(metrics.instantiate(setup.getDiversityMetric()));
+        diversity = new DiversityCalculator(MetricFactory.create(setup.getDiversityMetric()));
         cost = new CostAsSize();
         robustness = new DummyRobustnessCalculator();
     }

@@ -155,7 +155,6 @@ public class DecentralisedSetup implements Setup {
         this.worldSize = worldSize;
     }
     
-    
     public String getDiversityMetric() {
         return diversityMetric;
     }
@@ -178,6 +177,6 @@ public class DecentralisedSetup implements Setup {
     }
 
     private DiversityMetric getMetric() {
-        return new MetricFactory().instantiate(getDiversityMetric());
+        return MetricFactory.create(getDiversityMetric());
     }
 }

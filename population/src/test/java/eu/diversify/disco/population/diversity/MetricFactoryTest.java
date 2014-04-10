@@ -41,8 +41,7 @@ public class MetricFactoryTest extends TestCase {
 
     @Test
     public void testNominalUsage() {
-        MetricFactory factory = new MetricFactory();
-        DiversityMetric m1 = factory.instantiate("shannon index");
+        final DiversityMetric m1 = MetricFactory.create("shannon index");
         assertFalse(
                 "instantiation returns null",
                 m1 == null);
@@ -50,7 +49,7 @@ public class MetricFactoryTest extends TestCase {
                 "instantiation builds the wrong class",
                 m1 instanceof ShannonIndex);
 
-        DiversityMetric m2 = factory.instantiate("true Diversity (theta = 2)");
+        DiversityMetric m2 = MetricFactory.create("true Diversity (theta = 2)");
         assertFalse(
                 "instantiation returns null",
                 m2 == null);
@@ -67,7 +66,7 @@ public class MetricFactoryTest extends TestCase {
     @Test
     public void testParserNoParameterWithLongNames() {
         String text = "yyy yy y yyy";
-        MetricFactory.Description expected = new MetricFactory.Description();
+        MetricFactory expected = new MetricFactory();
         expected.setName("yyy yy y yyy");
         testParser(text, expected);
     }
@@ -75,7 +74,7 @@ public class MetricFactoryTest extends TestCase {
     @Test
     public void testParserNoParameter() {
         String text = "yyy";
-        MetricFactory.Description expected = new MetricFactory.Description();
+        MetricFactory expected = new MetricFactory();
         expected.setName("yyy");
         testParser(text, expected);
     }
@@ -83,7 +82,7 @@ public class MetricFactoryTest extends TestCase {
     @Test
     public void testParserOneParameter() {
         String text = "yyy(p1 = 23.5)";
-        MetricFactory.Description expected = new MetricFactory.Description();
+        MetricFactory expected = new MetricFactory();
         expected.setName("yyy");
         expected.setParameter("p1", 23.5);
         testParser(text, expected);
@@ -92,7 +91,7 @@ public class MetricFactoryTest extends TestCase {
     @Test
     public void testParserManyParameters() {
         String text = "yyy(p1 = 23.5, p2 = 6, p3 = 77)";
-        MetricFactory.Description expected = new MetricFactory.Description();
+        MetricFactory expected = new MetricFactory();
         expected.setName("yyy");
         expected.setParameter("p1", 23.5);
         expected.setParameter("p2", 6.);
@@ -106,9 +105,9 @@ public class MetricFactoryTest extends TestCase {
         testParser(text, null);
     }
 
-    private void testParser(String text, MetricFactory.Description expected) {
+    private void testParser(String text, MetricFactory expected) {
         MetricFactory.Parser parser = new MetricFactory.Parser();
-        MetricFactory.Description actual = parser.parse(text);
+        MetricFactory actual = parser.parse(text);
         assertEquals(
                 "Wrong description ",
                 actual,
@@ -117,7 +116,7 @@ public class MetricFactoryTest extends TestCase {
 
     @Test
     public void testDescriptionEquality() {
-        MetricFactory.Description d1 = new MetricFactory.Description();
+        MetricFactory d1 = new MetricFactory();
         d1.setName("yyy");
         d1.setParameter("p1", 23.5);
         d1.setParameter("p2", 6.);
@@ -125,7 +124,7 @@ public class MetricFactoryTest extends TestCase {
 
         assertTrue("Wrong description equality", d1.equals(d1));
 
-        MetricFactory.Description d2 = new MetricFactory.Description();
+        MetricFactory d2 = new MetricFactory();
         d2.setName("yyy");
         d2.setParameter("p1", 23.5);
         d2.setParameter("p2", 6.);
@@ -134,14 +133,14 @@ public class MetricFactoryTest extends TestCase {
         assertTrue("Wrong description equality", d1.equals(d2));
 
         // A parameter is missing
-        MetricFactory.Description d3 = new MetricFactory.Description();
+        MetricFactory d3 = new MetricFactory();
         d3.setName("yyy");
         d3.setParameter("p1", 23.5);
         d3.setParameter("p2", 6.);
         assertFalse("Wrong description equality", d1.equals(d3));
 
         // A parameter value is different
-        MetricFactory.Description d4 = new MetricFactory.Description();
+        MetricFactory d4 = new MetricFactory();
         d4.setName("yyy");
         d4.setParameter("p1", 23.5);
         d4.setParameter("p2", 6.);
@@ -149,7 +148,7 @@ public class MetricFactoryTest extends TestCase {
         assertFalse("Wrong description equality", d1.equals(d4));
 
         // A parameter name is different
-        MetricFactory.Description d5 = new MetricFactory.Description();
+        MetricFactory d5 = new MetricFactory();
         d5.setName("yyy");
         d5.setParameter("p1", 23.5);
         d5.setParameter("p2", 6.);
@@ -157,7 +156,7 @@ public class MetricFactoryTest extends TestCase {
         assertFalse("Wrong description equality", d1.equals(d5));
 
         // the name of the metric is different
-        MetricFactory.Description d6 = new MetricFactory.Description();
+        MetricFactory d6 = new MetricFactory();
         d6.setName("xxx");
         d6.setParameter("p1", 23.5);
         d6.setParameter("p2", 6.);

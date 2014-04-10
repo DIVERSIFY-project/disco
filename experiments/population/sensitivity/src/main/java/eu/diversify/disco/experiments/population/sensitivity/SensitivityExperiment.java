@@ -66,9 +66,8 @@ public class SensitivityExperiment implements Experiment {
         this.size = setup.getSize();
         this.metrics = new HashMap<String, DiversityMetric>();
 
-        MetricFactory factory = new MetricFactory();
         for (String metric : setup.getMetrics()) {
-            this.metrics.put(metric, factory.instantiate(metric));
+            this.metrics.put(metric, MetricFactory.create(metric));
         }
     }
 
