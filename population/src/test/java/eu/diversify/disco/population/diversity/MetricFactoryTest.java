@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population.diversity;
 
 import junit.framework.TestCase;
@@ -27,11 +44,13 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 /**
  * Test the behaviour of the MetricFactory
  *
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public class MetricFactoryTest extends TestCase {
@@ -40,27 +59,33 @@ public class MetricFactoryTest extends TestCase {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testNominalUsage() {
-        final DiversityMetric m1 = MetricFactory.create("shannon index");
-        assertFalse(
-                "instantiation returns null",
-                m1 == null);
-        assertTrue(
-                "instantiation builds the wrong class",
-                m1 instanceof ShannonIndex);
+    public void testShannonIndex() {
+        final DiversityMetric m = MetricFactory.create("shannon index");
+        assertThat("proper class", m, is(instanceOf(ShannonIndex.class)));
+    }
 
-        DiversityMetric m2 = MetricFactory.create("true Diversity (theta = 2)");
-        assertFalse(
-                "instantiation returns null",
-                m2 == null);
-        assertTrue(
-                "instantiation builds the wrong class",
-                m2 instanceof TrueDiversity);
-        assertEquals(
-                "wrong parameter values",
-                2.,
-                ((TrueDiversity) m2).getTheta());
+    @Test
+    public void testGiniSimpsonIndex() {
+        final DiversityMetric m = MetricFactory.create("gini simpson index");
+        assertThat("proper class", m, is(instanceOf(GiniSimpsonIndex.class)));
+    }
 
+    @Test
+    public void testTrueDiversityWithoutParameter() {
+        final DiversityMetric m = MetricFactory.create("true diversity");
+        assertThat("proper class", m, is(instanceOf(TrueDiversity.class)));
+    }
+
+    @Test
+    public void testTrueDiversityWithParameter() {
+        final DiversityMetric m = MetricFactory.create("true diversity (theta = 2)");
+        assertThat("proper class", m, is(instanceOf(TrueDiversity.class)));
+    }
+
+    @Test
+    public void testStandardDeviation() {
+        final DiversityMetric m = MetricFactory.create("standard deviation");
+        assertThat("proper class", m, is(instanceOf(StandardDeviation.class)));
     }
 
     @Test

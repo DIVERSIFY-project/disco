@@ -21,7 +21,6 @@ package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.Solution;
-import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 
 import eu.diversify.disco.population.Population;
