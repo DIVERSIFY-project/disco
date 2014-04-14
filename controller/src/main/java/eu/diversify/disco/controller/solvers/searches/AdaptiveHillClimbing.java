@@ -32,8 +32,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 package eu.diversify.disco.controller.solvers.searches;
 
 import eu.diversify.disco.controller.problem.Problem;
@@ -43,10 +41,16 @@ public class AdaptiveHillClimbing extends HillClimbing {
 
     public static final int SPEED_FACTOR = 2;
     private static final int MINIMUM_DEPTH = 1;
+    private static final String STRATEGY_NAME = "adaptive hill climbing";
     private int depth;
 
     public AdaptiveHillClimbing() {
         depth = DEFAULT_SCALE_FACTOR;
+    }
+
+    @Override
+    public String getName() {
+        return STRATEGY_NAME;
     }
 
     @Override

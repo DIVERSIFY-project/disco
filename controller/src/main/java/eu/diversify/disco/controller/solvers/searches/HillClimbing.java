@@ -25,6 +25,13 @@ import eu.diversify.disco.population.actions.Action;
 public class HillClimbing extends SearchStrategy {
 
     public static final int DEFAULT_SCALE_FACTOR = 1;
+    private static final String STRATEGY_NAME = "hill climbing";
+
+    @Override
+    public String getName() {
+        return STRATEGY_NAME;
+    }
+    
     
     
     @Override

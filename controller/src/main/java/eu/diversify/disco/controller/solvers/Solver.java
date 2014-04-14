@@ -23,15 +23,17 @@ import eu.diversify.disco.controller.problem.Problem;
 /**
  * General Interface for any kind of diversity controller, including iterative
  * search or analytical solutions.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public interface Solver {
+
+    /**
+     * @return a descriptive name of this solver 
+     */
+    public String getName();
     
     /**
      * Attach the given listener so it receives notification of intermediary solution
-     * @param listener the listener
+     * @param listener the listener to subscribe
      */
     public void subscribe(SolverListener listener);
     

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BreadthFirst extends SearchStrategy {
+    private static final String STRATEGY_NAME = "breadth-first search";
 
     private final HashSet<Solution> explored;
     private final HashSet<Solution> frontier;
@@ -35,6 +36,13 @@ public class BreadthFirst extends SearchStrategy {
         this.frontier = new HashSet<Solution>();
         this.explored = new HashSet<Solution>();
     }
+
+    @Override
+    public String getName() {
+        return STRATEGY_NAME;
+    }
+    
+    
 
     @Override
     public void setUp(Problem problem) {

@@ -30,6 +30,8 @@ public abstract class SearchStrategy {
         this.next = current;
         findImprovement();
     }
+    
+    public abstract String getName();
 
     public final Solution getCurrentSolution() {
         return current;

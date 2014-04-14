@@ -23,11 +23,23 @@ import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+
 @RunWith(JUnit4.class)
 public class HillClimbingTest extends SolverTest {
 
     @Override
-    public IterativeSearch factory() {
+    public IterativeSearch solverUnderTest() {
         return new IterativeSearch(new HillClimbing());
     }
+
+    @Override
+    public void verifySolverName(String solverName) {
+        final String name = solverName.toLowerCase();
+        assertThat("solver name", name, containsString("hill"));
+        assertThat("solver name", name, containsString("climbing"));
+    }
+    
 }

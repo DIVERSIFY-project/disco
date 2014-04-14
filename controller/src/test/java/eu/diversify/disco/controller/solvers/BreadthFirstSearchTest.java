@@ -47,18 +47,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 /**
  * Test the implementation of the Breadth-first search strategy.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public class BreadthFirstSearchTest extends SolverTest {
 
     @Override
-    public IterativeSearch factory() {
+    public IterativeSearch solverUnderTest() {
         return new IterativeSearch(new BreadthFirst());
+    }
+
+    @Override
+    public void verifySolverName(String solverName) {
+        final String name = solverName.toLowerCase();
+        assertThat("solver name", name, containsString("breadth"));
+        assertThat("solver name", name, containsString("first"));
+        assertThat("solver name", name, containsString("search"));
     }
 
     /**
@@ -71,7 +79,7 @@ public class BreadthFirstSearchTest extends SolverTest {
                 .withFixedNumberOfIndividuals()
                 .withFixedNumberOfSpecies()
                 .build();
-        
+
         Problem problem = aProblem()
                 .withInitialPopulation(source)
                 .withDiversityMetric(new NormalisedDiversityMetric(new TrueDiversity()))
