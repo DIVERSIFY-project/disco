@@ -35,25 +35,30 @@
 package eu.diversify.disco.population.diversity;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
 /**
- * Test the behaviour of standard deviation
+ * Test the true diversity used as a diversity metric.
  */
-public class StandardDeviationTest extends DiversityMetricTest {
+@RunWith(JUnit4.class)
+public class TrueDiversityTest extends DiversityMetricTest {
 
     @Override
     public DiversityMetric normalisedMetric() {
-        return new NormalisedDiversityMetric(new StandardDeviation());
+        return new NormalisedDiversityMetric(new TrueDiversity());
     }
 
     @Test
     public void testName() {
-        StandardDeviation sd = new StandardDeviation();
-        final String lowerCase = sd.getName().toLowerCase();
-        assertThat("index name", lowerCase, containsString("standard"));
-        assertThat("index name", lowerCase, containsString("deviation")); 
+        TrueDiversity td = new TrueDiversity(3); 
+        final String lowerCase = td.getName().toLowerCase(); 
+        assertThat("index name", lowerCase, containsString("true"));
+        assertThat("index name", lowerCase, containsString("diversity"));
+        assertThat("index name", lowerCase, containsString("theta"));
+        assertThat("index name", lowerCase, containsString("3"));
     }
 }

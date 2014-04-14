@@ -23,9 +23,6 @@ import eu.diversify.disco.population.Population;
 
 /**
  * A decorator that normalises the metric of interest
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
 public class NormalisedDiversityMetric implements DiversityMetric {
 
@@ -79,6 +76,12 @@ public class NormalisedDiversityMetric implements DiversityMetric {
     public DiversityMetric normalise() {
         return this;
     }
+
+    @Override
+    public String getName() {
+        return "normalised " + delegate.getName();
+    }
+
     
     
 }

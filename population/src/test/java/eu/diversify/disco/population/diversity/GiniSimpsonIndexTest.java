@@ -18,6 +18,11 @@
 
 package eu.diversify.disco.population.diversity;
 
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 
 /**
  * Test the Gini-Simpson index metric
@@ -28,8 +33,16 @@ package eu.diversify.disco.population.diversity;
 public class GiniSimpsonIndexTest extends DiversityMetricTest {
 
     @Override
-    public DiversityMetric newMetricUnderTest() {
+    public DiversityMetric normalisedMetric() {
         return new NormalisedDiversityMetric(new GiniSimpsonIndex());
     }
     
+      @Test
+    public void testName() {
+        GiniSimpsonIndex si = new GiniSimpsonIndex();
+        final String lowerCase = si.getName().toLowerCase(); 
+        assertThat("index name", lowerCase, containsString("gini"));
+        assertThat("index name", lowerCase, containsString("simpson"));
+        assertThat("index name", lowerCase, containsString("index"));
+    }
 }

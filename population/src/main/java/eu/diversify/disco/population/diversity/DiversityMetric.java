@@ -23,12 +23,14 @@ import eu.diversify.disco.population.Population;
 
 /**
  * The general interface of diversity metrics
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public interface DiversityMetric {
 
+    /**
+     * @return a descriptive name for this metric 
+     */
+    public String getName();
+    
     /**
      * Compute the upper bound of diversity for this metric and the given
      * population profile

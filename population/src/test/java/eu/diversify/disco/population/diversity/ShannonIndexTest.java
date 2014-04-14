@@ -18,17 +18,27 @@
 
 package eu.diversify.disco.population.diversity;
 
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 /**
  * Test the behaviour of the Shannon Index
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
 public class ShannonIndexTest extends DiversityMetricTest {
 
     @Override
-    public DiversityMetric newMetricUnderTest() {
+    public DiversityMetric normalisedMetric() {
         return new NormalisedDiversityMetric(new ShannonIndex());
+    }
+    
+    @Test
+    public void testName() {
+        ShannonIndex si = new ShannonIndex();
+        final String lowerCase = si.getName().toLowerCase();
+        assertThat("shannon index name", lowerCase, containsString("shannon"));
+        assertThat("shannon index name", lowerCase, containsString("index"));
     }
     
 }

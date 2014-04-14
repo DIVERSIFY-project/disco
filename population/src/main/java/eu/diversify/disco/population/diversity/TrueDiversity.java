@@ -32,17 +32,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.diversify.disco.population.diversity;
 
 /**
  * Implementation of the diversity metric as a quadratic mean of the species
  * population.
  *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class TrueDiversity extends AbstractDiversityMetric {
+    
+    public static final double DEFAULT_THETA = 2D;
+    private static final String TRUE_DIVERSITY_NAME = "true diversity";
 
     private final double theta;
 
@@ -50,14 +50,7 @@ public class TrueDiversity extends AbstractDiversityMetric {
      * Create a new True Diversity metric, by default based on a quadratic mean
      */
     public TrueDiversity() {
-        this.theta = 2;
-    }
-
-    /**
-     * @return the theta parameter
-     */
-    public double getTheta() {
-        return this.theta;
+        this(DEFAULT_THETA);
     }
 
     /**
@@ -70,13 +63,23 @@ public class TrueDiversity extends AbstractDiversityMetric {
         this.theta = theta;
     }
 
+    /**
+     * @return the theta parameter
+     */
+    public double getTheta() {
+        return this.theta;
+    }
 
     @Override
     protected double computeAbsolute(int totalNumberOfIndividuals, double[] fractions) {
         double sum = 0.;
-        for (int i=0 ; i<fractions.length ; i++) {
+        for (int i = 0; i < fractions.length; i++) {
             sum += Math.pow(fractions[i], theta);
         }
         return Math.pow(sum / fractions.length, -1D / theta);
+    }
+    
+    public String getName() {
+        return String.format(" %s (theta = %.2f)", TRUE_DIVERSITY_NAME, getTheta());
     }
 }

@@ -19,13 +19,11 @@
 package eu.diversify.disco.population.diversity;
 
 /**
- * An alternative diversity metrics based on the standard deviation of relative
+ * An alternative diversity metric based on the standard deviation of relative
  * species size
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class StandardDeviation extends AbstractDiversityMetric {
+    public static final String STANDARD_DEVIATION_NAME = "standard deviation";
 
     @Override
     protected double computeAbsolute(int totalNumberOfIndividuals, double[] fractions) {
@@ -36,5 +34,9 @@ public class StandardDeviation extends AbstractDiversityMetric {
         }
         double sd =  Math.sqrt(total / fractions.length);
         return 1D / (1D + sd);
+    }
+    
+    public String getName() {
+        return STANDARD_DEVIATION_NAME;
     }
 }

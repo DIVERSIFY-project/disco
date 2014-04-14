@@ -20,11 +20,10 @@ package eu.diversify.disco.population.diversity;
 
 /**
  * Implementation of the Gini-Simpson index
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
 public class GiniSimpsonIndex extends AbstractDiversityMetric {
+    
+    private static final String GINI_SIMPSON_INDEX_NAME = "Gini-Simpson index";
 
     @Override
     protected double computeAbsolute(int n, double[] fractions) {
@@ -35,4 +34,8 @@ public class GiniSimpsonIndex extends AbstractDiversityMetric {
         return 1 - sum;
     }
     
+    
+    public String getName() {
+        return GINI_SIMPSON_INDEX_NAME;
+    }
 }

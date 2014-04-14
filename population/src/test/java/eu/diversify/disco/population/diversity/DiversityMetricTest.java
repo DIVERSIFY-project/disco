@@ -34,12 +34,12 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * General set of test for each diversity metric.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public abstract class DiversityMetricTest extends TestCase {
+    public static final double MAXIMUM = 1D;
+    public static final double ERROR = 1e-15;
+    public static final double MINIMUM = 0D;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -47,23 +47,27 @@ public abstract class DiversityMetricTest extends TestCase {
     /**
      * @return a fresh diversity metric to be tested
      */
-    public abstract DiversityMetric newMetricUnderTest();
+    public abstract DiversityMetric normalisedMetric();
 
+    
+    @Test
+    public void testNormalisedName() {
+        DiversityMetric metric = normalisedMetric();
+ 
+        assertThat("metric name", metric.getName(), containsString("normalised"));
+    }
+    
     /**
      * Check that the diversity of a population whose species are uniform is 1.
      */
     @Test
     public void testMaximumDiversity() {
-        Population population = aPopulation().withDistribution(10, 10, 10).build();
-
-        DiversityMetric metric = newMetricUnderTest();
+        final DiversityMetric metric = normalisedMetric();
+        final Population population = aPopulation().withDistribution(10, 10, 10).build();
+        
         final double diversity = metric.applyTo(population);
-        assertEquals(
-                "Wrong diversity metric",
-                1.,
-                diversity,
-                1e-15);
-
+        
+        assertThat("diversity level", diversity, is(closeTo(MAXIMUM, ERROR)));
     }
 
     /**
@@ -72,15 +76,12 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testMinimumDiversity() {
-        Population population = aPopulation().withDistribution(30, 0, 0).build();
+        final DiversityMetric metric = normalisedMetric();
+        final Population population = aPopulation().withDistribution(30, 0, 0).build();
 
-        DiversityMetric metric = newMetricUnderTest();
         final double diversity = metric.applyTo(population);
-        assertEquals(
-                "Wrong diversity metric",
-                0.,
-                diversity,
-                1e-15);
+
+        assertThat("diversity level", diversity, is(closeTo(MINIMUM, ERROR)));
     }
 
     /**
@@ -88,13 +89,12 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testMediumDiversity() {
-        Population population = aPopulation().withDistribution(10, 13, 6).build();
+        final DiversityMetric metric = normalisedMetric();
+        final Population population = aPopulation().withDistribution(10, 13, 6).build();
 
-        DiversityMetric metric = newMetricUnderTest();
         final double diversity = metric.applyTo(population);
-        assertTrue(
-                "Wrong diversity metric",
-                diversity < 1. && diversity > 0.);
+        
+        assertThat("diversity level", diversity, is(both(lessThan(MAXIMUM)).and(greaterThan(MINIMUM))));
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class DiversityMetricTest extends TestCase {
      */
     @Test
     public void testScaling() {
-        DiversityMetric metric = newMetricUnderTest();
+        DiversityMetric metric = normalisedMetric();
         Population population = aPopulation().withDistribution(15, 5, 3).build();
         final double d1 = metric.applyTo(population);
         Population populationX2 = aPopulation().withDistribution(30, 10, 6).build();
@@ -121,7 +121,7 @@ public abstract class DiversityMetricTest extends TestCase {
     @Test(expected = IllegalArgumentException.class)
     public void testUndefinedDiversity() {
         Population population = aPopulation().build();
-        DiversityMetric metric = newMetricUnderTest();
+        DiversityMetric metric = normalisedMetric();
         metric.applyTo(population);
     }
 
@@ -146,7 +146,7 @@ public abstract class DiversityMetricTest extends TestCase {
     
     @Test
     public void testMonotony() {
-        final DiversityMetric metric = newMetricUnderTest();
+        final DiversityMetric metric = normalisedMetric();
      
         Population population = aPopulation()
                 .withDistribution(49, 1)

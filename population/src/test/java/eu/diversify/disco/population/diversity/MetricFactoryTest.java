@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.population.diversity;
 
 import junit.framework.TestCase;
@@ -60,32 +44,32 @@ public class MetricFactoryTest extends TestCase {
 
     @Test
     public void testShannonIndex() {
-        final DiversityMetric m = MetricFactory.create("shannon index");
-        assertThat("proper class", m, is(instanceOf(ShannonIndex.class)));
+        final DiversityMetric metric = MetricFactory.create("shannon index");
+        assertThat("proper class", metric, is(instanceOf(ShannonIndex.class)));
     }
 
     @Test
     public void testGiniSimpsonIndex() {
-        final DiversityMetric m = MetricFactory.create("gini simpson index");
-        assertThat("proper class", m, is(instanceOf(GiniSimpsonIndex.class)));
+        final DiversityMetric metric = MetricFactory.create("gini simpson index");
+        assertThat("proper class", metric, is(instanceOf(GiniSimpsonIndex.class)));
     }
 
     @Test
     public void testTrueDiversityWithoutParameter() {
-        final DiversityMetric m = MetricFactory.create("true diversity");
-        assertThat("proper class", m, is(instanceOf(TrueDiversity.class)));
+        final DiversityMetric metric = MetricFactory.create("true diversity");
+        assertThat("proper class", metric, is(instanceOf(TrueDiversity.class)));
     }
 
     @Test
     public void testTrueDiversityWithParameter() {
-        final DiversityMetric m = MetricFactory.create("true diversity (theta = 2)");
-        assertThat("proper class", m, is(instanceOf(TrueDiversity.class)));
+        final DiversityMetric metric = MetricFactory.create("true diversity (theta = 2)");
+        assertThat("proper class", metric, is(instanceOf(TrueDiversity.class)));
     }
 
     @Test
     public void testStandardDeviation() {
-        final DiversityMetric m = MetricFactory.create("standard deviation");
-        assertThat("proper class", m, is(instanceOf(StandardDeviation.class)));
+        final DiversityMetric metric = MetricFactory.create("standard deviation");
+        assertThat("proper class", metric, is(instanceOf(StandardDeviation.class)));
     }
 
     @Test
