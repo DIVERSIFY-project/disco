@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.controller.solvers;
@@ -24,6 +41,7 @@ import eu.diversify.disco.controller.problem.Solution;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.MetricFactory;
@@ -41,8 +59,7 @@ import static org.hamcrest.Matchers.*;
 @RunWith(Parameterized.class)
 public class BetterSolverTest extends TestCase {
 
- 
-
+    public static final double MAX_LEGAL_ERROR = 0.05;
     private final String name;
     private final Population population;
     private final DiversityMetric diversity;
@@ -59,15 +76,15 @@ public class BetterSolverTest extends TestCase {
 
     @Test
     public void testSolver() {
-        Problem problem = aProblem()
+        final Problem problem = aProblem()
                 .withInitialPopulation(population)
                 .withDiversityMetric(diversity)
                 .withReferenceDiversity(reference)
                 .build();
 
-        Solution solution = solver.solve(problem);
+        final Solution solution = solver.solve(problem);
 
-        assertThat("error small enough", solution.getError(), is(lessThan(0.05)));
+        assertThat("error small enough", solution.getError(), is(lessThan(MAX_LEGAL_ERROR)));
     }
 
     @Parameterized.Parameters(name = "{0}")
@@ -77,7 +94,7 @@ public class BetterSolverTest extends TestCase {
             for (Solver solver : testedSolvers()) {
                 for (DiversityMetric diversity : testedDiversityMetrics()) {
                     for (double reference : testedReferences()) {
-                        final String name = makeNameForExample( population, diversity, solver, reference);
+                        final String name = makeNameForExample(population, diversity, solver, reference);
                         examples.add(new Object[]{name, population, diversity,
                                                   solver,
                                                   reference});
@@ -89,10 +106,31 @@ public class BetterSolverTest extends TestCase {
     }
 
     private static Collection<Population> testedPopulations() {
+        final Integer distributions[][] = {
+            {16, 0, 0, 0},
+            {4, 4, 4, 4},
+            {1, 7, 5, 3}};
+
+        final boolean constraints[][] = {
+//            {false, false},
+//            {false, true},
+//            {true, false},
+            {true, true}
+        };
+
         final ArrayList<Population> testedPopulations = new ArrayList<Population>();
-        testedPopulations.add(aPopulation().withDistribution(16, 0, 0, 0).withFixedNumberOfIndividuals().withFixedNumberOfSpecies().build());
-        testedPopulations.add(aPopulation().withDistribution(4, 4, 4, 4).withFixedNumberOfIndividuals().withFixedNumberOfSpecies().build());
-        testedPopulations.add(aPopulation().withDistribution(1, 7, 5, 3).withFixedNumberOfIndividuals().withFixedNumberOfSpecies().build());
+        for (Integer[] distribution : distributions) {
+            for (boolean[] constraint : constraints) {
+                PopulationBuilder builder = aPopulation().withDistribution(distribution);
+                if (constraint[0]) {
+                    builder.withFixedNumberOfIndividuals();
+                }
+                if (constraint[1]) {
+                    builder.withFixedNumberOfSpecies();
+                }
+                testedPopulations.add(builder.build());
+            }
+        }
         return testedPopulations;
     }
 
@@ -115,10 +153,10 @@ public class BetterSolverTest extends TestCase {
     private static Collection<Double> testedReferences() {
         return Arrays.asList(new Double[]{0.00, 0.25, 0.50, 0.75, 1.00});
     }
-    
-       private static String makeNameForExample(Population population, DiversityMetric metric, Solver solver, double reference) {
+
+    private static String makeNameForExample(Population population, DiversityMetric metric, Solver solver, double reference) {
         final String distribution = population.getDistribution().toString();
-       
-        return String.format("%s to %.2f (%s/%s)", distribution, reference, metric.getClass().getName(), "solver");
+
+        return String.format("%s to %.2f (%s/%s)", distribution, reference, metric.getName(), solver.getName());
     }
 }

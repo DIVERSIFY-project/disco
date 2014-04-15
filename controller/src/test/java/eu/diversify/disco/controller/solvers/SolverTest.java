@@ -36,10 +36,8 @@ package eu.diversify.disco.controller.solvers;
 
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.problem.Problem;
-import eu.diversify.disco.controller.problem.ProblemBuilder;
 import static eu.diversify.disco.controller.problem.ProblemBuilder.*;
 import eu.diversify.disco.population.Population;
-import eu.diversify.disco.population.PopulationBuilder;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import junit.framework.TestCase;
