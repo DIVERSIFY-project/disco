@@ -51,7 +51,7 @@ public class IsCloser extends TypeSafeMatcher<DeploymentModel> {
     private static double distanceBetween(Population reference, Population other) {
         double sum = 0;
         for (String specieName: reference.getSpeciesNames()) {
-            sum += Math.pow(reference.getNumberOfIndividualsIn(specieName) - other.getNumberOfIndividualsIn(specieName), 2);
+            sum += Math.pow(reference.getHeadcountIn(specieName) - other.getHeadcountIn(specieName), 2);
         }
         return Math.sqrt(sum);
     }

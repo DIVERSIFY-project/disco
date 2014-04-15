@@ -77,7 +77,7 @@ public class Profile {
     }
 
     public boolean matches(Population population) {
-        return this.speciesCount.contains(population.getNumberOfSpecies())
-                && this.individualsCount.contains(population.getTotalNumberOfIndividuals());
+        return this.speciesCount.contains(population.getSpeciesCount())
+                && this.individualsCount.contains(population.getTotalHeadcount());
     }
 }

@@ -64,19 +64,19 @@ public interface Population {
      * @return the number of individuals in the specie at index 'specieIndex'
      * @throws IllegalArgumentException if the given index is irrelevant
      */
-    public int getNumberOfIndividualsIn(int specieIndex);
+    public int getHeadcountIn(int specieIndex);
 
     /**
      * @param specieName the name of the specie of interest
      * @return the number of individuals in the selected specie
      * @throws IllegalArgumentException if the given specie name is irrelevant
      */
-    public int getNumberOfIndividualsIn(String specieName);
+    public int getHeadcountIn(String specieName);
 
     /**
      * @return the number of species
      */
-    public int getNumberOfSpecies();
+    public int getSpeciesCount();
 
     /**
      * @param specieName the name of the specie of interest
@@ -88,7 +88,7 @@ public interface Population {
     /**
      * @return the mean number of individuals per specie
      */
-    public double getMeanNumberOfIndividuals();
+    public double getMeanHeadcount();
 
     /**
      * @return the variance of the number of individuals in each specie
@@ -98,7 +98,7 @@ public interface Population {
     /**
      * @return the total number of individual in the whole population
      */
-    public int getTotalNumberOfIndividuals();
+    public int getTotalHeadcount();
 
     /**
      * @return the list of species name ordered by index
@@ -198,7 +198,7 @@ public interface Population {
      * @return the modified population
      * @throws IllegalArgumentException if the given index is irrelevant
      */
-    public Population setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals);
+    public Population setHeadcountIn(int specieIndex, int numberOfIndividuals);
 
     /**
      * Set the number of individual in the selected population
@@ -209,7 +209,7 @@ public interface Population {
      * @return the modified population
      * @throws IllegalArgumentException if the given index is irrelevant
      */
-    public Population setNumberOfIndividualsIn(String specieName, int numberOfIndividuals);
+    public Population setHeadcountIn(String specieName, int numberOfIndividuals);
 
     /**
      * Adjust the number of individual in the selected specie by the given
@@ -221,7 +221,7 @@ public interface Population {
      * @return the modified population
      * @throws IllegalArgumentException if the given index is irrelevant
      */
-    public Population shiftNumberOfIndividualsIn(int specieIndex, int offset);
+    public Population shiftHeadcountIn(int specieIndex, int offset);
 
     /**
      * Adjust the number of individual in the selected specie by the given
@@ -233,7 +233,7 @@ public interface Population {
      * @return the modified population
      * @throws IllegalArgumentException if the given name is irrelevant
      */
-    public Population shiftNumberOfIndividualsIn(String specieName, int offset);
+    public Population shiftHeadcountIn(String specieName, int offset);
 
     /**
      * @param target the population to be compared to

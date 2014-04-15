@@ -123,12 +123,12 @@ public abstract class SolverTest extends TestCase {
         final Population expected = solution.getProblem().getInitialPopulation();
 
         assertThat("head count",
-                   population.getTotalNumberOfIndividuals(),
-                   is(equalTo(expected.getTotalNumberOfIndividuals())));
+                   population.getTotalHeadcount(),
+                   is(equalTo(expected.getTotalHeadcount())));
 
         assertThat("species count",
-                   population.getNumberOfSpecies(),
-                   is(equalTo(expected.getNumberOfSpecies())));
+                   population.getSpeciesCount(),
+                   is(equalTo(expected.getSpeciesCount())));
 
         assertThat("error", solution.getError(), is(lessThan(MAXIMUM_ERROR)));
     }

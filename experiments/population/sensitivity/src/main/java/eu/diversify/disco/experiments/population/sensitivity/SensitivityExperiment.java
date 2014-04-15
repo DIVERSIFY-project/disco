@@ -91,9 +91,9 @@ public class SensitivityExperiment implements Experiment {
     private void evaluate(DataSet ds, Population p) {
         for (String key : this.metrics.keySet()) {
             Data d = ds.getSchema().newData();
-            d.set(SPECIE_1, p.getNumberOfIndividualsIn(SPECIE_1.getName()));
-            d.set(SPECIES_COUNT, p.getNumberOfSpecies());
-            d.set(INDIVIDUALS_COUNT, p.getTotalNumberOfIndividuals());
+            d.set(SPECIE_1, p.getHeadcountIn(SPECIE_1.getName()));
+            d.set(SPECIES_COUNT, p.getSpeciesCount());
+            d.set(INDIVIDUALS_COUNT, p.getTotalHeadcount());
             DiversityMetric metric = this.metrics.get(key);
             d.set(METRIC, key);
             d.set(ABSOLUTE, metric.applyTo(p));
@@ -124,8 +124,8 @@ public class SensitivityExperiment implements Experiment {
          * intent: "Iterate until we reach a balanced population p = [x/2, x/2]"
          */
         for (int i = 1; i < this.size / 2; i++) {
-            population.setNumberOfIndividualsIn(1, this.size - i);
-            population.setNumberOfIndividualsIn(2, i);
+            population.setHeadcountIn(1, this.size - i);
+            population.setHeadcountIn(2, i);
             evaluate(dataset, population);
         }
 
@@ -156,9 +156,9 @@ public class SensitivityExperiment implements Experiment {
          * Iterate until p = [1, 1, ..., 1], with x species
          */
         for (int i = 1; i < this.size - 1; i++) {
-            population.setNumberOfIndividualsIn(1, 99 - i);
+            population.setHeadcountIn(1, 99 - i);
             population.addSpecie(SPECIE_NAME + (2 + i));
-            population.setNumberOfIndividualsIn(2 + i, 1);
+            population.setHeadcountIn(2 + i, 1);
             evaluate(dataset, population);
         }
 
@@ -188,7 +188,7 @@ public class SensitivityExperiment implements Experiment {
          * Iterate until we reach a balanced population p = [x, x]
          */
         for (int i = 1; i < this.size; i++) {
-            p.setNumberOfIndividualsIn(2, i);
+            p.setHeadcountIn(2, i);
             evaluate(dataset, p);
         }
 

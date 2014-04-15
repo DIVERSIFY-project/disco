@@ -103,10 +103,10 @@ public class PopulationBuilderTest extends TestCase {
         Population population = aPopulation()
                 .withDistribution(3, 2, 1)
                 .build();
-        assertEquals(3, population.getNumberOfSpecies());
-        assertEquals(3, population.getNumberOfIndividualsIn(1));
-        assertEquals(2, population.getNumberOfIndividualsIn(2));
-        assertEquals(1, population.getNumberOfIndividualsIn(3));
+        assertEquals(3, population.getSpeciesCount());
+        assertEquals(3, population.getHeadcountIn(1));
+        assertEquals(2, population.getHeadcountIn(2));
+        assertEquals(1, population.getHeadcountIn(3));
       }
 
         @Test
@@ -114,15 +114,15 @@ public class PopulationBuilderTest extends TestCase {
         Population population = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
-        assertEquals(4, population.getNumberOfSpecies());
-        assertEquals(0, population.getNumberOfIndividualsIn(1));
-        assertEquals(0, population.getNumberOfIndividualsIn("s1"));
-        assertEquals(0, population.getNumberOfIndividualsIn(2));
-        assertEquals(0, population.getNumberOfIndividualsIn("s2"));
-        assertEquals(0, population.getNumberOfIndividualsIn(3));
-        assertEquals(0, population.getNumberOfIndividualsIn("s3"));
-        assertEquals(0, population.getNumberOfIndividualsIn(4));
-        assertEquals(0, population.getNumberOfIndividualsIn("s4"));
+        assertEquals(4, population.getSpeciesCount());
+        assertEquals(0, population.getHeadcountIn(1));
+        assertEquals(0, population.getHeadcountIn("s1"));
+        assertEquals(0, population.getHeadcountIn(2));
+        assertEquals(0, population.getHeadcountIn("s2"));
+        assertEquals(0, population.getHeadcountIn(3));
+        assertEquals(0, population.getHeadcountIn("s3"));
+        assertEquals(0, population.getHeadcountIn(4));
+        assertEquals(0, population.getHeadcountIn("s4"));
     }
     
     @Test
@@ -131,15 +131,15 @@ public class PopulationBuilderTest extends TestCase {
                 .withDistribution(1, 2, 3, 4)
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
-        assertEquals(4, population.getNumberOfSpecies());
-        assertEquals(1, population.getNumberOfIndividualsIn(1));
-        assertEquals(1, population.getNumberOfIndividualsIn("s1"));
-        assertEquals(2, population.getNumberOfIndividualsIn(2));
-        assertEquals(2, population.getNumberOfIndividualsIn("s2"));
-        assertEquals(3, population.getNumberOfIndividualsIn(3));
-        assertEquals(3, population.getNumberOfIndividualsIn("s3"));
-        assertEquals(4, population.getNumberOfIndividualsIn(4));
-        assertEquals(4, population.getNumberOfIndividualsIn("s4"));
+        assertEquals(4, population.getSpeciesCount());
+        assertEquals(1, population.getHeadcountIn(1));
+        assertEquals(1, population.getHeadcountIn("s1"));
+        assertEquals(2, population.getHeadcountIn(2));
+        assertEquals(2, population.getHeadcountIn("s2"));
+        assertEquals(3, population.getHeadcountIn(3));
+        assertEquals(3, population.getHeadcountIn("s3"));
+        assertEquals(4, population.getHeadcountIn(4));
+        assertEquals(4, population.getHeadcountIn("s4"));
     }
 
     @Test
@@ -148,15 +148,15 @@ public class PopulationBuilderTest extends TestCase {
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(1, 2, 3, 4)
                 .build();
-        assertEquals(4, population.getNumberOfSpecies());
-        assertEquals(1, population.getNumberOfIndividualsIn(1));
-        assertEquals(1, population.getNumberOfIndividualsIn("s1"));
-        assertEquals(2, population.getNumberOfIndividualsIn(2));
-        assertEquals(2, population.getNumberOfIndividualsIn("s2"));
-        assertEquals(3, population.getNumberOfIndividualsIn(3));
-        assertEquals(3, population.getNumberOfIndividualsIn("s3"));
-        assertEquals(4, population.getNumberOfIndividualsIn(4));
-        assertEquals(4, population.getNumberOfIndividualsIn("s4"));
+        assertEquals(4, population.getSpeciesCount());
+        assertEquals(1, population.getHeadcountIn(1));
+        assertEquals(1, population.getHeadcountIn("s1"));
+        assertEquals(2, population.getHeadcountIn(2));
+        assertEquals(2, population.getHeadcountIn("s2"));
+        assertEquals(3, population.getHeadcountIn(3));
+        assertEquals(3, population.getHeadcountIn("s3"));
+        assertEquals(4, population.getHeadcountIn(4));
+        assertEquals(4, population.getHeadcountIn("s4"));
     }
 
     @Test
@@ -166,10 +166,10 @@ public class PopulationBuilderTest extends TestCase {
                 .immutable()
                 .build();
 
-        Population population2 = population.shiftNumberOfIndividualsIn(1, +2);
+        Population population2 = population.shiftHeadcountIn(1, +2);
         assertNotSame(population, population2);
-        assertEquals(1, population.getNumberOfIndividualsIn(1));
-        assertEquals(3, population2.getNumberOfIndividualsIn(1));
+        assertEquals(1, population.getHeadcountIn(1));
+        assertEquals(3, population2.getHeadcountIn(1));
     }
     
         @Test

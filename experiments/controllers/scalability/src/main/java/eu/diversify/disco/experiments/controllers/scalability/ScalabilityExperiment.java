@@ -146,11 +146,11 @@ public class ScalabilityExperiment implements Experiment {
                 .withFixedNumberOfSpecies()
                 .build();
         population.addSpecie("sp1");
-        population.setNumberOfIndividualsIn(1, numberOfIndividuals);
+        population.setHeadcountIn(1, numberOfIndividuals);
         for (int i = 2; i <= numberOfSpecies; i++) {
             String name = String.format("sp%d", i);
             population.addSpecie(name);
-            population.setNumberOfIndividualsIn(i, 0);
+            population.setHeadcountIn(i, 0);
         }
         return population;
     }
@@ -172,8 +172,8 @@ public class ScalabilityExperiment implements Experiment {
     private Data logPopulationDetails(String key, final Population population, final Solution solution, final long duration) {
         Data data = SCHEMA.newData();
         data.set(STRATEGY, key);
-        data.set(SPECIES_COUNT, population.getNumberOfSpecies());
-        data.set(INDIVIDUALS_COUNT, population.getTotalNumberOfIndividuals());
+        data.set(SPECIES_COUNT, population.getSpeciesCount());
+        data.set(INDIVIDUALS_COUNT, population.getTotalHeadcount());
         data.set(ERROR, solution.getError());
         data.set(DURATION, duration);
         System.out.println("\t - " + key + " in " + duration + " ms");

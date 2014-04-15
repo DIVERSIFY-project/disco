@@ -69,18 +69,18 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
-    public int getNumberOfIndividualsIn(int specieIndex) {
-        return delegate.getNumberOfIndividualsIn(specieIndex);
+    public int getHeadcountIn(int specieIndex) {
+        return delegate.getHeadcountIn(specieIndex);
     }
 
     @Override
-    public int getNumberOfIndividualsIn(String specieName) {
-        return delegate.getNumberOfIndividualsIn(specieName);
+    public int getHeadcountIn(String specieName) {
+        return delegate.getHeadcountIn(specieName);
     }
 
     @Override
-    public int getNumberOfSpecies() {
-        return delegate.getNumberOfSpecies();
+    public int getSpeciesCount() {
+        return delegate.getSpeciesCount();
     }
 
     @Override
@@ -89,8 +89,8 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
-    public double getMeanNumberOfIndividuals() {
-        return delegate.getMeanNumberOfIndividuals();
+    public double getMeanHeadcount() {
+        return delegate.getMeanHeadcount();
     }
 
     @Override
@@ -99,8 +99,8 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
     
     @Override
-    public int getTotalNumberOfIndividuals() {
-        return delegate.getTotalNumberOfIndividuals();
+    public int getTotalHeadcount() {
+        return delegate.getTotalHeadcount();
     }
 
     @Override
@@ -168,26 +168,26 @@ public abstract class AbstractPopulationDecorator implements Population {
     }
 
     @Override
-    public Population setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals) {
-        delegate.setNumberOfIndividualsIn(specieIndex, numberOfIndividuals);
+    public Population setHeadcountIn(int specieIndex, int numberOfIndividuals) {
+        delegate.setHeadcountIn(specieIndex, numberOfIndividuals);
         return this;
     }
 
     @Override
-    public final Population setNumberOfIndividualsIn(String specieName, int numberOfIndividuals) {
-        return setNumberOfIndividualsIn(getSpecieIndex(specieName), numberOfIndividuals);
+    public final Population setHeadcountIn(String specieName, int numberOfIndividuals) {
+        return setHeadcountIn(getSpecieIndex(specieName), numberOfIndividuals);
     }
         
 
     @Override
-    public Population shiftNumberOfIndividualsIn(int specieIndex, int offset) {
-        delegate.shiftNumberOfIndividualsIn(specieIndex, offset);
+    public Population shiftHeadcountIn(int specieIndex, int offset) {
+        delegate.shiftHeadcountIn(specieIndex, offset);
         return this;
     }
 
     @Override
-    public final Population shiftNumberOfIndividualsIn(String specieName, int offset) {
-        return shiftNumberOfIndividualsIn(getSpecieIndex(specieName), offset);
+    public final Population shiftHeadcountIn(String specieName, int offset) {
+        return shiftHeadcountIn(getSpecieIndex(specieName), offset);
     }
 
     @Override

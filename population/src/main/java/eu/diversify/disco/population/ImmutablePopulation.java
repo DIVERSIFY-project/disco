@@ -57,15 +57,15 @@ public class ImmutablePopulation extends AbstractPopulationDecorator {
     }
 
     @Override
-    public Population setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals) {
+    public Population setHeadcountIn(int specieIndex, int numberOfIndividuals) {
         Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.setNumberOfIndividualsIn(specieIndex, numberOfIndividuals));
+        return new ImmutablePopulation(copy.setHeadcountIn(specieIndex, numberOfIndividuals));
     }
 
     @Override
-    public Population shiftNumberOfIndividualsIn(int specieIndex, int offset) {
+    public Population shiftHeadcountIn(int specieIndex, int offset) {
         Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.shiftNumberOfIndividualsIn(specieIndex, offset));
+        return new ImmutablePopulation(copy.shiftHeadcountIn(specieIndex, offset));
     }
 
     @Override

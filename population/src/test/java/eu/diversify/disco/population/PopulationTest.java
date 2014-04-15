@@ -77,11 +77,11 @@ public abstract class PopulationTest extends TestCase {
     public void testCreatingPopulationFromArray() {
         actual = getBuilder().withDistribution(3, 2, 0, 1).build();
         assertFalse(actual.isEmpty());
-        assertEquals(4, actual.getNumberOfSpecies());
-        assertEquals(3, actual.getNumberOfIndividualsIn(1));
-        assertEquals(2, actual.getNumberOfIndividualsIn(2));
-        assertEquals(0, actual.getNumberOfIndividualsIn(3));
-        assertEquals(1, actual.getNumberOfIndividualsIn(4));
+        assertEquals(4, actual.getSpeciesCount());
+        assertEquals(3, actual.getHeadcountIn(1));
+        assertEquals(2, actual.getHeadcountIn(2));
+        assertEquals(0, actual.getHeadcountIn(3));
+        assertEquals(1, actual.getHeadcountIn(4));
     }
     
     @Test
@@ -155,9 +155,9 @@ public abstract class PopulationTest extends TestCase {
     }
 
     private double getMaximumVariance(Population population) {
-        double s = (double) population.getNumberOfSpecies();
-        double n = (double) population.getTotalNumberOfIndividuals();
-        double mu = population.getMeanNumberOfIndividuals();
+        double s = (double) population.getSpeciesCount();
+        double n = (double) population.getTotalHeadcount();
+        double mu = population.getMeanHeadcount();
         return (Math.pow(n - mu, 2) + ((s - 1) * (Math.pow(mu, 2)))) / s;
     }
 
@@ -213,7 +213,7 @@ public abstract class PopulationTest extends TestCase {
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(10, 2, 3)
                 .build();
-        double actual = initial.getMeanNumberOfIndividuals();
+        double actual = initial.getMeanHeadcount();
         double expected = 5D;
         assertEquals(expected, actual);
     }
@@ -222,7 +222,7 @@ public abstract class PopulationTest extends TestCase {
     @Test
     public void testSetNumberOfIndividualsInBySpecieIndex() {
         initial = getBuilder().withDistribution(1, 2, 3).build();
-        actual = initial.setNumberOfIndividualsIn(1, 54);
+        actual = initial.setHeadcountIn(1, 54);
         expected = getBuilder().withDistribution(54, 2, 3).build();
         assertEquals(expected, actual);
     }
@@ -233,7 +233,7 @@ public abstract class PopulationTest extends TestCase {
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(1, 2, 3)
                 .build();
-        actual = initial.setNumberOfIndividualsIn("s1", 54);
+        actual = initial.setHeadcountIn("s1", 54);
         expected = getBuilder()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(54, 2, 3)
@@ -244,7 +244,7 @@ public abstract class PopulationTest extends TestCase {
     @Test
     public void testShiftNumberOfIndividualsInByIndex() {
         initial = getBuilder().withDistribution(1, 2, 3).build();
-        actual = initial.shiftNumberOfIndividualsIn(1, +1);
+        actual = initial.shiftHeadcountIn(1, +1);
         expected = getBuilder().withDistribution(2, 2, 3).build();
         assertEquals(expected, actual);
     }
@@ -255,7 +255,7 @@ public abstract class PopulationTest extends TestCase {
                 .withSpeciesNamed("s1")
                 .withDistribution(0)
                 .build();
-        actual = initial.shiftNumberOfIndividualsIn("s1", 1);
+        actual = initial.shiftHeadcountIn("s1", 1);
         expected = getBuilder()
                 .withSpeciesNamed("s1")
                 .withDistribution(1)
@@ -266,7 +266,7 @@ public abstract class PopulationTest extends TestCase {
     @Test(expected = IllegalArgumentException.class)
     public void testShiftNumberOfIndividualsByIndexThatDoesNotExists() {
         initial = getBuilder().withDistribution(0).build();
-        actual = initial.shiftNumberOfIndividualsIn(77, 1);
+        actual = initial.shiftHeadcountIn(77, 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -275,7 +275,7 @@ public abstract class PopulationTest extends TestCase {
                 .withSpeciesNamed("s1")
                 .withDistribution(0)
                 .build();
-        actual = initial.shiftNumberOfIndividualsIn("s877", 1);
+        actual = initial.shiftHeadcountIn("s877", 1);
     }
 
     @Test

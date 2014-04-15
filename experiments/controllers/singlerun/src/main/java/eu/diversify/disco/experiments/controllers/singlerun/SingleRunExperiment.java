@@ -96,7 +96,7 @@ public class SingleRunExperiment implements Experiment {
         final List<Integer> counts = setup.getPopulation();
         for (int i = 0; i < counts.size(); i++) {
             this.population.addSpecie("s" + (i + 1));
-            this.population.setNumberOfIndividualsIn(i + 1, counts.get(i));
+            this.population.setHeadcountIn(i + 1, counts.get(i));
         }
     }
 

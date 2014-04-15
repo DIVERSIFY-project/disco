@@ -35,7 +35,7 @@ public abstract class AbstractDiversityMetric implements DiversityMetric {
             throw new IllegalArgumentException("Diversity is not defined for empty populations!");
         }
         double[] fractions = population.toArrayOfFractions();
-        return computeAbsolute(population.getTotalNumberOfIndividuals(), fractions);
+        return computeAbsolute(population.getTotalHeadcount(), fractions);
     }
 
     
@@ -43,9 +43,9 @@ public abstract class AbstractDiversityMetric implements DiversityMetric {
 
     @Override
     public final double maximum(Population population) {
-        double[] fractions = new double[population.getNumberOfSpecies()];
-        int total = population.getTotalNumberOfIndividuals();
-        double mean = population.getMeanNumberOfIndividuals() / total;
+        double[] fractions = new double[population.getSpeciesCount()];
+        int total = population.getTotalHeadcount();
+        double mean = population.getMeanHeadcount() / total;
         for (int i = 0; i < fractions.length; i++) {
             fractions[i] = mean;
         }
@@ -54,8 +54,8 @@ public abstract class AbstractDiversityMetric implements DiversityMetric {
 
     @Override
     public final double minimum(Population population) {
-        double[] fractions = new double[population.getNumberOfSpecies()];
-        int total = population.getTotalNumberOfIndividuals();
+        double[] fractions = new double[population.getSpeciesCount()];
+        int total = population.getTotalHeadcount();
         fractions[0] = 1D;
         return computeAbsolute(total, fractions);
     }

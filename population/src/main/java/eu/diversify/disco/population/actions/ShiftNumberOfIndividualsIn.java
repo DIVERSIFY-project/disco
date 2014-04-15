@@ -59,7 +59,7 @@ public class ShiftNumberOfIndividualsIn extends SpecieAccess {
 
     @Override
     public Population applyTo(Population subject) {
-        return subject.shiftNumberOfIndividualsIn(getSpecieIndex(subject), offset);
+        return subject.shiftHeadcountIn(getSpecieIndex(subject), offset);
     }
 
     @Override

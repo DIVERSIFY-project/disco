@@ -80,7 +80,7 @@ public class Group implements Iterable<Individual> {
             if (!population.hasAnySpecieNamed(specie)) {
                 population.addSpecie(specie);
             }
-            population.shiftNumberOfIndividualsIn(specie, +1);
+            population.shiftHeadcountIn(specie, +1);
         }
         return aPopulation().immutable().clonedFrom(population).build();
     }
@@ -96,7 +96,7 @@ public class Group implements Iterable<Individual> {
 
         public Attempt(DecentralisedSetup setup, double reference, Population population, String specieName) {
             this.specieName = specieName;
-            Population updated = population.shiftNumberOfIndividualsIn(specieName, +1);
+            Population updated = population.shiftHeadcountIn(specieName, +1);
             error = Math.pow(reference - setup.diversityOf(updated), 2);
         }
 

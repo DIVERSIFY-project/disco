@@ -77,28 +77,28 @@ public class Eda implements Experiment {
     }
 
     void sampleImpactOnDiversity(Data data, Population population) {
-        data.set(INDIVIDUAL_COUNT, population.getTotalNumberOfIndividuals());
-        data.set(SPECIE_COUNT, population.getNumberOfSpecies());
+        data.set(INDIVIDUAL_COUNT, population.getTotalHeadcount());
+        data.set(SPECIE_COUNT, population.getSpeciesCount());
 
         data.set(DIVERSITY_BEFORE, diversity.applyTo(population));
 
         String source = chooseAnySpecieFrom(nonEmptySpecies(population));
-        data.set(SOURCE_SPECIE, population.getNumberOfIndividualsIn(source));
+        data.set(SOURCE_SPECIE, population.getHeadcountIn(source));
 
         String target = chooseAnySpecieFrom(excludeSpecieNamed(population, source));
-        data.set(TARGET_SPECIE, population.getNumberOfIndividualsIn(target));
+        data.set(TARGET_SPECIE, population.getHeadcountIn(target));
 
-        population.shiftNumberOfIndividualsIn(source, -1);
-        population.shiftNumberOfIndividualsIn(target, +1);
+        population.shiftHeadcountIn(source, -1);
+        population.shiftHeadcountIn(target, +1);
 
         data.set(DIVERSITY_AFTER, diversity.applyTo(population));
     }
 
     // FIXME: extractAllNonEmptySpecies() Should be a feature of the population class
     List<String> nonEmptySpecies(Population population) {
-        ArrayList<String> nonEmptySpecies = new ArrayList<String>(population.getNumberOfSpecies());
+        ArrayList<String> nonEmptySpecies = new ArrayList<String>(population.getSpeciesCount());
         for (String specie: population.getSpeciesNames()) {
-            if (population.getNumberOfIndividualsIn(specie) > 0) {
+            if (population.getHeadcountIn(specie) > 0) {
                 nonEmptySpecies.add(specie);
             }
         }
@@ -114,7 +114,7 @@ public class Eda implements Experiment {
     }
 
     List<String> excludeSpecieNamed(Population population, String toExclude) {
-        final ArrayList<String> filtered = new ArrayList<String>(population.getNumberOfSpecies());
+        final ArrayList<String> filtered = new ArrayList<String>(population.getSpeciesCount());
         for (String specie: population.getSpeciesNames()) {
             if (!specie.equals(toExclude)) {
                 filtered.add(specie);

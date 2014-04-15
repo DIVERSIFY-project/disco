@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.population;
 
 import static eu.diversify.disco.population.Population.DEFAULT_SPECIE_NAME_FORMAT;
@@ -39,32 +56,24 @@ import java.util.regex.Pattern;
  * to species name in O(c)
  */
 public class ConcretePopulation implements Population {
+    private static final int DEFAULT_INDEX = -1;
 
-    private final ArrayList<String> speciesName;
-    private final ArrayList<Integer> distribution;
+    private final ArrayList<Specie> species;
 
     ConcretePopulation() {
-        this.speciesName = new ArrayList<String>();
-        this.distribution = new ArrayList<Integer>();
+        this(new ArrayList<String>(), new ArrayList<Integer>());
     }
 
     ConcretePopulation(List<String> speciesNames, List<Integer> distribution) {
         checkConsistencyBetween(speciesNames, distribution);
-        this.speciesName = new ArrayList<String>();
-        for (String specieName : speciesNames) {
-            checkIfSpecieNameIsValid(specieName);
-            this.speciesName.add(specieName);
-        }
-        this.distribution = new ArrayList<Integer>();
-        for (Integer count : distribution) {
-            checkIfIndividualCountIsValid(count);
-            this.distribution.add(count);
+        species = new ArrayList<Specie>();
+        for(int index = 0 ; index<speciesNames.size() ; index++) {
+            species.add(new Specie(speciesNames.get(index), distribution.get(index)));
         }
     }
 
     private ConcretePopulation(ConcretePopulation model) {
-        this.speciesName = new ArrayList<String>(model.speciesName);
-        this.distribution = new ArrayList<Integer>(model.distribution);
+        this(model.getSpeciesNames(), model.getDistribution());
     }
 
     @Override
@@ -80,105 +89,106 @@ public class ConcretePopulation implements Population {
             newSpecies.addSpecie();
         }
         legalActions.add(newSpecies.build());
-        for (String specie : getSpeciesNames()) {
-            if (getTotalNumberOfIndividuals() > getNumberOfIndividualsIn(specie)) {
-                legalActions.add(new RemoveSpecie(specie));
+        for (Specie specie : species) {
+            if (getTotalHeadcount() > specie.getHeadcount()) {
+                legalActions.add(new RemoveSpecie(specie.getName()));
             }
-            legalActions.add(new ShiftNumberOfIndividualsIn(specie, +scaleFactor));
-            if (getTotalNumberOfIndividuals() > scaleFactor && getNumberOfIndividualsIn(specie) >= scaleFactor) {
-                legalActions.add(new ShiftNumberOfIndividualsIn(specie, -scaleFactor));
+            legalActions.add(new ShiftNumberOfIndividualsIn(specie.getName(), +scaleFactor));
+            if (getTotalHeadcount() > scaleFactor && specie.getHeadcount() >= scaleFactor) {
+                legalActions.add(new ShiftNumberOfIndividualsIn(specie.getName(), -scaleFactor));
             }
-            for (String otherSpecie : getSpeciesNames()) {
+            for (Specie otherSpecie: species) {
                 if (!specie.equals(otherSpecie)) {
-                    if (getNumberOfIndividualsIn(specie) >= scaleFactor) {
+                    if (specie.getHeadcount() >= scaleFactor) {
                         legalActions.add(aScript()
-                                .shift(specie, -scaleFactor)
-                                .shift(otherSpecie, +scaleFactor)
+                                .shift(specie.getName(), -scaleFactor)
+                                .shift(otherSpecie.getName(), +scaleFactor)
                                 .build());
                     }
                 }
             }
         }
-
         return legalActions;
     }
 
     @Override
     public boolean isEmpty() {
-        return getTotalNumberOfIndividuals() == 0;
+        return getTotalHeadcount() == 0;
     }
 
     @Override
-    public int getTotalNumberOfIndividuals() {
+    public int getTotalHeadcount() {
         int total = 0;
-        for (int count : this.distribution) {
-            total += count;
+        for (Specie specie : species) {
+            total += specie.getHeadcount();
         }
         return total;
     }
 
     @Override
-    public int getNumberOfSpecies() {
-        return this.speciesName.size();
+    public int getSpeciesCount() {
+        return species.size();
+    }
+
+    public Specie getSpecie(int index) {
+        checkSpecieIndexIsValid(index);
+        return species.get(index - 1);
     }
 
     @Override
-    public Population shiftNumberOfIndividualsIn(int specieIndex, int offset) {
-        int count = getNumberOfIndividualsIn(specieIndex);
-        return setNumberOfIndividualsIn(specieIndex, count + offset);
-    }
-
-    @Override
-    public Population shiftNumberOfIndividualsIn(String specieName, int offset) {
-        return shiftNumberOfIndividualsIn(getSpecieIndex(specieName), offset);
-    }
-
-    @Override
-    public int getNumberOfIndividualsIn(int specieIndex) {
-        checkSpecieIndexIsValid(specieIndex);
-        return distribution.get(specieIndex - 1);
-    }
-
-    @Override
-    public int getNumberOfIndividualsIn(String specieName) {
-        return getNumberOfIndividualsIn(getSpecieIndex(specieName));
-    }
-
-    @Override
-    public Population renameSpecie(String oldName, String newName) {
-        return renameSpecie(getSpecieIndex(oldName), newName);
-    }
-
-    @Override
-    public Population setNumberOfIndividualsIn(int specieIndex, int numberOfIndividuals) {
-        checkSpecieIndexIsValid(specieIndex);
-        if (numberOfIndividuals < 0) {
-            throw new IllegalArgumentException("Specie " + specieIndex + " cannot have a negative number of individuals");
-        }
-        distribution.set(specieIndex - 1, numberOfIndividuals);
+    public Population shiftHeadcountIn(int specieIndex, int offset) {
+        getSpecie(specieIndex).shiftHeadcountBy(offset);
         return this;
     }
 
     @Override
-    public Population setNumberOfIndividualsIn(String specieName, int numberOfIndividuals) {
-        setNumberOfIndividualsIn(getSpecieIndex(specieName), numberOfIndividuals);
+    public Population shiftHeadcountIn(String specieName, int offset) {
+        return shiftHeadcountIn(getSpecieIndex(specieName), offset);
+    }
+
+    @Override
+    public int getHeadcountIn(int specieIndex) {
+        return getSpecie(specieIndex).getHeadcount();
+    }
+
+    @Override
+    public int getHeadcountIn(String specieName) {
+        return getHeadcountIn(getSpecieIndex(specieName));
+    }
+
+    @Override
+    public Population renameSpecie(String oldName, String newName) {
+        getSpecie(getSpecieIndex(oldName)).setName(newName);
+        return this;
+    }
+
+    @Override
+    public Population setHeadcountIn(int specieIndex, int headcount) {
+        getSpecie(specieIndex).setHeadcount(headcount);
+        return this;
+    }
+
+    @Override
+    public Population setHeadcountIn(String specieName, int headcount) {
+        setHeadcountIn(getSpecieIndex(specieName), headcount);
         return this;
     }
 
     @Override
     public int getSpecieIndex(String specieName) {
-        int index = speciesName.indexOf(specieName);
-        if (index == -1) {
-            throw new IllegalArgumentException("No specie with name '" + specieName + "'");
+        int index = DEFAULT_INDEX;
+        for(int i=0 ; i<species.size() ; i++) {
+            if (species.get(i).isNamed(specieName)) {
+                index = i + 1;
+            }
         }
-        return index + 1;
+        return index > 0 ? index : DEFAULT_INDEX;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 67 * hash + (this.speciesName != null ? this.speciesName.hashCode() : 0);
-        hash = 67 * hash + (this.distribution != null ? this.distribution.hashCode() : 0);
+        hash = 67 * hash + (this.species != null ? this.species.hashCode() : 0);
         return hash;
     }
 
@@ -228,21 +238,18 @@ public class ConcretePopulation implements Population {
     @Override
     public Population addSpecie(String specieName) {
         checkIfSpecieNameIsValid(specieName);
-        speciesName.add(specieName);
-        distribution.add(0);
+        species.add(new Specie(specieName));
         return this;
     }
 
     @Override
     public boolean hasAnySpecieNamed(String specieName) {
-        return speciesName.contains(specieName);
+        return getSpecieIndex(specieName) > -1;
     }
 
     @Override
     public Population removeSpecie(int specieIndex) {
-        checkSpecieIndexIsValid(specieIndex);
-        speciesName.remove(specieIndex - 1);
-        distribution.remove(specieIndex - 1);
+        species.remove(getSpecie(specieIndex));
         return this;
     }
 
@@ -260,14 +267,6 @@ public class ConcretePopulation implements Population {
         }
     }
 
-    private void checkIfIndividualCountIsValid(Integer count) {
-        if (count == null) {
-            throw new IllegalArgumentException("Individual count shall not be null.");
-        }
-        if (count < 0) {
-            throw new IllegalArgumentException("Individual count shall not be negative");
-        }
-    }
 
     private void checkIfSpecieNameIsValid(String specieName) {
         if (specieName == null) {
@@ -282,7 +281,7 @@ public class ConcretePopulation implements Population {
     }
 
     private void checkSpecieIndexIsValid(int specieIndex) {
-        if (specieIndex < 1 || specieIndex > speciesName.size()) {
+        if (specieIndex < 1 || specieIndex > species.size()) {
             throw new IllegalArgumentException("No specie with index '" + specieIndex + "'");
         }
     }
@@ -291,11 +290,11 @@ public class ConcretePopulation implements Population {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[ ");
-        for (int i = 0; i < distribution.size(); i++) {
-            builder.append(speciesName.get(i));
+        for (final Specie specie: species) {
+            builder.append(specie.getName());
             builder.append(": ");
-            builder.append(distribution.get(i));
-            if (i < distribution.size() - 1) {
+            builder.append(specie.getHeadcount());
+            if (species.indexOf(specie) < species.size() - 1) {
                 builder.append(", ");
             }
         }
@@ -305,8 +304,8 @@ public class ConcretePopulation implements Population {
 
     @Override
     public double getFractionIn(int specieIndex) {
-        double count = getNumberOfIndividualsIn(specieIndex);
-        return (count / getTotalNumberOfIndividuals());
+        double count = getSpecie(specieIndex).getHeadcount();
+        return (count / getTotalHeadcount());
     }
 
     @Override
@@ -316,7 +315,7 @@ public class ConcretePopulation implements Population {
 
     @Override
     public double[] toArrayOfFractions() {
-        double[] results = new double[getNumberOfSpecies()];
+        double[] results = new double[getSpeciesCount()];
         for (int i = 0; i < results.length; i++) {
             results[i] = getFractionIn(i + 1);
         }
@@ -324,14 +323,13 @@ public class ConcretePopulation implements Population {
     }
 
     @Override
-    public double getMeanNumberOfIndividuals() {
-        return ((double) getTotalNumberOfIndividuals()) / getNumberOfSpecies();
+    public double getMeanHeadcount() {
+        return ((double) getTotalHeadcount()) / getSpeciesCount();
     }
 
     @Override
     public Population renameSpecie(int specieIndex, String newName) {
-        checkSpecieIndexIsValid(specieIndex);
-        speciesName.set(specieIndex - 1, newName);
+        getSpecie(specieIndex).setName(newName);
         return this;
     }
 
@@ -342,21 +340,29 @@ public class ConcretePopulation implements Population {
 
     @Override
     public List<String> getSpeciesNames() {
-        return Collections.unmodifiableList(this.speciesName);
+        ArrayList<String> speciesName = new ArrayList<String>();
+        for (Specie specie : species) {
+            speciesName.add(specie.getName());
+        }
+        return Collections.unmodifiableList(speciesName);
     }
 
     @Override
     public List<Integer> getDistribution() {
-        return Collections.unmodifiableList(this.distribution);
+        ArrayList<Integer> distribution = new ArrayList<Integer>();
+        for (Specie specie : species) {
+            distribution.add(specie.getHeadcount());
+        }
+        return Collections.unmodifiableList(distribution);
     }
 
     @Override
     public double getVariance() {
-        int s = getNumberOfSpecies();
-        double mu = getMeanNumberOfIndividuals();
+        int s = getSpeciesCount();
+        double mu = getMeanHeadcount();
         double total = 0D;
-        for (int index = 1; index <= s; index++) {
-            total += Math.pow(getNumberOfIndividualsIn(index) - mu, 2);
+        for (Specie specie: species) {
+            total += Math.pow(specie.getHeadcount() - mu, 2);
         }
         return total / s;
     }
@@ -372,14 +378,14 @@ public class ConcretePopulation implements Population {
         final List<String> superfluousSpecies = new ArrayList<String>(getSpeciesNames());
         for (String foreign : target.getSpeciesNames()) {
             if (this.hasAnySpecieNamed(foreign)) {
-                int delta = target.getNumberOfIndividualsIn(foreign) - this.getNumberOfIndividualsIn(foreign);
+                int delta = target.getHeadcountIn(foreign) - this.getHeadcountIn(foreign);
                 if (delta != 0) {
                     actions.add(new ShiftNumberOfIndividualsIn(foreign, delta));
                 }
             }
             else {
                 actions.add(new AddSpecie(foreign));
-                actions.add(new ShiftNumberOfIndividualsIn(foreign, target.getNumberOfIndividualsIn(foreign)));
+                actions.add(new ShiftNumberOfIndividualsIn(foreign, target.getHeadcountIn(foreign)));
             }
             superfluousSpecies.remove(foreign);
         }
@@ -398,9 +404,9 @@ public class ConcretePopulation implements Population {
 
     @Override
     public Map<String, Integer> toMap() {
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-        for (int index = 0; index < this.distribution.size(); index++) {
-            map.put(this.speciesName.get(index), this.distribution.get(index));
+        final HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for (final Specie specie: species) {
+            map.put(specie.getName(), specie.getHeadcount());
         }
         return map;
     }
