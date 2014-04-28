@@ -20,11 +20,19 @@
 
 package eu.diversify.disco.population.constraints;
 
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.actions.Action;
 
 
 public class FixedNumberOfIndividuals implements Constraint {
 
+    @Override
+    public PopulationBuilder activateOn(PopulationBuilder builder) {
+        return builder.withFixedNumberOfIndividuals();
+    }
+
+    
+    
     @Override
     public boolean allows(Action action) {
         return action.preserveTheTotalNumberOfIndividuals();

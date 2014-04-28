@@ -22,6 +22,7 @@ package eu.diversify.disco.cloudml.matchers;
 
 import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.Specie;
 import org.cloudml.core.DeploymentModel;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -50,8 +51,8 @@ public class IsCloser extends TypeSafeMatcher<DeploymentModel> {
     
     private static double distanceBetween(Population reference, Population other) {
         double sum = 0;
-        for (String specieName: reference.getSpeciesNames()) {
-            sum += Math.pow(reference.getHeadcountIn(specieName) - other.getHeadcountIn(specieName), 2);
+        for (Specie specie: reference) {
+            sum += Math.pow(specie.getHeadcount() - other.getSpecie(specie.getName()).getHeadcount(), 2);
         }
         return Math.sqrt(sum);
     }

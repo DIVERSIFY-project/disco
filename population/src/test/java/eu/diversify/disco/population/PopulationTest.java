@@ -8,7 +8,7 @@
  * (at your option) any later version.
  *
  * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
@@ -16,7 +16,7 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.population;
+package eu.diversify.disco.population; 
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,6 +43,7 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public abstract class PopulationTest extends TestCase {
+    public static final double MAX_ROUNDOFF_ERROR = 1e-10;
 
     @Rule
     public final ExpectedException exception;
@@ -54,7 +55,7 @@ public abstract class PopulationTest extends TestCase {
         exception = ExpectedException.none();
     }
 
-    public abstract PopulationBuilder getBuilder();
+    public abstract PopulationBuilder aSamplePopulation();
 
     public Population getInitial() {
         return this.initial;
@@ -75,29 +76,78 @@ public abstract class PopulationTest extends TestCase {
     // FIXME: Move to PopulationBuilderTest
     @Test
     public void testCreatingPopulationFromArray() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
-        assertFalse(actual.isEmpty());
-        assertEquals(4, actual.getSpeciesCount());
-        assertEquals(3, actual.getHeadcountIn(1));
-        assertEquals(2, actual.getHeadcountIn(2));
-        assertEquals(0, actual.getHeadcountIn(3));
-        assertEquals(1, actual.getHeadcountIn(4));
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
+        verifyDistribution(actual, 3, 2, 0, 1);
+
+    }
+    
+    private void verifyDistribution(Population sut, int... distribution) {
+        assertThat("not null", sut, is(not(nullValue())));
+        for(int i=0 ; i<distribution.length ;i++) {
+            assertThat("distribution", actual.getDistribution().get(i), is(equalTo(distribution[i])));
+        }
     }
     
     @Test
     public void testDeepCopyPreserveConstraint() {
-        Population population = getBuilder()
+        Population population = aSamplePopulation()
                 .withFixedNumberOfSpecies()
                 .withDistribution(3, 2, 0, 1)
                 .build();
         
-        actual = population.deepCopy();
+        actual = population.deepCopy().build();
         final Action action = new AddSpecie();
         
         assertThat("illegal addition of specie", actual.allows(action), is(false));   
     }
 
     // Getters test
+    @Test
+    public void testGetSpecieByIndex() {
+        initial = aPopulation()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .withDistribution(3, 2, 0, 1)
+                .build();
+        
+        Specie specie = initial.getSpecie(1);
+        
+        assertThat("specie name", specie.getName(), is(equalTo("s1")));
+        assertThat("specie headcount", specie.getHeadcount(), is(equalTo(3)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSpecieByIndexThatDoesNotExists() {
+        initial = aPopulation()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .withDistribution(3, 2, 0, 1)
+                .build();
+        
+        initial.getSpecie(23);
+    }
+    
+    @Test
+    public void testGetSpecieByName() {
+        initial = aPopulation()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .withDistribution(3, 2, 0, 1)
+                .build();
+        
+        Specie specie = initial.getSpecie("s1");
+        
+        assertThat("specie name", specie.getName(), is(equalTo("s1")));
+        assertThat("specie headcount", specie.getHeadcount(), is(equalTo(3)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSpecieByNameThatDoesNotExists() {
+        initial = aPopulation()
+                .withSpeciesNamed("s1", "s2", "s3", "s4")
+                .withDistribution(3, 2, 0, 1)
+                .build();
+        
+        initial.getSpecie("foo");
+    }
+    
     @Test
     public void testGetDistribution() {
         initial = aPopulation()
@@ -173,38 +223,29 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testGetPercentagePerSpecieOnTheFullSpecie() {
-        initial = getBuilder().withDistribution(3, 0, 0).build();
-        expected = getBuilder().clonedFrom(initial).build();
-        double percentage = initial.getFractionIn(1);
-        assertEquals(initial, expected);
-        assertEquals(1D, percentage, 1e-9);
+        initial = aSamplePopulation().withDistribution(3, 0, 0).build();
+        
+        double percentage = initial.getSpecie(1).getFraction();
+        
+        assertThat("fraction", percentage, is(closeTo(1D, MAX_ROUNDOFF_ERROR)));
     }
 
     @Test
     public void testGetPercentagePerSpecieOnEmptySpecie() {
-        initial = getBuilder().withDistribution(3, 0, 0).build();
-        expected = getBuilder().clonedFrom(initial).build();
-        double percentage = initial.getFractionIn(2);
-        assertEquals(initial, expected);
-        assertEquals(0D, percentage, 1e-9);
+        initial = aSamplePopulation().withDistribution(3, 0, 0).build();
+
+        double percentage = initial.getSpecie(2).getFraction();
+        
+        assertThat("fraction", percentage, is(closeTo(0D, MAX_ROUNDOFF_ERROR)));
     }
 
     @Test
     public void testGetPercentagePerSpecieOnRegularSpecie() {
-        initial = getBuilder().withDistribution(1, 1, 1).build();
-        expected = getBuilder().clonedFrom(initial).build();
-        double percentage = initial.getFractionIn(2);
-        assertEquals(initial, expected);
-        assertEquals(1D / 3D, percentage, 1e-9);
-    }
+        initial = aSamplePopulation().withDistribution(1, 1, 1).build();
 
-    @Test
-    public void testGetPercentagePerSpecieOnRegularSpecieBySpecieName() {
-        initial = getBuilder().withDistribution(1, 1, 1).build();
-        expected = getBuilder().clonedFrom(initial).build();
-        double percentage = initial.getFractionIn(2);
-        assertEquals(initial, expected);
-        assertEquals(1D / 3D, percentage, 1e-9);
+        double percentage = initial.getSpecie(2).getFraction();
+        
+        assertThat("fraction", percentage, is(closeTo(1D / 3D, MAX_ROUNDOFF_ERROR)));
     }
 
     @Test
@@ -221,20 +262,20 @@ public abstract class PopulationTest extends TestCase {
     // Mutator tests
     @Test
     public void testSetNumberOfIndividualsInBySpecieIndex() {
-        initial = getBuilder().withDistribution(1, 2, 3).build();
-        actual = initial.setHeadcountIn(1, 54);
-        expected = getBuilder().withDistribution(54, 2, 3).build();
+        initial = aSamplePopulation().withDistribution(1, 2, 3).build();
+        actual = initial.getSpecie(1).setHeadcount(54);
+        expected = aSamplePopulation().withDistribution(54, 2, 3).build();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testSetNumberOfIndividualsInBySpecieName() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(1, 2, 3)
                 .build();
-        actual = initial.setHeadcountIn("s1", 54);
-        expected = getBuilder()
+        actual = initial.getSpecie("s1").setHeadcount(54);
+        expected = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(54, 2, 3)
                 .build();
@@ -243,20 +284,20 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testShiftNumberOfIndividualsInByIndex() {
-        initial = getBuilder().withDistribution(1, 2, 3).build();
-        actual = initial.shiftHeadcountIn(1, +1);
-        expected = getBuilder().withDistribution(2, 2, 3).build();
+        initial = aSamplePopulation().withDistribution(1, 2, 3).build();
+        actual = initial.getSpecie(1).shiftHeadcountBy(+1);
+        expected = aSamplePopulation().withDistribution(2, 2, 3).build();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testShiftNumberOfIndividualsInBySpecieName() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1")
                 .withDistribution(0)
                 .build();
-        actual = initial.shiftHeadcountIn("s1", 1);
-        expected = getBuilder()
+        actual = initial.getSpecie("s1").shiftHeadcountBy(+1);
+        expected = aSamplePopulation()
                 .withSpeciesNamed("s1")
                 .withDistribution(1)
                 .build();
@@ -265,27 +306,27 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testShiftNumberOfIndividualsByIndexThatDoesNotExists() {
-        initial = getBuilder().withDistribution(0).build();
-        actual = initial.shiftHeadcountIn(77, 1);
+        initial = aSamplePopulation().withDistribution(0).build();
+        actual = initial.getSpecie(77).shiftHeadcountBy(+1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShiftNumberOfIndividualBySpecieNameThatDoesNotExist() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1")
                 .withDistribution(0)
                 .build();
-        actual = initial.shiftHeadcountIn("s877", 1);
+        actual = initial.getSpecie("doesNotExist").shiftHeadcountBy(+1);
     }
 
     @Test
     public void testAddSpecieWithoutName() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withDistribution(1, 2, 3)
                 .build();
         actual = initial.addSpecie(); 
         
-        expected = getBuilder()
+        expected = aSamplePopulation()
                 .withDistribution(1, 2, 3, 0)
                 .build();
         
@@ -294,12 +335,12 @@ public abstract class PopulationTest extends TestCase {
     
     @Test
     public void testAddSpecie() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
         actual = initial.addSpecie("s4");
-        expected = getBuilder()
+        expected = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 1, 0)
                 .build();
@@ -308,7 +349,7 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testAddSpecieWithNullName() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
@@ -317,7 +358,7 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testAddSpecieWithEmptyName() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
@@ -326,7 +367,7 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testAddDuplicatedSpecie() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
@@ -336,12 +377,12 @@ public abstract class PopulationTest extends TestCase {
     // TODO: check that there are no more occurence of "new PopualtionBuilder()"
     @Test
     public void testRemoveSpecieByIndex() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
         actual = initial.removeSpecie(2);
-        expected = getBuilder()
+        expected = aSamplePopulation()
                 .withSpeciesNamed("s1", "s3")
                 .withDistribution(3, 1)
                 .build();
@@ -350,7 +391,7 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveSpecieByIndexTooLarge() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .build();
         actual = initial.removeSpecie(77);
@@ -358,7 +399,7 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveSpecieByNegativeIndex() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
@@ -367,12 +408,12 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testRemoveSpecieByName() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
         actual = initial.removeSpecie("s2");
-        expected = getBuilder()
+        expected = aSamplePopulation()
                 .withSpeciesNamed("s1", "s3")
                 .withDistribution(3, 1)
                 .build();
@@ -381,32 +422,34 @@ public abstract class PopulationTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveSpecieByNameThatDoesNotExist() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
-        actual = initial.removeSpecie("s77");
+        actual = initial.removeSpecie("specie_that_does_not_exist");
     }
 
     @Test
     public void testRenameSpecieByIndex() {
-        initial = getBuilder().withSpeciesNamed("s1", "s2").build();
-        actual = initial.renameSpecie(2, "sXX");
-        expected = getBuilder().withSpeciesNamed("s1", "sXX").build();
+        final String newName = "sXX";
+        initial = aSamplePopulation().withSpeciesNamed("s1", "s2").build();
+        actual = initial.getSpecie(2).setName(newName);
+        expected = aSamplePopulation().withSpeciesNamed("s1", newName).build();
         assertEquals(actual, expected);
     }
 
     @Test
     public void testRenameSpecieByName() {
-        initial = getBuilder().withSpeciesNamed("s1", "s2").build();
-        actual = initial.renameSpecie("s2", "sXX");
-        expected = getBuilder().withSpeciesNamed("s1", "sXX").build();
+        final String newName = "sXX";
+        initial = aSamplePopulation().withSpeciesNamed("s1", "s2").build();
+        actual = initial.getSpecie("s2").setName(newName);
+        expected = aSamplePopulation().withSpeciesNamed("s1", newName).build();
         assertEquals(actual, expected);
     }
 
     @Test
     public void testDifferenceWith() {
-        Population source = getBuilder()
+        Population source = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(1, 2, 3)
                 .build();
@@ -428,7 +471,7 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testSortSpeciesNamesAlphabetically() {
-        Population source = getBuilder()
+        Population source = aSamplePopulation()
                 .withSpeciesNamed("s3", "s2", "s1")
                 .withDistribution(1, 2, 3)
                 .build();
@@ -441,7 +484,7 @@ public abstract class PopulationTest extends TestCase {
     
     @Test
     public void testIsUniformlyDistributed() {
-        Population population = getBuilder()
+        Population population = aSamplePopulation()
                 .withDistribution(5, 5, 5, 5, 5)
                 .build();
         
@@ -450,7 +493,7 @@ public abstract class PopulationTest extends TestCase {
     
     @Test
     public void testIsNotUniformlyDistributed() {
-        Population population = getBuilder()
+        Population population = aSamplePopulation()
                 .withDistribution(10, 3, 1, 12, 5)
                 .build();
         
@@ -460,7 +503,7 @@ public abstract class PopulationTest extends TestCase {
     // Test conversions to other data representation
     @Test
     public void testToString() {
-        Population p = getBuilder()
+        Population p = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
@@ -471,25 +514,26 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testToArrayOfFraction() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
         double[] actual = initial.toArrayOfFractions();
         double[] expected = new double[]{0.5D, 1D / 3, 1D / 6};
-        assertTrue(Arrays.equals(expected, actual));
+        
+        assertThat("fractions", actual, is(equalTo(expected)));
     }
 
     @Test
     public void testToMapWhenEmpty() {
-        initial = getBuilder().build();
+        initial = aSamplePopulation().build();
         Map<String, Integer> expected = new HashMap<String, Integer>();
         assertEquals(expected, initial.toMap());
     }
 
     @Test
     public void testToMapWhenFilled() {
-        initial = getBuilder()
+        initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2")
                 .withDistribution(3, 9)
                 .build();
@@ -502,18 +546,18 @@ public abstract class PopulationTest extends TestCase {
     // Test populations equality
     @Test
     public void testEqualsWhenEquals() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
-        expected = getBuilder().withDistribution(3, 2, 0, 1).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
+        expected = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertEquals(actual, expected);
     }
 
     @Test
     public void testEqualsWhenEqualsButSpeciesNamesAreInDifferentOrder() {
-        actual = getBuilder()
+        actual = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 0, 1)
                 .build();
-        expected = getBuilder()
+        expected = aSamplePopulation()
                 .withSpeciesNamed("s2", "s1", "s4", "s3")
                 .withDistribution(2, 3, 1, 0)
                 .build();
@@ -522,30 +566,30 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testEqualsWithNull() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertFalse(actual.equals(null));
     }
 
     @Test
     public void testEqualsWithWrongType() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertFalse(actual.equals(23));
     }
 
     @Test
     public void testEqualsWhenIndividualCountAreDifferent() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
-        expected = getBuilder().withDistribution(3, 3, 0, 1).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
+        expected = aSamplePopulation().withDistribution(3, 3, 0, 1).build();
         assertFalse(actual.equals(expected));
     }
 
     @Test
     public void testEqualsWhenSpecieNameAreDifferent() {
-        actual = getBuilder()
+        actual = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
-        expected = getBuilder()
+        expected = aSamplePopulation()
                 .withSpeciesNamed("sp1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
@@ -554,21 +598,21 @@ public abstract class PopulationTest extends TestCase {
 
     @Test
     public void testEqualsWhenSpeciesCountAreDifferent() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
-        expected = getBuilder().withDistribution(3, 2, 0, 1, 5).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
+        expected = aSamplePopulation().withDistribution(3, 2, 0, 1, 5).build();
         assertFalse(actual.equals(expected));
     }
 
     @Test
     public void testEqualsWhenSame() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertTrue(actual.equals(actual));
     }
 
     @Test
     public void testSameHashCodeImpliesEquals() {
-        actual = getBuilder().withDistribution(3, 2, 0, 1).build();
-        expected = getBuilder().withDistribution(3, 2, 0, 1).build();
+        actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
+        expected = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertEquals(actual.hashCode(), expected.hashCode());
     }
 }

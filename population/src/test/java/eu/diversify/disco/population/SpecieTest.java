@@ -27,22 +27,24 @@ import org.junit.runners.JUnit4;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import static eu.diversify.disco.population.PopulationBuilder.*;
+
 @RunWith(JUnit4.class)
 public class SpecieTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectNullAsNameInConstructor() {
-        new Specie(null, 23);
+        new Specie(new MutablePopulation(), null, 23);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectEmptyStringAsNameInConstructor() {
-        new Specie("", 23);
+        new Specie(new MutablePopulation(), "", 23);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectNegativeHeadcountInConstructor() {
-        new Specie("Lions", -23);
+        new Specie(new MutablePopulation(), "Lions", -23);
     }
 
     @Test
@@ -162,7 +164,7 @@ public class SpecieTest extends TestCase {
     public void testIsEmptyWhenFull() {
         Specie specie = defaultSpecie();
 
-        assertThat("Not empty", !specie.isEmpty());
+        assertThat("empty", !specie.isEmpty());
     }
 
     @Test
@@ -174,6 +176,7 @@ public class SpecieTest extends TestCase {
     }
 
     private Specie defaultSpecie() {
-        return new Specie("Lions", 25);
+       Population population = aPopulation().withDistribution(1, 2, 3, 4).build();
+       return population.getSpecie(1);
     }
 }

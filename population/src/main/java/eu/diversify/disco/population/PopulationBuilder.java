@@ -47,12 +47,12 @@ import java.util.Map;
  *
  * This follows the 'fluent interface' pattern to ensure that the construction
  * of complex populations remain readable.
- *
  */
 public class PopulationBuilder {
 
     public static final boolean MUTABLE = false;
     public static final boolean FREE = false;
+
     private final ArrayList<Integer> distribution;
     private final ArrayList<String> speciesNames;
     private boolean immutable;
@@ -76,19 +76,6 @@ public class PopulationBuilder {
         fixedNumberOfSpecies = FREE;
         fixedNumberOfIndividuals = FREE;
     }
-
-    /**
-     * Create a new population, copied from the given one
-     *
-     * @param population the population to copy
-     * @return this builder object
-     */
-    public PopulationBuilder clonedFrom(Population population) {
-        withSpeciesNamed(population.getSpeciesNames());
-        withDistribution(population.getDistribution());
-        return this;
-    }
-    
     
     public PopulationBuilder fromMap(Map<String, Integer> map) {
         for(Map.Entry<String, Integer> entry: map.entrySet()) {
@@ -157,34 +144,26 @@ public class PopulationBuilder {
     public Population build() {
         makeDefaultSpeciesNamesIfNeeded();
         makeDefaultDistributionIfNeeded();
-        Population result = new ConcretePopulation(speciesNames, distribution);
-        result = setupConstraints(result);
-        result = makeImmutableIfNeeded(result);
+        final Collection<Constraint> constraints = prepareConstaints();  
+        Population result = new MutablePopulation(speciesNames, distribution, constraints);  
+        if (immutable) {
+            result = new ImmutablePopulation(speciesNames, distribution, constraints);
+        }
         setDefaultValues();
         return result;
     }
 
-    private Population setupConstraints(Population population) {
-        ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+    private Collection<Constraint> prepareConstaints() {
+        final ArrayList<Constraint> constraints = new ArrayList<Constraint>();
         if (fixedNumberOfIndividuals) {
             constraints.add(new FixedNumberOfIndividuals());
         }
         if (fixedNumberOfSpecies) {
             constraints.add(new FixedNumberOfSpecies());
         }
-        if (!constraints.isEmpty()) {
-            return new ConstrainedPopulation(population, constraints);
-        }
-        return population;
+        return constraints;
     }
 
-    private Population makeImmutableIfNeeded(Population population) {
-        Population result = population;
-        if (immutable) {
-            result = new ImmutablePopulation(population);
-        }
-        return result;
-    }
 
     private void makeDefaultSpeciesNamesIfNeeded() {
         if (speciesNames.isEmpty() && !distribution.isEmpty()) {

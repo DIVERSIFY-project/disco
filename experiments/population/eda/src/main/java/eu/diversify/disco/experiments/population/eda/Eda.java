@@ -83,13 +83,13 @@ public class Eda implements Experiment {
         data.set(DIVERSITY_BEFORE, diversity.applyTo(population));
 
         String source = chooseAnySpecieFrom(nonEmptySpecies(population));
-        data.set(SOURCE_SPECIE, population.getHeadcountIn(source));
+        data.set(SOURCE_SPECIE, population.getSpecie(source).getHeadcount());
 
         String target = chooseAnySpecieFrom(excludeSpecieNamed(population, source));
-        data.set(TARGET_SPECIE, population.getHeadcountIn(target));
+        data.set(TARGET_SPECIE, population.getSpecie(target).getHeadcount());
 
-        population.shiftHeadcountIn(source, -1);
-        population.shiftHeadcountIn(target, +1);
+        population.getSpecie(source).shiftHeadcountBy(-1);
+        population.getSpecie(target).shiftHeadcountBy(+1);
 
         data.set(DIVERSITY_AFTER, diversity.applyTo(population));
     }
@@ -98,7 +98,7 @@ public class Eda implements Experiment {
     List<String> nonEmptySpecies(Population population) {
         ArrayList<String> nonEmptySpecies = new ArrayList<String>(population.getSpeciesCount());
         for (String specie: population.getSpeciesNames()) {
-            if (population.getHeadcountIn(specie) > 0) {
+            if (population.getSpecie(specie).getHeadcount() > 0) {
                 nonEmptySpecies.add(specie);
             }
         }

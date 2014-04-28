@@ -57,11 +57,11 @@ public class ToCloudML implements DiversityInjection<DeploymentModel>{
         // TODO: Check if the model and the population are consistent?
         
         for (Node nodeType: deployment.getNodeTypes()) {
-            adjustNodeInstanceCount(deployment, nodeType, toBe.getHeadcountIn(nodeType.getName()));
+            adjustNodeInstanceCount(deployment, nodeType, toBe.getSpecie(nodeType.getName()).getHeadcount());
         }
         
         for (Artefact artefactType: deployment.getArtefactTypes()) {
-            adjustArtefactInstanceCount(deployment, artefactType, toBe.getHeadcountIn(artefactType.getName()));
+            adjustArtefactInstanceCount(deployment, artefactType, toBe.getSpecie(artefactType.getName()).getHeadcount());
         }
 
         return deployment;

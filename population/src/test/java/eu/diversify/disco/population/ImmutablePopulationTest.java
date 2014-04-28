@@ -32,26 +32,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 package eu.diversify.disco.population;
 
-import eu.diversify.disco.population.PopulationBuilder;
+import org.junit.Test;
 import static eu.diversify.disco.population.PopulationBuilder.*;
-import eu.diversify.disco.population.PopulationTest;
 import static junit.framework.TestCase.assertNotSame;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 /**
  * Shall override the all mutators test and check for immutability
  */
 @RunWith(JUnit4.class)
 public class ImmutablePopulationTest extends PopulationTest {
-
-    public ImmutablePopulationTest() {
-        super();
-    }
 
     @Override
     public void testShiftNumberOfIndividualsInByIndex() {
@@ -102,7 +98,22 @@ public class ImmutablePopulationTest extends PopulationTest {
     }
 
     @Override
-    public PopulationBuilder getBuilder() {
+    public PopulationBuilder aSamplePopulation() {
         return aPopulation().immutable();
+    }
+
+    @Test
+    public void testCloning() {
+        Population sut = aPopulation().withDistribution(1, 2, 3, 4).build();
+        Population clone = sut.deepCopy().immutable().build();
+
+        Population updated = clone.getSpecie(3).setHeadcount(0);
+        
+        Population updatedTwice = updated.getSpecie(3).setHeadcount(1);
+
+        assertThat("immutable cloned not changed", clone.getSpecie(3).getHeadcount(), is(equalTo(3)));
+        assertThat("new population changed", updated.getSpecie(3).getHeadcount(), is(equalTo(0)));
+        assertThat("new population changed", updatedTwice.getSpecie(3).getHeadcount(), is(equalTo(1)));
+
     }
 }

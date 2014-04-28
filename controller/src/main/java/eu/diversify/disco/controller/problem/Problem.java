@@ -18,8 +18,8 @@
 package eu.diversify.disco.controller.problem;
 
 import eu.diversify.disco.population.Population;
+import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.actions.Action;
-import eu.diversify.disco.population.ImmutablePopulation;
 import eu.diversify.disco.population.diversity.DiversityMetric;
 
 /**
@@ -27,9 +27,7 @@ import eu.diversify.disco.population.diversity.DiversityMetric;
  * population, the reference diversity level and diversity metric in use.
  *
  * A problem is a value object which cannot be change over the time.
- *
- * @author Franck Chauvel
- * @since 0.1
+
  */
 public class Problem {
 
@@ -53,7 +51,7 @@ public class Problem {
         checkIfReferenceIsWithinTheRangeOfTheMetric(initialPopulation, metric, reference);
         this.metric = metric;
         this.reference = reference;
-        this.initialPopulation = new ImmutablePopulation(initialPopulation);
+        this.initialPopulation = initialPopulation.deepCopy().immutable().build();
     }
 
     private void checkIfPopulationIsValid(Population population) {

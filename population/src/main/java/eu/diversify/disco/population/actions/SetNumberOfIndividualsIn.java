@@ -44,7 +44,7 @@ public class SetNumberOfIndividualsIn extends SpecieAccess {
 
     @Override
     public Population applyTo(Population subject) {
-        return subject.setHeadcountIn(getSpecieIndex(subject), numberOfIndividuals);
+        return subject.getSpecie(getSpecieIndex(subject)).setHeadcount(numberOfIndividuals);
     }
 
     @Override

@@ -15,37 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.population;
 
 import static eu.diversify.disco.population.Population.DEFAULT_SPECIE_NAME_FORMAT;
+import static eu.diversify.disco.population.PopulationBuilder.*;
+
 import static eu.diversify.disco.population.actions.ScriptBuilder.*;
 import eu.diversify.disco.population.actions.Action;
 import eu.diversify.disco.population.actions.AddSpecie;
 import eu.diversify.disco.population.actions.RemoveSpecie;
 import eu.diversify.disco.population.actions.ScriptBuilder;
 import eu.diversify.disco.population.actions.ShiftNumberOfIndividualsIn;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import eu.diversify.disco.population.constraints.Constraint;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,57 +37,82 @@ import java.util.regex.Pattern;
  * FIXME: Change the implementation of the list of species name to ensure access
  * to species name in O(c)
  */
-public class ConcretePopulation implements Population {
+public class MutablePopulation implements Population {
+
     private static final int DEFAULT_INDEX = -1;
-
     private final ArrayList<Specie> species;
+    private final ArrayList<Constraint> constraints;
 
-    ConcretePopulation() {
-        this(new ArrayList<String>(), new ArrayList<Integer>());
+    MutablePopulation() {
+        this(new ArrayList<String>(), new ArrayList<Integer>(), new ArrayList<Constraint>());
+    }
+    
+    MutablePopulation(List<String> speciesNames, List<Integer> distribution) {
+      this(speciesNames, distribution, new ArrayList<Constraint>());
     }
 
-    ConcretePopulation(List<String> speciesNames, List<Integer> distribution) {
+    MutablePopulation(List<String> speciesNames, List<Integer> distribution, Collection<Constraint> constraints) {
         checkConsistencyBetween(speciesNames, distribution);
-        species = new ArrayList<Specie>();
-        for(int index = 0 ; index<speciesNames.size() ; index++) {
-            species.add(new Specie(speciesNames.get(index), distribution.get(index)));
+        this.species = new ArrayList<Specie>();
+        this.constraints = new ArrayList<Constraint>(constraints);
+        for (int index = 0; index < speciesNames.size(); index++) {
+            this.species.add(new Specie(this, speciesNames.get(index), distribution.get(index))); 
         }
     }
 
-    private ConcretePopulation(ConcretePopulation model) {
-        this(model.getSpeciesNames(), model.getDistribution());
+    private MutablePopulation(MutablePopulation model) {
+        this(model.getSpeciesNames(), model.getDistribution(), model.constraints);
+    }
+
+    public MutablePopulation prepareUpdate() {
+        return this;
     }
 
     @Override
     public boolean allows(Action action) {
-        return true;
+        boolean supported = true;
+        for (Constraint constraint : constraints) {
+            supported &= constraint.allows(action);
+        }
+        return supported;
     }
 
-    @Override
-    public List<Action> allLegalActions(int scaleFactor) {
-        ArrayList<Action> legalActions = new ArrayList<Action>();
+    // FIXME: to be refactored
+    private List<Action> allPossibleActions(int scaleFactor) {
+        final ArrayList<Action> possibleActions = new ArrayList<Action>();
         ScriptBuilder newSpecies = aScript();
         for (int i = 0; i < scaleFactor; i++) {
             newSpecies.addSpecie();
         }
-        legalActions.add(newSpecies.build());
+        possibleActions.add(newSpecies.build());
         for (Specie specie : species) {
             if (getTotalHeadcount() > specie.getHeadcount()) {
-                legalActions.add(new RemoveSpecie(specie.getName()));
+                possibleActions.add(new RemoveSpecie(specie.getName()));
             }
-            legalActions.add(new ShiftNumberOfIndividualsIn(specie.getName(), +scaleFactor));
+            possibleActions.add(new ShiftNumberOfIndividualsIn(specie.getName(), +scaleFactor));
             if (getTotalHeadcount() > scaleFactor && specie.getHeadcount() >= scaleFactor) {
-                legalActions.add(new ShiftNumberOfIndividualsIn(specie.getName(), -scaleFactor));
+                possibleActions.add(new ShiftNumberOfIndividualsIn(specie.getName(), -scaleFactor));
             }
-            for (Specie otherSpecie: species) {
+            for (Specie otherSpecie : species) {
                 if (!specie.equals(otherSpecie)) {
                     if (specie.getHeadcount() >= scaleFactor) {
-                        legalActions.add(aScript()
+                        possibleActions.add(aScript()
                                 .shift(specie.getName(), -scaleFactor)
                                 .shift(otherSpecie.getName(), +scaleFactor)
                                 .build());
                     }
                 }
+            }
+        }
+        return possibleActions;
+    }
+
+    @Override
+    public List<Action> allLegalActions(int scaleFactor) {
+        final ArrayList<Action> legalActions = new ArrayList<Action>();
+        for (Action action : allPossibleActions(scaleFactor)) {
+            if (allows(action)) {
+                legalActions.add(action);
             }
         }
         return legalActions;
@@ -130,54 +137,21 @@ public class ConcretePopulation implements Population {
         return species.size();
     }
 
+    @Override
     public Specie getSpecie(int index) {
-        checkSpecieIndexIsValid(index);
+        rejectInvalidIndex(index);
         return species.get(index - 1);
-    }
-
+    } 
+    
     @Override
-    public Population shiftHeadcountIn(int specieIndex, int offset) {
-        getSpecie(specieIndex).shiftHeadcountBy(offset);
-        return this;
-    }
-
-    @Override
-    public Population shiftHeadcountIn(String specieName, int offset) {
-        return shiftHeadcountIn(getSpecieIndex(specieName), offset);
-    }
-
-    @Override
-    public int getHeadcountIn(int specieIndex) {
-        return getSpecie(specieIndex).getHeadcount();
-    }
-
-    @Override
-    public int getHeadcountIn(String specieName) {
-        return getHeadcountIn(getSpecieIndex(specieName));
-    }
-
-    @Override
-    public Population renameSpecie(String oldName, String newName) {
-        getSpecie(getSpecieIndex(oldName)).setName(newName);
-        return this;
-    }
-
-    @Override
-    public Population setHeadcountIn(int specieIndex, int headcount) {
-        getSpecie(specieIndex).setHeadcount(headcount);
-        return this;
-    }
-
-    @Override
-    public Population setHeadcountIn(String specieName, int headcount) {
-        setHeadcountIn(getSpecieIndex(specieName), headcount);
-        return this;
+    public Specie getSpecie(String name) {
+        return getSpecie(getSpecieIndex(name));
     }
 
     @Override
     public int getSpecieIndex(String specieName) {
         int index = DEFAULT_INDEX;
-        for(int i=0 ; i<species.size() ; i++) {
+        for (int i = 0; i < species.size(); i++) {
             if (species.get(i).isNamed(specieName)) {
                 index = i + 1;
             }
@@ -237,9 +211,10 @@ public class ConcretePopulation implements Population {
 
     @Override
     public Population addSpecie(String specieName) {
-        checkIfSpecieNameIsValid(specieName);
-        species.add(new Specie(specieName));
-        return this;
+        rejectInvalidNames(specieName);
+        final MutablePopulation updated = prepareUpdate();
+        updated.species.add(new Specie(this, specieName));
+        return updated;
     }
 
     @Override
@@ -249,8 +224,9 @@ public class ConcretePopulation implements Population {
 
     @Override
     public Population removeSpecie(int specieIndex) {
-        species.remove(getSpecie(specieIndex));
-        return this;
+        final MutablePopulation updated = prepareUpdate();
+        updated.species.remove(getSpecie(specieIndex));
+        return updated;
     }
 
     @Override
@@ -267,8 +243,7 @@ public class ConcretePopulation implements Population {
         }
     }
 
-
-    private void checkIfSpecieNameIsValid(String specieName) {
+    private void rejectInvalidNames(String specieName) {
         if (specieName == null) {
             throw new IllegalArgumentException("Specie name shall not be null.");
         }
@@ -280,9 +255,9 @@ public class ConcretePopulation implements Population {
         }
     }
 
-    private void checkSpecieIndexIsValid(int specieIndex) {
+    private void rejectInvalidIndex(int specieIndex) {
         if (specieIndex < 1 || specieIndex > species.size()) {
-            throw new IllegalArgumentException("No specie with index '" + specieIndex + "'");
+            throw new IllegalArgumentException("No specie with index '" + specieIndex + "' (should be in [1, " + species.size() + "])" );
         }
     }
 
@@ -290,7 +265,7 @@ public class ConcretePopulation implements Population {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[ ");
-        for (final Specie specie: species) {
+        for (final Specie specie : species) {
             builder.append(specie.getName());
             builder.append(": ");
             builder.append(specie.getHeadcount());
@@ -303,21 +278,12 @@ public class ConcretePopulation implements Population {
     }
 
     @Override
-    public double getFractionIn(int specieIndex) {
-        double count = getSpecie(specieIndex).getHeadcount();
-        return (count / getTotalHeadcount());
-    }
-
-    @Override
-    public double getFractionIn(String specieName) {
-        return getFractionIn(getSpecieIndex(specieName));
-    }
-
-    @Override
     public double[] toArrayOfFractions() {
         double[] results = new double[getSpeciesCount()];
-        for (int i = 0; i < results.length; i++) {
-            results[i] = getFractionIn(i + 1);
+        int index = 0;
+        for (Specie specie : species) {
+            results[index] = specie.getFraction();
+            index += 1;
         }
         return results;
     }
@@ -328,14 +294,14 @@ public class ConcretePopulation implements Population {
     }
 
     @Override
-    public Population renameSpecie(int specieIndex, String newName) {
-        getSpecie(specieIndex).setName(newName);
-        return this;
-    }
-
-    @Override
-    public Population deepCopy() {
-        return new ConcretePopulation(this);
+    public PopulationBuilder deepCopy() {
+        final PopulationBuilder builder = aPopulation()
+                .withSpeciesNamed(getSpeciesNames())
+                .withDistribution(getDistribution());
+        for(Constraint constraint: constraints) {
+            constraint.activateOn(builder);
+        }
+        return builder;
     }
 
     @Override
@@ -361,7 +327,7 @@ public class ConcretePopulation implements Population {
         int s = getSpeciesCount();
         double mu = getMeanHeadcount();
         double total = 0D;
-        for (Specie specie: species) {
+        for (Specie specie : species) {
             total += Math.pow(specie.getHeadcount() - mu, 2);
         }
         return total / s;
@@ -376,18 +342,18 @@ public class ConcretePopulation implements Population {
     public List<Action> differenceWith(Population target) {
         final ArrayList<Action> actions = new ArrayList<Action>();
         final List<String> superfluousSpecies = new ArrayList<String>(getSpeciesNames());
-        for (String foreign : target.getSpeciesNames()) {
-            if (this.hasAnySpecieNamed(foreign)) {
-                int delta = target.getHeadcountIn(foreign) - this.getHeadcountIn(foreign);
+        for (Specie foreign : target) {
+            if (this.hasAnySpecieNamed(foreign.getName())) {
+                int delta = foreign.getHeadcount() - this.getSpecie(foreign.getName()).getHeadcount();
                 if (delta != 0) {
-                    actions.add(new ShiftNumberOfIndividualsIn(foreign, delta));
+                    actions.add(new ShiftNumberOfIndividualsIn(foreign.getName(), delta));
                 }
             }
             else {
-                actions.add(new AddSpecie(foreign));
-                actions.add(new ShiftNumberOfIndividualsIn(foreign, target.getHeadcountIn(foreign)));
+                actions.add(new AddSpecie(foreign.getName()));
+                actions.add(new ShiftNumberOfIndividualsIn(foreign.getName(), foreign.getHeadcount()));
             }
-            superfluousSpecies.remove(foreign);
+            superfluousSpecies.remove(foreign.getName());
         }
         for (String specie : superfluousSpecies) {
             actions.add(new RemoveSpecie(specie));
@@ -405,9 +371,14 @@ public class ConcretePopulation implements Population {
     @Override
     public Map<String, Integer> toMap() {
         final HashMap<String, Integer> map = new HashMap<String, Integer>();
-        for (final Specie specie: species) {
+        for (final Specie specie : species) {
             map.put(specie.getName(), specie.getHeadcount());
         }
         return map;
+    }
+
+    @Override
+    public Iterator<Specie> iterator() {
+        return species.iterator();
     }
 }

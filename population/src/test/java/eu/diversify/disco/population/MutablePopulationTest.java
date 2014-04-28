@@ -36,10 +36,10 @@ import static org.hamcrest.Matchers.*;
  * Override all mutators test and check they do modify the initial population
  */
 @RunWith(JUnit4.class)
-public class ConcretePopulationTest extends PopulationTest {
+public class MutablePopulationTest extends PopulationTest {
 
     @Override
-    public PopulationBuilder getBuilder() {
+    public PopulationBuilder aSamplePopulation() {
         return aPopulation();
     }
 
@@ -99,7 +99,7 @@ public class ConcretePopulationTest extends PopulationTest {
 
     @Test
     public void testLegalActions() {
-        ConcretePopulation population = (ConcretePopulation) aPopulation()
+        MutablePopulation population = (MutablePopulation) aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(2, 0, 0)
                 .build();
@@ -123,7 +123,7 @@ public class ConcretePopulationTest extends PopulationTest {
 
     @Test
     public void testThatLegalActionsCannotEmptyThePopulation() {
-        ConcretePopulation population = (ConcretePopulation) aPopulation()
+        MutablePopulation population = (MutablePopulation) aPopulation()
                 .withSpeciesNamed("s1", "s2")
                 .withDistribution(1, 0)
                 .build();

@@ -154,9 +154,9 @@ public class EdaTest extends TestCase {
     private Population makeMinimalPopulation(int s1, int s2) {
         Population minimalPopulation = aPopulation().build();
         minimalPopulation.addSpecie("s1");
-        minimalPopulation.setHeadcountIn("s1", s1);
+        minimalPopulation.getSpecie("s1").setHeadcount(s1);
         minimalPopulation.addSpecie("s2");
-        minimalPopulation.setHeadcountIn("s2", s2);
+        minimalPopulation.getSpecie("s2").setHeadcount(s2);
         return minimalPopulation;
     }
 }

@@ -26,7 +26,7 @@ import java.util.Map;
  * The general interface of population as a mapping from species names to number
  * of individuals in species.
  */
-public interface Population {
+public interface Population extends Iterable<Specie> {
 
     /**
      * FIXME: What is the meaning of a population with no specie? is it an empty
@@ -45,7 +45,7 @@ public interface Population {
     /**
      * @return a complete copy of the population
      */
-    public Population deepCopy();
+    public PopulationBuilder deepCopy();
 
     /**
      * @return true if the given action is permitted on this population
@@ -60,24 +60,23 @@ public interface Population {
     public List<Action> allLegalActions(int scaleFactor);
 
     /**
-     * @param specieIndex the index of the specie from interest, starting from 1
-     * @return the number of individuals in the specie at index 'specieIndex'
-     * @throws IllegalArgumentException if the given index is irrelevant
-     */
-    public int getHeadcountIn(int specieIndex);
-
-    /**
-     * @param specieName the name of the specie of interest
-     * @return the number of individuals in the selected specie
-     * @throws IllegalArgumentException if the given specie name is irrelevant
-     */
-    public int getHeadcountIn(String specieName);
-
-    /**
      * @return the number of species
      */
     public int getSpeciesCount();
 
+    
+    /**
+     * @return the specie at the given position
+     * @param index the index of the specie of interest
+     */
+    public Specie getSpecie(int index);
+
+    /**
+     * @return the specie with a given name if it exists  
+     * @param name the name of the specie of interest
+     */
+    public Specie getSpecie(String name);
+    
     /**
      * @param specieName the name of the specie of interest
      * @return the index of the specie
@@ -111,20 +110,7 @@ public interface Population {
      */
     public List<Integer> getDistribution();
 
-    /**
-     * @param specieIndex the index of the population of interest, starting at 1
-     * @return the fraction of the whole population as a scalar value in [0, 1]
-     * @throws IllegalArgumentException if the given index is irrelevant
-     */
-    public double getFractionIn(int specieIndex);
-
-    /**
-     * @param specieName the name of specie of interest
-     * @return the fraction of the whole population as a scalar value in [0, 1]
-     * @throws IllegalArgumentException if the given name is irrelevant
-     */
-    public double getFractionIn(String specieName);
-
+ 
     /**
      * Check whether the population contains a specie with the given name
      *
@@ -138,24 +124,6 @@ public interface Population {
      * whether the total number of individuals is zero)
      */
     public boolean isEmpty();
-
-    /**
-     * Update the name of the specie at in the given index, with the given name
-     *
-     * @param specieIndex the index of interest
-     * @param newName the new name to use for the selected specie
-     * @return the modified population
-     */
-    public Population renameSpecie(int specieIndex, String newName);
-
-    /**
-     * Update the name of the specie at in the given index, with the given name
-     *
-     * @param oldName the name of the specie whose name must be changed
-     * @param newName the new name to use for the selected specie
-     * @return the modified population
-     */
-    public Population renameSpecie(String oldName, String newName);
 
     /**
      * Create a new specie, with the given and no individual
@@ -188,52 +156,6 @@ public interface Population {
      * @throws IllegalArgumentException if the given name is irrelevant
      */
     public Population removeSpecie(String specieName);
-
-    /**
-     * Set the number of individual in the selected population
-     *
-     * @param specieIndex the index of the specie of interest
-     * @param numberOfIndividuals the number of individual to associate with the
-     * selected specie
-     * @return the modified population
-     * @throws IllegalArgumentException if the given index is irrelevant
-     */
-    public Population setHeadcountIn(int specieIndex, int numberOfIndividuals);
-
-    /**
-     * Set the number of individual in the selected population
-     *
-     * @param specieIndex the name of the specie of interest
-     * @param numberOfIndividuals the number of individual to associate with the
-     * selected specie
-     * @return the modified population
-     * @throws IllegalArgumentException if the given index is irrelevant
-     */
-    public Population setHeadcountIn(String specieName, int numberOfIndividuals);
-
-    /**
-     * Adjust the number of individual in the selected specie by the given
-     * addend
-     *
-     * @param specieIndex the index of the specie whose number of individuals
-     * shall be adjusted
-     * @param offset the change to add to the number of specie
-     * @return the modified population
-     * @throws IllegalArgumentException if the given index is irrelevant
-     */
-    public Population shiftHeadcountIn(int specieIndex, int offset);
-
-    /**
-     * Adjust the number of individual in the selected specie by the given
-     * addend
-     *
-     * @param specieIndex the index of the specie whose number of individuals
-     * shall be adjusted
-     * @param offset the change to add to the number of specie
-     * @return the modified population
-     * @throws IllegalArgumentException if the given name is irrelevant
-     */
-    public Population shiftHeadcountIn(String specieName, int offset);
 
     /**
      * @param target the population to be compared to

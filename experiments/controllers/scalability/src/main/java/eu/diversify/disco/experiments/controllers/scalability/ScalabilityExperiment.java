@@ -146,11 +146,11 @@ public class ScalabilityExperiment implements Experiment {
                 .withFixedNumberOfSpecies()
                 .build();
         population.addSpecie("sp1");
-        population.setHeadcountIn(1, numberOfIndividuals);
+        population.getSpecie(1).setHeadcount(numberOfIndividuals);
         for (int i = 2; i <= numberOfSpecies; i++) {
             String name = String.format("sp%d", i);
             population.addSpecie(name);
-            population.setHeadcountIn(i, 0);
+            population.getSpecie(i).setHeadcount(0);
         }
         return population;
     }

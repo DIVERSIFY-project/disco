@@ -17,85 +17,30 @@
  */
 package eu.diversify.disco.population;
 
-import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.constraints.Constraint;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * Ensure immutability of a population
- *
- * We only need to override the mutators methods which accepts a specie index so
- * they return an new object and let the original one unchanged.
- *
- * Other mutators are expressed with respect to the other one in
- * AbstractDecorator
- *
- * @author Franck Chauvel
- * @since 0.1
+ * Ensure immutability of a population, by return a copy of the population
+ * on prepare update
  */
-public class ImmutablePopulation extends AbstractPopulationDecorator {
+public class ImmutablePopulation extends MutablePopulation {
 
-    public ImmutablePopulation(Population population) {
-        super(population);
+    public ImmutablePopulation(List<String> speciesNames, List<Integer> distribution, Collection<Constraint> constraints) {
+        super(speciesNames, distribution, constraints);
     }
 
     @Override
-    public Population addSpecie() {
-        Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.addSpecie());
+    public MutablePopulation prepareUpdate() {
+        return (MutablePopulation) deepCopy().build();
     }
 
     @Override
-    public Population addSpecie(String specieName) {
-        Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.addSpecie(specieName));
+    public PopulationBuilder deepCopy() {
+        return super.deepCopy().immutable();
     }
+    
+    
 
-    @Override
-    public Population removeSpecie(int specieIndex) {
-        Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.removeSpecie(specieIndex));
-    }
-
-    @Override
-    public Population setHeadcountIn(int specieIndex, int numberOfIndividuals) {
-        Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.setHeadcountIn(specieIndex, numberOfIndividuals));
-    }
-
-    @Override
-    public Population shiftHeadcountIn(int specieIndex, int offset) {
-        Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.shiftHeadcountIn(specieIndex, offset));
-    }
-
-    @Override
-    public String toString() {
-        return getDelegate().toString();
-    }
-
-    @Override
-    public double[] toArrayOfFractions() {
-        return getDelegate().toArrayOfFractions();
-    }
-
-    @Override
-    public Population renameSpecie(int specieIndex, String newName) {
-        Population copy = getDelegate().deepCopy();
-        return new ImmutablePopulation(copy.renameSpecie(specieIndex, newName));
-    }
-
-    @Override
-    public Population deepCopy() {
-        return new ImmutablePopulation((getDelegate().deepCopy()));
-    }
-
-    @Override
-    public List<String> getSpeciesNames() {
-        return getDelegate().getSpeciesNames();
-    }
-
-    @Override
-    public List<Integer> getDistribution() {
-        return getDelegate().getDistribution();
-    }
 }

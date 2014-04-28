@@ -19,7 +19,7 @@
  */
 package eu.diversify.disco.experiments.controllers.decentralised;
 
-import eu.diversify.disco.population.ConcretePopulation;
+import eu.diversify.disco.population.MutablePopulation;
 import static eu.diversify.disco.population.PopulationBuilder.*;
 import eu.diversify.disco.population.Population;
 import java.util.ArrayList;
@@ -80,13 +80,13 @@ public class Group implements Iterable<Individual> {
             if (!population.hasAnySpecieNamed(specie)) {
                 population.addSpecie(specie);
             }
-            population.shiftHeadcountIn(specie, +1);
+            population.getSpecie(specie).shiftHeadcountBy(+1);
         }
-        return aPopulation().immutable().clonedFrom(population).build();
+        return population.deepCopy().immutable().build();
     }
 
     private String makeSpecieName(final Individual i) {
-        return String.format(ConcretePopulation.DEFAULT_SPECIE_NAME_FORMAT, i.getSpecie());
+        return String.format(MutablePopulation.DEFAULT_SPECIE_NAME_FORMAT, i.getSpecie());
     }
 
     private static class Attempt {
@@ -96,7 +96,7 @@ public class Group implements Iterable<Individual> {
 
         public Attempt(DecentralisedSetup setup, double reference, Population population, String specieName) {
             this.specieName = specieName;
-            Population updated = population.shiftHeadcountIn(specieName, +1);
+            Population updated = population.getSpecie(specieName).shiftHeadcountBy(+1);
             error = Math.pow(reference - setup.diversityOf(updated), 2);
         }
 
@@ -114,7 +114,7 @@ public class Group implements Iterable<Individual> {
         }
 
         private int getSpecieCode() {
-            Pattern pattern = Pattern.compile(ConcretePopulation.DEFAULT_SPECIE_NAME_REGEX);
+            Pattern pattern = Pattern.compile(MutablePopulation.DEFAULT_SPECIE_NAME_REGEX);
             Matcher matcher = pattern.matcher(specieName);
             if (matcher.matches()) {
                 return Integer.parseInt(matcher.group(1));

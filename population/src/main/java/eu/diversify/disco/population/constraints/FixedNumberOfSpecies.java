@@ -20,10 +20,16 @@
 
 package eu.diversify.disco.population.constraints;
 
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.actions.Action;
 
 
 public class FixedNumberOfSpecies implements Constraint {
+
+    @Override
+    public PopulationBuilder activateOn(PopulationBuilder builder) {
+        return builder.withFixedNumberOfSpecies();
+    }
 
     @Override
     public boolean allows(Action action) {

@@ -17,6 +17,7 @@
  */
 package eu.diversify.disco.population.constraints;
 
+import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.actions.Action;
 
 /**
@@ -24,6 +25,8 @@ import eu.diversify.disco.population.actions.Action;
  */
 public interface Constraint {
 
+    PopulationBuilder activateOn(PopulationBuilder builder);
+    
     boolean allows(Action action);
 
 }

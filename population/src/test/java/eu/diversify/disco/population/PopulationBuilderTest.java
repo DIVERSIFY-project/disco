@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.population;
@@ -39,30 +56,28 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(JUnit4.class)
 public class PopulationBuilderTest extends TestCase {
-    
-    
+
     @Test
     public void testBuilderWithoutMemory() {
         Population first = aPopulation().withDistribution(1, 2, 3, 4).build();
-        
+
         Population second = aPopulation().build();
-        
+
         assertThat("not the same", first, is(not(sameInstance(second))));
         assertThat("default population", second.isEmpty());
     }
-    
+
     @Test
-    public void testFromMap() {    
+    public void testFromMap() {
         final HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("s1", 2);
         map.put("s2", 3);
         map.put("s3", 4);
-        
-        Map<String, Integer> out = aPopulation().fromMap(map).build().toMap();  
-        
+
+        Map<String, Integer> out = aPopulation().fromMap(map).build().toMap();
+
         assertThat("same entries", out.entrySet(), is(equalTo(map.entrySet())));
     }
- 
 
     @Test(expected = IllegalArgumentException.class)
     public void testMissingSpeciesNames() {
@@ -79,7 +94,7 @@ public class PopulationBuilderTest extends TestCase {
                 .withSpeciesNamed("s1", "s2", "s3")
                 .build();
     }
-    
+
     public void testDuplicateCallToImmuatble() {
         Population population = aPopulation()
                 .immutable()
@@ -92,7 +107,7 @@ public class PopulationBuilderTest extends TestCase {
     @Test
     public void testClonePopulation() {
         Population population = aPopulation().withDistribution(1, 2, 3, 4).build();
-        Population clone = aPopulation().clonedFrom(population).build();
+        Population clone = population.deepCopy().build();
         assertNotNull(clone);
         assertNotSame(population, clone);
         assertEquals(population, clone);
@@ -103,43 +118,27 @@ public class PopulationBuilderTest extends TestCase {
         Population population = aPopulation()
                 .withDistribution(3, 2, 1)
                 .build();
-        assertEquals(3, population.getSpeciesCount());
-        assertEquals(3, population.getHeadcountIn(1));
-        assertEquals(2, population.getHeadcountIn(2));
-        assertEquals(1, population.getHeadcountIn(3));
-      }
 
-        @Test
+        assertThat("distribution", population.getDistribution(), contains(3, 2, 1));
+    }
+
+    @Test
     public void testWithSpeciesNames() {
         Population population = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
-        assertEquals(4, population.getSpeciesCount());
-        assertEquals(0, population.getHeadcountIn(1));
-        assertEquals(0, population.getHeadcountIn("s1"));
-        assertEquals(0, population.getHeadcountIn(2));
-        assertEquals(0, population.getHeadcountIn("s2"));
-        assertEquals(0, population.getHeadcountIn(3));
-        assertEquals(0, population.getHeadcountIn("s3"));
-        assertEquals(0, population.getHeadcountIn(4));
-        assertEquals(0, population.getHeadcountIn("s4"));
+        assertThat("species names", population.getSpeciesNames(), contains("s1", "s2", "s3", "s4"));
     }
-    
+
     @Test
     public void testWithDistributionAndSpeciesNames() {
         Population population = aPopulation()
                 .withDistribution(1, 2, 3, 4)
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
-        assertEquals(4, population.getSpeciesCount());
-        assertEquals(1, population.getHeadcountIn(1));
-        assertEquals(1, population.getHeadcountIn("s1"));
-        assertEquals(2, population.getHeadcountIn(2));
-        assertEquals(2, population.getHeadcountIn("s2"));
-        assertEquals(3, population.getHeadcountIn(3));
-        assertEquals(3, population.getHeadcountIn("s3"));
-        assertEquals(4, population.getHeadcountIn(4));
-        assertEquals(4, population.getHeadcountIn("s4"));
+
+        assertThat("distribution", population.getDistribution(), contains(1, 2, 3, 4));
+        assertThat("species names", population.getSpeciesNames(), contains("s1", "s2", "s3", "s4"));
     }
 
     @Test
@@ -148,15 +147,9 @@ public class PopulationBuilderTest extends TestCase {
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(1, 2, 3, 4)
                 .build();
-        assertEquals(4, population.getSpeciesCount());
-        assertEquals(1, population.getHeadcountIn(1));
-        assertEquals(1, population.getHeadcountIn("s1"));
-        assertEquals(2, population.getHeadcountIn(2));
-        assertEquals(2, population.getHeadcountIn("s2"));
-        assertEquals(3, population.getHeadcountIn(3));
-        assertEquals(3, population.getHeadcountIn("s3"));
-        assertEquals(4, population.getHeadcountIn(4));
-        assertEquals(4, population.getHeadcountIn("s4"));
+
+        assertThat("distribution", population.getDistribution(), contains(1, 2, 3, 4));
+        assertThat("species names", population.getSpeciesNames(), contains("s1", "s2", "s3", "s4"));
     }
 
     @Test
@@ -166,18 +159,17 @@ public class PopulationBuilderTest extends TestCase {
                 .immutable()
                 .build();
 
-        Population population2 = population.shiftHeadcountIn(1, +2);
+        Population population2 = population.getSpecie(1).shiftHeadcountBy(+2);
         assertNotSame(population, population2);
-        assertEquals(1, population.getHeadcountIn(1));
-        assertEquals(3, population2.getHeadcountIn(1));
+        assertEquals(1, population.getSpecie(1).getHeadcount());
+        assertEquals(3, population2.getSpecie(1).getHeadcount());
     }
-    
-        @Test
+
+    @Test
     public void testEmptyPopulation() {
         Population population = aPopulation().build();
         assertTrue(population.isEmpty());
     }
-
 
     @Test
     public void testEqualsWithImmutableEquivalent() {

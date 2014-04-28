@@ -95,13 +95,13 @@ public class ToPopulation implements DiversityExtraction<DeploymentModel> {
         @Override
         public void onNodeInstance(NodeInstance subject) {
             final String specieName = subject.getType().getName();
-            population.shiftHeadcountIn(specieName, +1);
+            population.getSpecie(specieName).shiftHeadcountBy(+1);
         }
 
         @Override
         public void onArtefactInstance(ArtefactInstance subject) {
             final String specieName = subject.getType().getName();
-            population.shiftHeadcountIn(specieName, +1);
+            population.getSpecie(specieName).shiftHeadcountBy(+1);
         }
 
         public Population getExtractedPopulation() {
