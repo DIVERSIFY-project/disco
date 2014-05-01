@@ -15,25 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/*
- */
+
 package eu.diversify.disco.population;
 
 import junit.framework.TestCase;
@@ -49,16 +31,13 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Build another of various configurations
- *
- * @author Franck Chauvel
- * @since 0.1
+ * Specification of the population builder
  */
 @RunWith(JUnit4.class)
 public class PopulationBuilderTest extends TestCase {
 
     @Test
-    public void testBuilderWithoutMemory() {
+    public void buildShouldNotHaveMemory() {
         Population first = aPopulation().withDistribution(1, 2, 3, 4).build();
 
         Population second = aPopulation().build();
@@ -68,7 +47,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testFromMap() {
+    public void buildShouldAcceptAMapFromNameToHeadcount() {
         final HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("s1", 2);
         map.put("s2", 3);
@@ -80,7 +59,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMissingSpeciesNames() {
+    public void buildShouldRejectMissingSpecieName() {
         Population population = aPopulation()
                 .withDistribution(1, 3, 2, 5)
                 .withSpeciesNamed("s1", "s3")
@@ -88,14 +67,14 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMissingIndividualCounts() {
+    public void buildShouldRejectMissingHeadcount() {
         Population population = aPopulation()
                 .withDistribution(1, 3)
                 .withSpeciesNamed("s1", "s2", "s3")
                 .build();
     }
 
-    public void testDuplicateCallToImmuatble() {
+    public void buildShouldAcceptDuplicateCallsToImmutable() {
         Population population = aPopulation()
                 .immutable()
                 .withDistribution(1, 2, 3)
@@ -114,7 +93,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testWithDistribution() {
+    public void buildShouldAcceptTheDistributionOfIndividuals() {
         Population population = aPopulation()
                 .withDistribution(3, 2, 1)
                 .build();
@@ -123,7 +102,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testWithSpeciesNames() {
+    public void buildShouldAcceptTheSpeciesName() {
         Population population = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
@@ -131,7 +110,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testWithDistributionAndSpeciesNames() {
+    public void buildShouldAcceptSpecieNameAndDistribution() {
         Population population = aPopulation()
                 .withDistribution(1, 2, 3, 4)
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
@@ -142,7 +121,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testWithSpecieNameBeforeDistribution() {
+    public void buildShouldAcceptSpecieNamesAndDistributionInAnyOrder() {
         Population population = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(1, 2, 3, 4)
@@ -153,7 +132,7 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testWithImmutability() {
+    public void buildShouldAcceptImmutability() {
         Population population = aPopulation()
                 .withDistribution(1, 2, 3, 4)
                 .immutable()
@@ -166,15 +145,9 @@ public class PopulationBuilderTest extends TestCase {
     }
 
     @Test
-    public void testEmptyPopulation() {
+    public void buildShouldReturnAnEmptyPopulationByDefault() {
         Population population = aPopulation().build();
         assertTrue(population.isEmpty());
     }
 
-    @Test
-    public void testEqualsWithImmutableEquivalent() {
-        Population p1 = aPopulation().withDistribution(1, 2, 3).build();
-        Population p2 = aPopulation().withDistribution(1, 2, 3).immutable().build();
-        assertEquals(p1, p2);
-    }
 }

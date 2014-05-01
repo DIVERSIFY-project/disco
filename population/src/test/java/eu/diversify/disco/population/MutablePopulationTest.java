@@ -44,56 +44,41 @@ public class MutablePopulationTest extends PopulationTest {
     }
 
     @Override
-    public void testShiftNumberOfIndividualsInByIndex() {
-        super.testShiftNumberOfIndividualsInByIndex();
+    public void shiftHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie() {
+        super.shiftHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie();
+        assertSame(getActual(), getInitial());
+    }
+
+  
+    @Override
+    public void setHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie() {
+        super.setHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie();
+        assertSame(getActual(), getInitial());
+    }
+
+
+    @Override
+    public void renameSpecieShouldUpdateTheNameOfTheSelectedSpecie() {
+        super.renameSpecieShouldUpdateTheNameOfTheSelectedSpecie();
+        assertSame(getActual(), getInitial());
+    }
+
+
+    @Override
+    public void addSpecieShouldCreateANewSpecieWithTheGivenName() {
+        super.addSpecieShouldCreateANewSpecieWithTheGivenName();
         assertSame(getActual(), getInitial());
     }
 
     @Override
-    public void testShiftNumberOfIndividualsInBySpecieName() {
-        super.testShiftNumberOfIndividualsInBySpecieName();
+    public void removeSpecieShouldRemoveTheSpecieAtTheGivenIndex() {
+        super.removeSpecieShouldRemoveTheSpecieAtTheGivenIndex();
         assertSame(getActual(), getInitial());
     }
 
     @Override
-    public void testSetNumberOfIndividualsInBySpecieIndex() {
-        super.testSetNumberOfIndividualsInBySpecieIndex();
-        assertSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testSetNumberOfIndividualsInBySpecieName() {
-        super.testSetNumberOfIndividualsInBySpecieName();
-        assertSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testRenameSpecieByIndex() {
-        super.testRenameSpecieByIndex();
-        assertSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testRenameSpecieByName() {
-        super.testRenameSpecieByName();
-        assertSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testAddSpecie() {
-        super.testAddSpecie();
-        assertSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testRemoveSpecieByIndex() {
-        super.testRemoveSpecieByIndex();
-        assertSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testRemoveSpecieByName() {
-        super.testRemoveSpecieByName();
+    public void removeSpecieShouldRemoveTheSpecieWithTheGivenName() {
+        super.removeSpecieShouldRemoveTheSpecieWithTheGivenName();
         assertSame(getActual(), getInitial());
     }
 

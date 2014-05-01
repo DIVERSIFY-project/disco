@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.population;
 
 import junit.framework.TestCase;
@@ -33,22 +32,22 @@ import static eu.diversify.disco.population.PopulationBuilder.*;
 public class SpecieTest extends TestCase {
 
     @Test(expected = IllegalArgumentException.class)
-    public void rejectNullAsNameInConstructor() {
+    public void constructorShoudlRejectNullAsName() {
         new Specie(new MutablePopulation(), null, 23);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void rejectEmptyStringAsNameInConstructor() {
+    public void constructorShouldRejectEmptyStringAsName() {
         new Specie(new MutablePopulation(), "", 23);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void rejectNegativeHeadcountInConstructor() {
+    public void constructorShouldRejectNegativeHeadcount() {
         new Specie(new MutablePopulation(), "Lions", -23);
     }
 
     @Test
-    public void testShiftHeadcountBy() {
+    public void shiftHeadcountShouldUpdateTheHeadcount() {
         final int initialHeadcount = 25;
         final int offset = 5;
 
@@ -61,7 +60,7 @@ public class SpecieTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testShiftHeadcountBelowZero() {
+    public void shiftHeadcountShouldRejectOffsetThatWouldResultInANegativeHeadcount() {
         Specie specie = defaultSpecie();
         specie.setHeadcount(10);
 
@@ -69,7 +68,7 @@ public class SpecieTest extends TestCase {
     }
 
     @Test
-    public void testSetHeadcount() {
+    public void setHeadcountShouldUpdateTheHeadcount() {
         Specie specie = defaultSpecie();
 
         specie.setHeadcount(25);
@@ -78,13 +77,13 @@ public class SpecieTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetHeadCountWithNegativeValue() {
+    public void setHeadcountShouldRejectNegativeHeadcount() {
         Specie specie = defaultSpecie();
         specie.setHeadcount(-23);
     }
 
     @Test
-    public void testSetName() {
+    public void setNameShouldUpdateTheName() {
         Specie specie = defaultSpecie();
 
         specie.setName("Hippopotamus");
@@ -93,7 +92,7 @@ public class SpecieTest extends TestCase {
     }
 
     @Test
-    public void testIsNamed() {
+    public void isNamedShouldReturnTrueIfTheGivenNameMatchesTheActualName() {
         Specie specie = defaultSpecie();
         specie.setName("Tigers");
 
@@ -101,41 +100,49 @@ public class SpecieTest extends TestCase {
     }
 
     @Test
-    public void testIsNamedWhenNotNamed() {
+    public void isNamedShouldReturnFalseWhenTheGivenNameDoesNotMatchTheActualName() {
         Specie specie = defaultSpecie();
 
         assertThat("Is named tigers", !specie.isNamed("Tigers"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetNameWithNull() {
+    public void setNameShouldRejectNull() {
         Specie specie = defaultSpecie();
         specie.setName(null);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testSetNameWithEmptyString() {
+    public void setNameShouldRejectEmptyString() {
         Specie specie = defaultSpecie();
         specie.setName("");
     }
 
     @Test
-    public void testEqualsWhenEquals() {
-        Specie s1 = defaultSpecie();
-        Specie s2 = defaultSpecie();
+    public void equalsShouldReturnTrueWhenBothNameAndHeadcountAreEquals() {
+        final int headcount = 23;
+        final String name = "foo";
+     
+        final Specie s1 = defaultSpecie();
+        s1.setHeadcount(headcount);
+        s1.setName(name);
+        
+        final Specie s2 = defaultSpecie();
+        s2.setHeadcount(headcount);
+        s2.setName(name);
 
         assertThat("Equals species", s1.equals(s2));
     }
 
     @Test
-    public void testEqualsItself() {
+    public void equalsShouldReturnTrueWhenApplyToItself() {
         Specie s1 = defaultSpecie();
 
         assertThat("not equals", s1, is(equalTo(s1)));
     }
 
     @Test
-    public void testNotEqualsWhenNamesAreDifferent() {
+    public void equalsShouldDetectNameThatAreDifferent() {
         Specie s1 = defaultSpecie();
         Specie s2 = defaultSpecie();
         s2.setName("Tigers");
@@ -144,7 +151,7 @@ public class SpecieTest extends TestCase {
     }
 
     @Test
-    public void testNotEqualsWhenHeadcountsAreDifferent() {
+    public void equalsShouldDetectHeadcountThatAreDifferent() {
         Specie s1 = defaultSpecie();
         Specie s2 = defaultSpecie();
         s2.setHeadcount(0);
@@ -153,7 +160,7 @@ public class SpecieTest extends TestCase {
     }
 
     @Test
-    public void testNotEqualsNull() {
+    public void equalsShouldReturnFalseWhenAppliedOnNull() {
         Specie s1 = defaultSpecie();
         Specie s2 = null;
 
@@ -161,14 +168,15 @@ public class SpecieTest extends TestCase {
     }
 
     @Test
-    public void testIsEmptyWhenFull() {
+    public void isEmptyShouldReturnFalseWhenHeadCountIsGreaterThanZero() {
         Specie specie = defaultSpecie();
+        specie.setHeadcount(23);
 
         assertThat("empty", !specie.isEmpty());
     }
 
     @Test
-    public void testIsEmptyWhemEmpty() {
+    public void isEmptyShouldReturnTrueWhenHeadcountIsZero() {
         Specie specie = defaultSpecie();
         specie.setHeadcount(0);
 

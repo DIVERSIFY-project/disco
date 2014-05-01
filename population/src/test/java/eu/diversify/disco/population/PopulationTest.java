@@ -69,8 +69,6 @@ public abstract class PopulationTest extends TestCase {
         return this.expected;
     }
     
-    
-    
 
     // Construction from various data types
     // FIXME: Move to PopulationBuilderTest
@@ -89,7 +87,7 @@ public abstract class PopulationTest extends TestCase {
     }
     
     @Test
-    public void testDeepCopyPreserveConstraint() {
+    public void deepCopyShouldPreserveConstraints() {
         Population population = aSamplePopulation()
                 .withFixedNumberOfSpecies()
                 .withDistribution(3, 2, 0, 1)
@@ -103,7 +101,7 @@ public abstract class PopulationTest extends TestCase {
 
     // Getters test
     @Test
-    public void testGetSpecieByIndex() {
+    public void shouldReturnTheSpecieAtAGivenIndex() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 0, 1)
@@ -116,7 +114,7 @@ public abstract class PopulationTest extends TestCase {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testGetSpecieByIndexThatDoesNotExists() {
+    public void getSpecieShouldRejectIndexesThatDoNotExist() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 0, 1)
@@ -126,7 +124,7 @@ public abstract class PopulationTest extends TestCase {
     }
     
     @Test
-    public void testGetSpecieByName() {
+    public void getSpecieShouldReturnASpecieWithTheGivenName() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 0, 1)
@@ -139,17 +137,17 @@ public abstract class PopulationTest extends TestCase {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testGetSpecieByNameThatDoesNotExists() {
+    public void getSpecieShouldRejectNamesThatDoNotExist() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 0, 1)
                 .build();
         
-        initial.getSpecie("foo");
+        initial.getSpecie("a specie that do not exist");
     }
     
     @Test
-    public void testGetDistribution() {
+    public void getDistributionShouldReturnTheCorrectDistribution() {
         initial = aPopulation()
                 .withDistribution(3, 2, 0, 1)
                 .build();
@@ -159,7 +157,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDistributionIsImmutable() {
+    public void shouldReturnAnImmutableDistribution() {
         initial = aPopulation()
                 .withDistribution(3, 2, 0, 1)
                 .build();
@@ -167,7 +165,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetSpeciesNames() {
+    public void getSpeciesNameShouldReturnTheCorrectListOfNames() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
@@ -178,7 +176,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetSpeciesNamesIsImmutable() {
+    public void getSpeciesNameShouldReturnAnImmutableListOfName() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .build();
@@ -186,7 +184,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetVarianceWhenMinimum() {
+    public void getVarianceShouldReturnZeroWhenAllSpecieHaveTheSameHeadcount() {
         initial = aPopulation()
                 .withDistribution(3, 3, 3, 3, 3)
                 .build();
@@ -195,7 +193,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetVarianceWhenMaximum() {
+    public void getVarianceShouldBeMaximalWhenAllIndividualsBelongToTheSameSpecie() {
         initial = aPopulation()
                 .withDistribution(15, 0, 0, 0, 0)
                 .build();
@@ -212,7 +210,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetVarianceWhenUnknown() {
+    public void getVarianceShouldReturnAValueBetweenZeroAndTheMaximumVariance() {
         initial = aPopulation()
                 .withDistribution(15, 6, 2, 1, 9)
                 .build();
@@ -222,7 +220,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetPercentagePerSpecieOnTheFullSpecie() {
+    public void getFractionShouldReturnOneForTheSpecieThatContainsAllIndividuals() {
         initial = aSamplePopulation().withDistribution(3, 0, 0).build();
         
         double percentage = initial.getSpecie(1).getFraction();
@@ -231,7 +229,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetPercentagePerSpecieOnEmptySpecie() {
+    public void getFractionShouldBeZeroForTheSpecieThatContainsNoIndividual() {
         initial = aSamplePopulation().withDistribution(3, 0, 0).build();
 
         double percentage = initial.getSpecie(2).getFraction();
@@ -240,7 +238,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetPercentagePerSpecieOnRegularSpecie() {
+    public void getFractionShouldReturnAValueBetweenZeroAndOne() {
         initial = aSamplePopulation().withDistribution(1, 1, 1).build();
 
         double percentage = initial.getSpecie(2).getFraction();
@@ -249,7 +247,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testGetMeanNumberOfIndividuals() {
+    public void getMeanHeadcountShouldReturnTheAverageOfHeadcounts() {
         initial = aPopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(10, 2, 3)
@@ -261,7 +259,7 @@ public abstract class PopulationTest extends TestCase {
 
     // Mutator tests
     @Test
-    public void testSetNumberOfIndividualsInBySpecieIndex() {
+    public void setHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie() {
         initial = aSamplePopulation().withDistribution(1, 2, 3).build();
         actual = initial.getSpecie(1).setHeadcount(54);
         expected = aSamplePopulation().withDistribution(54, 2, 3).build();
@@ -269,58 +267,16 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testSetNumberOfIndividualsInBySpecieName() {
-        initial = aSamplePopulation()
-                .withSpeciesNamed("s1", "s2", "s3")
-                .withDistribution(1, 2, 3)
-                .build();
-        actual = initial.getSpecie("s1").setHeadcount(54);
-        expected = aSamplePopulation()
-                .withSpeciesNamed("s1", "s2", "s3")
-                .withDistribution(54, 2, 3)
-                .build();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testShiftNumberOfIndividualsInByIndex() {
+    public void shiftHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie() {
         initial = aSamplePopulation().withDistribution(1, 2, 3).build();
         actual = initial.getSpecie(1).shiftHeadcountBy(+1);
         expected = aSamplePopulation().withDistribution(2, 2, 3).build();
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void testShiftNumberOfIndividualsInBySpecieName() {
-        initial = aSamplePopulation()
-                .withSpeciesNamed("s1")
-                .withDistribution(0)
-                .build();
-        actual = initial.getSpecie("s1").shiftHeadcountBy(+1);
-        expected = aSamplePopulation()
-                .withSpeciesNamed("s1")
-                .withDistribution(1)
-                .build();
-        assertEquals(expected, actual);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testShiftNumberOfIndividualsByIndexThatDoesNotExists() {
-        initial = aSamplePopulation().withDistribution(0).build();
-        actual = initial.getSpecie(77).shiftHeadcountBy(+1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testShiftNumberOfIndividualBySpecieNameThatDoesNotExist() {
-        initial = aSamplePopulation()
-                .withSpeciesNamed("s1")
-                .withDistribution(0)
-                .build();
-        actual = initial.getSpecie("doesNotExist").shiftHeadcountBy(+1);
-    }
 
     @Test
-    public void testAddSpecieWithoutName() {
+    public void addSpecieShouldGenerateADefaultNameForTheNewSpecie() {
         initial = aSamplePopulation()
                 .withDistribution(1, 2, 3)
                 .build();
@@ -334,7 +290,7 @@ public abstract class PopulationTest extends TestCase {
     }
     
     @Test
-    public void testAddSpecie() {
+    public void addSpecieShouldCreateANewSpecieWithTheGivenName() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -348,7 +304,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddSpecieWithNullName() {
+    public void addSpecieShouldRejectNullAsASpecieName() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -357,7 +313,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddSpecieWithEmptyName() {
+    public void addSpecieShouldRejectEmptyStringAsName() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -366,7 +322,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddDuplicatedSpecie() {
+    public void addSpecieShouldRejectDuplicatedSpecieName() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -376,7 +332,7 @@ public abstract class PopulationTest extends TestCase {
 
     // TODO: check that there are no more occurence of "new PopualtionBuilder()"
     @Test
-    public void testRemoveSpecieByIndex() {
+    public void removeSpecieShouldRemoveTheSpecieAtTheGivenIndex() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -390,7 +346,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRemoveSpecieByIndexTooLarge() {
+    public void removeSpecieShouldRejectInvalidIndexes() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .build();
@@ -407,7 +363,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testRemoveSpecieByName() {
+    public void removeSpecieShouldRemoveTheSpecieWithTheGivenName() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -421,7 +377,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRemoveSpecieByNameThatDoesNotExist() {
+    public void removeSpecieShouldRejectInvalidSpecieNames() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -430,7 +386,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testRenameSpecieByIndex() {
+    public void renameSpecieShouldUpdateTheNameOfTheSelectedSpecie() {
         final String newName = "sXX";
         initial = aSamplePopulation().withSpeciesNamed("s1", "s2").build();
         actual = initial.getSpecie(2).setName(newName);
@@ -439,16 +395,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testRenameSpecieByName() {
-        final String newName = "sXX";
-        initial = aSamplePopulation().withSpeciesNamed("s1", "s2").build();
-        actual = initial.getSpecie("s2").setName(newName);
-        expected = aSamplePopulation().withSpeciesNamed("s1", newName).build();
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    public void testDifferenceWith() {
+    public void differenceWithShouldReturnTheCorrectListOfActions() {
         Population source = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(1, 2, 3)
@@ -483,7 +430,7 @@ public abstract class PopulationTest extends TestCase {
     
     
     @Test
-    public void testIsUniformlyDistributed() {
+    public void IsUniformlyDistributedShouldBeTrueWhenAllSpecieHaveTheSameHeadcount() {
         Population population = aSamplePopulation()
                 .withDistribution(5, 5, 5, 5, 5)
                 .build();
@@ -492,7 +439,7 @@ public abstract class PopulationTest extends TestCase {
     }
     
     @Test
-    public void testIsNotUniformlyDistributed() {
+    public void isUniformlyDistributedShouldBeFalseHeadcountsVary() {
         Population population = aSamplePopulation()
                 .withDistribution(10, 3, 1, 12, 5)
                 .build();
@@ -502,7 +449,7 @@ public abstract class PopulationTest extends TestCase {
 
     // Test conversions to other data representation
     @Test
-    public void testToString() {
+    public void toStringShouldContainsTheNameAndTheHeadcountOfAllSpecies() {
         Population p = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -513,7 +460,7 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testToArrayOfFraction() {
+    public void toArrayOfFractionsShouldReturnTheFractionOfEachSpecie() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
@@ -525,14 +472,14 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testToMapWhenEmpty() {
+    public void toMapShouldReturnAnEmptyMapWhenThePopulationIsEmpty() {
         initial = aSamplePopulation().build();
         Map<String, Integer> expected = new HashMap<String, Integer>();
         assertEquals(expected, initial.toMap());
     }
 
     @Test
-    public void testToMapWhenFilled() {
+    public void toMapShouldReturnAMapFromSpecieNameToHeadcount() {
         initial = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2")
                 .withDistribution(3, 9)
@@ -545,14 +492,14 @@ public abstract class PopulationTest extends TestCase {
 
     // Test populations equality
     @Test
-    public void testEqualsWhenEquals() {
+    public void equalsShouldReturnTrueIfBothPopulationHaveTheSameSpeciesNameAndTheSameDistribution() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         expected = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertEquals(actual, expected);
     }
 
     @Test
-    public void testEqualsWhenEqualsButSpeciesNamesAreInDifferentOrder() {
+    public void equalsShouldReturnTrueWhenPopulationDifferOnlyInTheOrderOfSpeciesName() {
         actual = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3", "s4")
                 .withDistribution(3, 2, 0, 1)
@@ -565,52 +512,52 @@ public abstract class PopulationTest extends TestCase {
     }
 
     @Test
-    public void testEqualsWithNull() {
+    public void equalsShouldReturnTrueWhenTheGivenPopulationIsNull() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertFalse(actual.equals(null));
     }
 
     @Test
-    public void testEqualsWithWrongType() {
+    public void equalsShouldReturnFalseWhenTheGivenObjectIsNotAPopulation() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertFalse(actual.equals(23));
     }
 
     @Test
-    public void testEqualsWhenIndividualCountAreDifferent() {
+    public void equalsShouldReturnFalseWhenTheDistributionAreDifferent() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         expected = aSamplePopulation().withDistribution(3, 3, 0, 1).build();
         assertFalse(actual.equals(expected));
     }
 
     @Test
-    public void testEqualsWhenSpecieNameAreDifferent() {
+    public void equalsShouldReturnFalseWhenTheSpecieNamesAreDifferent() {
         actual = aSamplePopulation()
                 .withSpeciesNamed("s1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
         expected = aSamplePopulation()
-                .withSpeciesNamed("sp1", "s2", "s3")
+                .withSpeciesNamed("sssssss1", "s2", "s3")
                 .withDistribution(3, 2, 1)
                 .build();
         assertFalse(actual.equals(expected));
     }
 
     @Test
-    public void testEqualsWhenSpeciesCountAreDifferent() {
+    public void equalsShouldReturnFalseWhenTheNumberOfSpeciesVary() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         expected = aSamplePopulation().withDistribution(3, 2, 0, 1, 5).build();
         assertFalse(actual.equals(expected));
     }
 
     @Test
-    public void testEqualsWhenSame() {
+    public void equalsShouldReturnTrueWhenApplyToItself() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertTrue(actual.equals(actual));
     }
 
     @Test
-    public void testSameHashCodeImpliesEquals() {
+    public void hashCodeShouldReturnTheSameValueWhenThePopulationAreEquals() {
         actual = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         expected = aSamplePopulation().withDistribution(3, 2, 0, 1).build();
         assertEquals(actual.hashCode(), expected.hashCode());

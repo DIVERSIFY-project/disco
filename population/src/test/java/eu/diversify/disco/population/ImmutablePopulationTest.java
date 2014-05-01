@@ -50,50 +50,39 @@ import static org.hamcrest.MatcherAssert.*;
 public class ImmutablePopulationTest extends PopulationTest {
 
     @Override
-    public void testShiftNumberOfIndividualsInByIndex() {
-        super.testShiftNumberOfIndividualsInByIndex();
+    public void shiftHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie() {
+        super.shiftHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie();
+        assertNotSame(getActual(), getInitial());
+    }
+
+  
+    @Override
+    public void setHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie() {
+        super.setHeadcountShouldUpdateTheHeadcountOfTheSelectedSpecie();
         assertNotSame(getActual(), getInitial());
     }
 
     @Override
-    public void testShiftNumberOfIndividualsInBySpecieName() {
-        super.testShiftNumberOfIndividualsInBySpecieName();
+    public void addSpecieShouldCreateANewSpecieWithTheGivenName() {
+        super.addSpecieShouldCreateANewSpecieWithTheGivenName();
         assertNotSame(getActual(), getInitial());
     }
 
     @Override
-    public void testSetNumberOfIndividualsInBySpecieIndex() {
-        super.testSetNumberOfIndividualsInBySpecieIndex();
+    public void addSpecieShouldGenerateADefaultNameForTheNewSpecie() {
+        super.addSpecieShouldCreateANewSpecieWithTheGivenName();
         assertNotSame(getActual(), getInitial());
     }
 
     @Override
-    public void testSetNumberOfIndividualsInBySpecieName() {
-        super.testSetNumberOfIndividualsInBySpecieName();
+    public void removeSpecieShouldRemoveTheSpecieAtTheGivenIndex() {
+        super.removeSpecieShouldRemoveTheSpecieAtTheGivenIndex(); //To change body of generated methods, choose Tools | Templates.
         assertNotSame(getActual(), getInitial());
     }
 
     @Override
-    public void testAddSpecie() {
-        super.testAddSpecie();
-        assertNotSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testAddSpecieWithoutName() {
-        super.testAddSpecie();
-        assertNotSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testRemoveSpecieByIndex() {
-        super.testRemoveSpecieByIndex(); //To change body of generated methods, choose Tools | Templates.
-        assertNotSame(getActual(), getInitial());
-    }
-
-    @Override
-    public void testRemoveSpecieByName() {
-        super.testRemoveSpecieByName(); //To change body of generated methods, choose Tools | Templates.
+    public void removeSpecieShouldRemoveTheSpecieWithTheGivenName() {
+        super.removeSpecieShouldRemoveTheSpecieWithTheGivenName(); //To change body of generated methods, choose Tools | Templates.
         assertNotSame(getActual(), getInitial());
     }
 
