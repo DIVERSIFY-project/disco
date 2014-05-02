@@ -43,37 +43,37 @@ public class MetricFactoryTest extends TestCase {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testShannonIndex() {
+    public void factoryShouldCreateShannonIndex() {
         final DiversityMetric metric = MetricFactory.create("shannon index");
         assertThat("proper class", metric, is(instanceOf(ShannonIndex.class)));
     }
 
     @Test
-    public void testGiniSimpsonIndex() {
+    public void factoryShouldCreateGiniSimpsonIndex() {
         final DiversityMetric metric = MetricFactory.create("gini simpson index");
         assertThat("proper class", metric, is(instanceOf(GiniSimpsonIndex.class)));
     }
 
     @Test
-    public void testTrueDiversityWithoutParameter() {
+    public void factoryShouldCreateTrueDiversityWithDefaultThetaValue() {
         final DiversityMetric metric = MetricFactory.create("true diversity");
         assertThat("proper class", metric, is(instanceOf(TrueDiversity.class)));
     }
 
     @Test
-    public void testTrueDiversityWithParameter() {
+    public void factoryShouldCreateTrueDiversityWithAGivenThetaValue() {
         final DiversityMetric metric = MetricFactory.create("true diversity (theta = 2)");
         assertThat("proper class", metric, is(instanceOf(TrueDiversity.class)));
     }
 
     @Test
-    public void testStandardDeviation() {
+    public void factoryShouldCreateStandardDeviation() {
         final DiversityMetric metric = MetricFactory.create("standard deviation");
         assertThat("proper class", metric, is(instanceOf(StandardDeviation.class)));
     }
 
     @Test
-    public void testParserNoParameterWithLongNames() {
+    public void parserShouldExtractLongMetricNamesWithSpacesAndNoParameters() {
         String text = "yyy yy y yyy";
         MetricFactory expected = new MetricFactory();
         expected.setName("yyy yy y yyy");
@@ -81,7 +81,7 @@ public class MetricFactoryTest extends TestCase {
     }
 
     @Test
-    public void testParserNoParameter() {
+    public void parserShouldExtractSimpleNameWithNoParameters() {
         String text = "yyy";
         MetricFactory expected = new MetricFactory();
         expected.setName("yyy");
@@ -89,7 +89,7 @@ public class MetricFactoryTest extends TestCase {
     }
 
     @Test
-    public void testParserOneParameter() {
+    public void parserShouldExtractSimpleNameWithOneParameter() {
         String text = "yyy(p1 = 23.5)";
         MetricFactory expected = new MetricFactory();
         expected.setName("yyy");
@@ -98,7 +98,7 @@ public class MetricFactoryTest extends TestCase {
     }
 
     @Test
-    public void testParserManyParameters() {
+    public void parserShouldExtractSimpleNameWithManyParameter() {
         String text = "yyy(p1 = 23.5, p2 = 6, p3 = 77)";
         MetricFactory expected = new MetricFactory();
         expected.setName("yyy");
@@ -109,7 +109,7 @@ public class MetricFactoryTest extends TestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testParserIllegalDescription() {
+    public void parserShouldRejectIllformedDescription() {
         String text = "yyy(p1 = 23.5";
         testParser(text, null);
     }

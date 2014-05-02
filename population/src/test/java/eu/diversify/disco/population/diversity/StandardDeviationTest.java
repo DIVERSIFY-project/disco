@@ -50,7 +50,7 @@ public class StandardDeviationTest extends DiversityMetricTest {
     }
 
     @Test
-    public void testName() {
+    public void nameShouldBeAboutStandardDeviation() {
         StandardDeviation sd = new StandardDeviation();
         final String lowerCase = sd.getName().toLowerCase();
         assertThat("index name", lowerCase, containsString("standard"));

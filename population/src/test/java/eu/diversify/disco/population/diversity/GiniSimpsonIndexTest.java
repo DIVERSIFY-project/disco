@@ -38,7 +38,7 @@ public class GiniSimpsonIndexTest extends DiversityMetricTest {
     }
     
       @Test
-    public void testName() {
+    public void nameShouldBeAboutGiniSimpsonIndex() {
         GiniSimpsonIndex si = new GiniSimpsonIndex();
         final String lowerCase = si.getName().toLowerCase(); 
         assertThat("index name", lowerCase, containsString("gini"));

@@ -34,7 +34,7 @@ public class ShannonIndexTest extends DiversityMetricTest {
     }
     
     @Test
-    public void testName() {
+    public void nameShouldBeAboutShannonIndex() {
         ShannonIndex si = new ShannonIndex();
         final String lowerCase = si.getName().toLowerCase();
         assertThat("shannon index name", lowerCase, containsString("shannon"));

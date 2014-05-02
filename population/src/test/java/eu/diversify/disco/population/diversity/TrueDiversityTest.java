@@ -53,7 +53,7 @@ public class TrueDiversityTest extends DiversityMetricTest {
     }
 
     @Test
-    public void testName() {
+    public void nameShouldBeAboutTrueDiversity() {
         TrueDiversity td = new TrueDiversity(3); 
         final String lowerCase = td.getName().toLowerCase(); 
         assertThat("index name", lowerCase, containsString("true"));

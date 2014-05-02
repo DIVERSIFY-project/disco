@@ -51,21 +51,21 @@ public abstract class DiversityMetricTest extends TestCase {
 
     
     @Test
-    public void testNormalisedName() {
-        DiversityMetric metric = normalisedMetric();
+    public void getNameShouldReturnsAStringContainingNormalizedWhenNormalized() {
+        DiversityMetric sut = normalisedMetric();
  
-        assertThat("metric name", metric.getName(), containsString("normalised"));
+        assertThat("metric name", sut.getName(), containsString("normalised"));
     }
     
     /**
      * Check that the diversity of a population whose species are uniform is 1.
      */
     @Test
-    public void testMaximumDiversity() {
-        final DiversityMetric metric = normalisedMetric();
+    public void maximumShouldReturnOneWhenDiversityIsNormalized() {
+        final DiversityMetric sut = normalisedMetric();
         final Population population = aPopulation().withDistribution(10, 10, 10).build();
         
-        final double diversity = metric.applyTo(population);
+        final double diversity = sut.applyTo(population);
         
         assertThat("diversity level", diversity, is(closeTo(MAXIMUM, ERROR)));
     }
@@ -75,7 +75,7 @@ public abstract class DiversityMetricTest extends TestCase {
      * specie is equal to 0.
      */
     @Test
-    public void testMinimumDiversity() {
+    public void minimumShouldReturnZeroWhenDiversityIsNormalized() {
         final DiversityMetric metric = normalisedMetric();
         final Population population = aPopulation().withDistribution(30, 0, 0).build();
 
@@ -88,7 +88,7 @@ public abstract class DiversityMetricTest extends TestCase {
      * Check that an mixed population has a diversity level between 0 and 1.
      */
     @Test
-    public void testMediumDiversity() {
+    public void applyShouldReturnAValueBetweenZeroAndOneWhenNormalized() {
         final DiversityMetric metric = normalisedMetric();
         final Population population = aPopulation().withDistribution(10, 13, 6).build();
 
@@ -101,7 +101,7 @@ public abstract class DiversityMetricTest extends TestCase {
      * Test whether scaling population does preserve the diversity metric
      */
     @Test
-    public void testScaling() {
+    public void diversityShouldBeTheSameForAPopulationAndThePopulationScaledByTwo() {
         DiversityMetric metric = normalisedMetric();
         Population population = aPopulation().withDistribution(15, 5, 3).build();
         final double d1 = metric.applyTo(population);
@@ -119,7 +119,7 @@ public abstract class DiversityMetricTest extends TestCase {
      * Check that the diversity is undefined for an empty population
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testUndefinedDiversity() {
+    public void applyShouldRejectEmptyPopulations() {
         Population population = aPopulation().build();
         DiversityMetric metric = normalisedMetric();
         metric.applyTo(population);
@@ -129,7 +129,7 @@ public abstract class DiversityMetricTest extends TestCase {
      * The equality of two metrics
      */
     @Test
-    public void testEquality() {
+    public void equalsShouldDetectDifferentDiversityMetric() {
         DiversityMetric m1 = new TrueDiversity();
         DiversityMetric m2 = new TrueDiversity();
         DiversityMetric m3 = new ShannonIndex();
@@ -145,7 +145,7 @@ public abstract class DiversityMetricTest extends TestCase {
     }
     
     @Test
-    public void testMonotony() {
+    public void applyShouldBeMonotonicWhenTheVarianceIsMonotonic() {
         final DiversityMetric metric = normalisedMetric();
      
         Population population = aPopulation()
