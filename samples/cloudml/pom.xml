@@ -1,95 +1,22 @@
-<?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>root</artifactId>
         <groupId>eu.diversify.disco</groupId>
-        <artifactId>samples</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-
+    
     <groupId>eu.diversify.disco</groupId>
     <artifactId>samples.cloudml</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>Disco :: Samples :: CloudML</name>
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <dependencies>
-        
-        <dependency>
-            <groupId>eu.diversify.disco</groupId>
-            <artifactId>population</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>eu.diversify.disco</groupId>
-            <artifactId>controller</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>eu.diversify.disco</groupId>
-            <artifactId>samples.commons</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.cloudml</groupId>
-            <artifactId>model</artifactId>
-            <version>1.5-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.cloudml</groupId>
-            <artifactId>codecs.json</artifactId>
-            <version>1.5-SNAPSHOT</version>
-        </dependency>
-        
-         
-        <dependency>
-            <groupId>org.cloudml</groupId>
-            <artifactId>codecs.dot</artifactId>
-            <version>1.5-SNAPSHOT</version>
-        </dependency>
-                
-        
-      
-    </dependencies>
+    <packaging>pom</packaging>
+    <name>Disco :: Samples </name>
+  
+  
+    <modules>
+        <module>robustness</module>
+        <module>controller</module>
+    </modules>
     
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <descriptorRefs> 
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>eu.diversify.disco.cloudml.Runner</mainClass>
-                        </manifest>
-                    </archive>
-                    <finalName>cloudml-controller</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>          
-            </plugin>
-        </plugins>
-    </build>
-
-
 </project>

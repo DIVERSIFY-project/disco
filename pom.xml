@@ -11,8 +11,8 @@
     <modules>
         <module>population</module>
         <module>experiments</module>
-        <module>samples</module>
         <module>controller</module>
+        <module>samples</module>
     </modules>
  
  
