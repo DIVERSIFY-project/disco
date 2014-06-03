@@ -2,18 +2,18 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.diversify.disco.cloudml.robustness;
 
@@ -98,7 +98,7 @@ public class Run {
     }
 
     void deleteGeneratedFiles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        new File("extinction_sequence.csv").delete();
     }
 
     private String getStandardOutput() {
@@ -109,14 +109,15 @@ public class Run {
         return standardError.getOutput();
     }
 
-    public void noErrorShouldBeReported() {
-        assertThat(hint("no error"), getStandardError(), not(containsString("ERROR")));
-        assertThat(hint("no error"), getStandardError(), not(containsString("Error")));
-        assertThat(hint("no error"), getStandardError(), not(containsString("error")));
+    private static final String[] keywords = new String[]{
+        "ERROR", "Error", "error", "Exception", "exception"
+    };
 
-        assertThat(hint("no error"), getStandardOutput(), not(containsString("ERROR")));
-        assertThat(hint("no error"), getStandardOutput(), not(containsString("Error")));
-        assertThat(hint("no error"), getStandardOutput(), not(containsString("error")));
+    public void noErrorShouldBeReported() {
+        for (String eachKeyword: keywords) {
+            assertThat(hint("no error"), getStandardError(), not(containsString(eachKeyword)));
+            assertThat(hint("no error"), getStandardOutput(), not(containsString(eachKeyword)));
+        }
     }
 
 }

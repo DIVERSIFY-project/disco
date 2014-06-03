@@ -2,29 +2,31 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package eu.diversify.disco.cloudml.robustness;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import junit.framework.TestCase;
+import org.cloudml.codecs.library.CodecsLibrary;
+import org.cloudml.core.Deployment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.cloudml.core.builders.Commons.*;
 
 /**
  * Specification of user acceptance tests
@@ -32,23 +34,29 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class AcceptanceIT extends TestCase {
 
-    
-    @Test 
+    @Test
     public void robustnessShouldBeOneForASingleVM() throws IOException, InterruptedException {
-        String fileName = createModelWithASingleVM();
-        
-        Run run = Run.withArguments(fileName);
-        
+        final String testFile = "test.json";
+        createModelWithASingleVM(testFile);
+
+        Run run = Run.withArguments(testFile);
+
         run.noErrorShouldBeReported();
         run.displayedRobustnessShouldBe(100D);
         run.extinctionSequenceShouldBeAvailableIn("extinction_sequence.csv");
-        
+
         run.deleteGeneratedFiles();
     }
 
-    private String createModelWithASingleVM() {
-        return "test.json";
+    private void createModelWithASingleVM(String location) throws FileNotFoundException {
+        Deployment deployment = aDeployment()
+                .with(aProvider().named("Ec2"))
+                .with(aVM()
+                        .named("My VM")
+                        .providedBy("Ec2"))
+                .build();
+
+        new CodecsLibrary().saveAs(deployment, location);
     }
-    
 
 }
