@@ -35,7 +35,7 @@
 
         <dependency>
             <groupId>eu.diversify.disco</groupId>
-            <artifactId>samples.cloudml</artifactId>
+            <artifactId>samples.cloudml.controller</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         
