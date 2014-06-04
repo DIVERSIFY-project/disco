@@ -29,6 +29,7 @@ public class Simulator {
 
     public Simulator(Deployment deployment) {
         this.deployment = deployment;
+        markAllAsAlive();
     }
 
     public int countAliveComponents() {
@@ -45,7 +46,7 @@ public class Simulator {
         return canBeProvisioned(c) && allMandatoryDependenciesCanBeResolved(c);
     }
 
-    private boolean canBeProvisioned(Component c) {
+    public boolean canBeProvisioned(Component c) {
         if (isDead(c)) {
             return false;
         }
@@ -54,7 +55,7 @@ public class Simulator {
         }
 
         for (Component other: deployment.getComponents()) {
-            if (isAlive(other) && c.canHost(c.asInternal())) {
+            if (isAlive(other) && other.canHost(c.asInternal())) {
                 return true;
             }
         }
@@ -118,7 +119,7 @@ public class Simulator {
     }
 
     public void markAsDead(Component c) {
-        c.getProperties().add(new Property("Killed", "true"));
+        c.getProperties().get("Killed").setValue("true");
     }
 
     public void markAllAsAlive() {
@@ -128,7 +129,11 @@ public class Simulator {
     }
 
     private void markAsAlive(Component component) {
-        component.getProperties().add(new Property("Killed", "false"));
+        if (component.hasProperty("Killed")) {
+            component.getProperties().get("Killed").setValue("false");
+        } else {
+            component.getProperties().add(new Property("Killed", "false"));
+        }
     }
 
     public int countComponents() {

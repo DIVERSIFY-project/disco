@@ -19,7 +19,9 @@ package eu.diversify.disco.cloudml.robustness;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -34,6 +36,8 @@ import static org.hamcrest.MatcherAssert.*;
  */
 @RunWith(JUnit4.class)
 public class ExtinctionSequenceTest extends TestCase {
+    
+    
 
     @Test
     public void fromMapShouldBuildTheSimplestExtinctionSequence() {
@@ -44,8 +48,8 @@ public class ExtinctionSequenceTest extends TestCase {
         ExtinctionSequence es = ExtinctionSequence.fromMap(map);
 
         assertThat(es.getUpperBound(), is(equalTo(1)));
-        assertThat(es.getAliveCount(0), is(equalTo(1)));
-        assertThat(es.getAliveCount(1), is(equalTo(0)));
+        assertThat(es.getLifeLevel(0), is(equalTo(1)));
+        assertThat(es.getLifeLevel(1), is(equalTo(0)));
     }
     
     @Test
@@ -57,8 +61,8 @@ public class ExtinctionSequenceTest extends TestCase {
         ExtinctionSequence es = ExtinctionSequence.fromMap(map);
 
         assertThat(es.getUpperBound(), is(equalTo(10)));
-        assertThat(es.getAliveCount(0), is(equalTo(10)));
-        assertThat(es.getAliveCount(10), is(equalTo(0)));
+        assertThat(es.getLifeLevel(0), is(equalTo(10)));
+        assertThat(es.getLifeLevel(10), is(equalTo(0)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -170,9 +174,9 @@ public class ExtinctionSequenceTest extends TestCase {
 
         final ExtinctionSequence es = ExtinctionSequence.fromCsv(csvText);
 
-        assertThat(es.getAliveCount(0), is(equalTo(10)));
-        assertThat(es.getAliveCount(5), is(equalTo(5)));
-        assertThat(es.getAliveCount(10), is(equalTo(0)));
+        assertThat(es.getLifeLevel(0), is(equalTo(10)));
+        assertThat(es.getLifeLevel(5), is(equalTo(5)));
+        assertThat(es.getLifeLevel(10), is(equalTo(0)));
     }
 
     @Test

@@ -15,13 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.cloudml.robustness;
 
 import junit.framework.TestCase;
 import org.cloudml.core.Component;
 import org.cloudml.core.Deployment;
-
-import static org.cloudml.core.builders.Commons.*;
+import org.cloudml.core.InternalComponent;
+import org.cloudml.core.VM;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,13 +54,44 @@ import static org.hamcrest.MatcherAssert.*;
 public class SimulatorTest extends TestCase {
 
     @Test
-    public void countAliveComponentsShouldReturnTheNumberOfComponentsBeforeAnyKilling() {
-        final Deployment deployment = aDeployment()
-                .with(aProvider().named("Ec2"))
-                .with(aVM()
-                        .named("My VM")
-                        .providedBy("Ec2"))
-                .build();
+    public void aliveComponentsShouldIncludeInternalOnes() {
+        final Deployment deployment = Samples.anAppOnAVm().build();
+
+        final Simulator simulator = new Simulator(deployment);
+
+        assertThat(simulator.countAliveComponents(), is(equalTo(2)));
+    }
+
+    @Test
+    public void internalComponentShouldBeAlive() {
+        final String appName = "app";
+        final Deployment deployment = Samples.anAppOnAVm(appName, "vm").build();
+
+        final InternalComponent theApp = deployment.getComponents().onlyInternals().firstNamed(appName);
+        final Simulator simulator = new Simulator(deployment);
+
+        assertThat("dead!", simulator.isAlive(theApp));
+    }
+    
+    @Test
+    public void freshInternalComponentsShouldBeReadyToStart() {
+        final String appName = "app";
+        final String vmName = "vm";
+        final Deployment deployment = Samples.anAppOnAVm(appName, vmName).build();
+        
+        final InternalComponent theApp = deployment.getComponents().onlyInternals().firstNamed(appName);
+        final VM vm = deployment.getComponents().onlyVMs().firstNamed(vmName);
+        final Simulator simulator = new Simulator(deployment);
+
+        assertThat("dead!", simulator.isAlive(theApp));
+        assertThat("cannot be hosted by the VM", vm.canHost(theApp));
+        assertThat("cannot be provisioned!", simulator.canBeProvisioned(theApp));
+        assertThat("cannot start!", simulator.canStillBeStarted(theApp));
+    }
+
+    @Test
+    public void allComponentsShouldBeAliveAtFirst() {
+        final Deployment deployment = Samples.aSingleVM().build();
 
         final Simulator simulator = new Simulator(deployment);
 
@@ -51,76 +99,53 @@ public class SimulatorTest extends TestCase {
     }
 
     @Test
-    public void brandNewComponentsShouldNotBeKilled() {
-        final Deployment deployment = aDeployment()
-                .with(aProvider().named("Ec2"))
-                .with(aVM()
-                        .named("My VM")
-                        .providedBy("Ec2"))
-                .build();
+    public void brandNewComponentsShouldBeAlive() {
+        final String vmName = "My VM";
 
+        final Deployment deployment = Samples.aSingleVM(vmName).build();
         final Simulator simulator = new Simulator(deployment);
+        final Component vm = deployment.getComponents().firstNamed(vmName);
 
-        assertThat("not killed", simulator.isAlive(deployment.getComponents().firstNamed("My VM")));
-
+        assertThat("alive", simulator.isAlive(vm));
     }
 
     @Test
-    public void killedComponentsShouldBeMarkedAsKilled() {
-        final Deployment deployment = aDeployment()
-                .with(aProvider().named("Ec2"))
-                .with(aVM()
-                        .named("My VM")
-                        .providedBy("Ec2"))
-                .build();
-        final Component theVm = deployment.getComponents().firstNamed("My VM");
+    public void killedComponentsShouldBeDead() {
+        final String vmName = "My VM";
+        final Deployment deployment = Samples.aSingleVM(vmName).build();
+
+        final Component vm = deployment.getComponents().firstNamed(vmName);
 
         final Simulator simulator = new Simulator(deployment);
-        simulator.markAsDead(theVm); 
-                
-        assertThat("not marked as killed", simulator.isDead(theVm));
+        simulator.markAsDead(vm);
+
+        assertThat("not marked as killed", simulator.isDead(vm));
     }
-    
-    
+
     @Test
-    public void killedComponentsShouldBeNotBeCountedAsAlive() {
-        final Deployment deployment = aDeployment()
-                .with(aProvider().named("Ec2"))
-                .with(aVM()
-                        .named("VM #1")
-                        .providedBy("Ec2"))
-                .with(aVM()
-                        .named("VM #2")
-                        .providedBy("Ec2"))
-                .build();
-        final Component theVm = deployment.getComponents().firstNamed("VM #1");
+    public void deadComponentsShouldNotBeCountedAsAlive() {
+        final String vmName = "VM #1";
+        final Deployment deployment = Samples.twoIndependentVMs(vmName, "any name").build();
+
+        final Component theVm = deployment.getComponents().firstNamed(vmName);
 
         final Simulator simulator = new Simulator(deployment);
-        simulator.markAsDead(theVm); 
-                
+        simulator.markAsDead(theVm);
+
         assertThat("alive components", simulator.countAliveComponents(), is(equalTo(1)));
     }
-    
-    
+
     @Test
     public void killingOneComponentShouldDecreaseTheNumberOfAliveComponents() {
-        final Deployment deployment = aDeployment()
-                .with(aProvider().named("Ec2"))
-                .with(aVM()
-                        .named("VM #1")
-                        .providedBy("Ec2"))
-                .with(aVM()
-                        .named("VM #2")
-                        .providedBy("Ec2"))
-                .build();
-        
+        final Deployment deployment = Samples.twoIndependentVMs().build();
+
         final Simulator simulator = new Simulator(deployment);
         assertThat("alive components", simulator.countAliveComponents(), is(equalTo(2)));
-        
-        simulator.killOneComponent(); 
+
+        simulator.killOneComponent();
         assertThat("alive components", simulator.countAliveComponents(), is(equalTo(1)));
-                
-        simulator.killOneComponent(); 
+
+        simulator.killOneComponent();
         assertThat("alive components", simulator.countAliveComponents(), is(equalTo(0)));
     }
 }

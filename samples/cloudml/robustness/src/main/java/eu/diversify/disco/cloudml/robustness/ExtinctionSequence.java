@@ -1,3 +1,20 @@
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /**
  *
@@ -27,15 +44,15 @@ import java.util.*;
 public class ExtinctionSequence {
 
     public static ExtinctionSequence fromMap(Map<Integer, Integer> lifeLevels) {
-        final List<Entry> entries = new ArrayList<Entry>(lifeLevels.size());
+        final List<SurvivorCounts> entries = new ArrayList<SurvivorCounts>(lifeLevels.size());
         for (Integer eachExtinctionLevel: lifeLevels.keySet()) {
-            entries.add(new Entry(eachExtinctionLevel, lifeLevels.get(eachExtinctionLevel)));
+            entries.add(new SurvivorCounts(eachExtinctionLevel, lifeLevels.get(eachExtinctionLevel)));
         }
         return new ExtinctionSequence(entries);
     }
 
     public static ExtinctionSequence fromCsv(String csvText) {
-        final List<Entry> entries = new ArrayList<Entry>();
+        final List<SurvivorCounts> entries = new ArrayList<SurvivorCounts>();
         final String[] lines = csvText.split("\\r?\\n");
         for (String eachLine: lines) {
             final String[] cells = eachLine.split(",");
@@ -44,7 +61,7 @@ public class ExtinctionSequence {
             } else {
                 final int extinctionLevel = Integer.parseInt(cells[0].trim());
                 final int lifeLevel = Integer.parseInt(cells[1].trim());
-                entries.add(new Entry(extinctionLevel, lifeLevel));
+                entries.add(new SurvivorCounts(extinctionLevel, lifeLevel));
             }
         }
         return new ExtinctionSequence(entries);
@@ -68,16 +85,16 @@ public class ExtinctionSequence {
     }
 
     private final int maximumLifeLevel;
-    private final List<Entry> entries;
+    private final List<SurvivorCounts> entries;
 
-    private ExtinctionSequence(Collection<Entry> entries) {
+    private ExtinctionSequence(Collection<SurvivorCounts> entries) {
         validate(entries);
-        this.entries = new ArrayList<Entry>(entries);
+        this.entries = new ArrayList<SurvivorCounts>(entries);
         this.maximumLifeLevel = maximumLifeLevel(entries);
         Collections.sort(this.entries);
     }
 
-    private void validate(Collection<Entry> entries) {
+    private void validate(Collection<SurvivorCounts> entries) {
         if (entries.size() < 2) {
             throw new IllegalArgumentException("An extinction sequence requires at least two data points" + entries);
         }
@@ -90,16 +107,16 @@ public class ExtinctionSequence {
         final int maximumLifeLevel = maximumLifeLevel(entries);
         final int maximumExtinctionLevel = maximumExtinctionLevel(entries);
         if (maximumLifeLevel != maximumExtinctionLevel) {
-            final String error = String.format("An extinction sequence requires that the maximum life and extinction levels agree (found %d alive & %d killed", maximumLifeLevel, maximumExtinctionLevel);
+            final String error = String.format("An extinction sequence requires that the maximum life and extinction levels agree (found %d alive & %d killed)\r\n%s" , maximumLifeLevel, maximumExtinctionLevel, entries);
             throw new IllegalArgumentException(error);
         }
     }
 
-    private int minimumLifeLevel(Collection<Entry> entries) {
-        final List<Entry> asList = new ArrayList<Entry>(entries);
-        int min = asList.get(0).getLifeLevel();
+    private int minimumLifeLevel(Collection<SurvivorCounts> entries) {
+        final List<SurvivorCounts> asList = new ArrayList<SurvivorCounts>(entries);
+        int min = asList.get(0).getSurvivorCount();
         for (int i = 1; i < entries.size(); i++) {
-            final int lifeLevel = asList.get(i).getLifeLevel();
+            final int lifeLevel = asList.get(i).getSurvivorCount();
             if (lifeLevel < min) {
                 min = lifeLevel;
             }
@@ -107,11 +124,11 @@ public class ExtinctionSequence {
         return min;
     }
 
-    private int minimumExtinctionLevel(Collection<Entry> entries) {
-        final List<Entry> asList = new ArrayList<Entry>(entries);
-        int min = asList.get(0).getExtinctionLevel();
+    private int minimumExtinctionLevel(Collection<SurvivorCounts> entries) {
+        final List<SurvivorCounts> asList = new ArrayList<SurvivorCounts>(entries);
+        int min = asList.get(0).getDeadCount();
         for (int i = 1; i < entries.size(); i++) {
-            final int extinctionLevel = asList.get(i).getExtinctionLevel();
+            final int extinctionLevel = asList.get(i).getDeadCount();
             if (extinctionLevel < min) {
                 min = extinctionLevel;
             }
@@ -119,11 +136,11 @@ public class ExtinctionSequence {
         return min;
     }
 
-    private int maximumLifeLevel(Collection<Entry> entries) {
-        final List<Entry> asList = new ArrayList<Entry>(entries);
-        int max = asList.get(0).getLifeLevel();
+    private int maximumLifeLevel(Collection<SurvivorCounts> entries) {
+        final List<SurvivorCounts> asList = new ArrayList<SurvivorCounts>(entries);
+        int max = asList.get(0).getSurvivorCount();
         for (int i = 1; i < entries.size(); i++) {
-            final int lifeLevel = asList.get(i).getLifeLevel();
+            final int lifeLevel = asList.get(i).getSurvivorCount();
             if (lifeLevel > max) {
                 max = lifeLevel;
             }
@@ -131,11 +148,11 @@ public class ExtinctionSequence {
         return max;
     }
 
-    private int maximumExtinctionLevel(Collection<Entry> entries) {
-        final List<Entry> asList = new ArrayList<Entry>(entries);
-        int max = asList.get(0).getExtinctionLevel();
+    private int maximumExtinctionLevel(Collection<SurvivorCounts> entries) {
+        final List<SurvivorCounts> asList = new ArrayList<SurvivorCounts>(entries);
+        int max = asList.get(0).getDeadCount();
         for (int i = 1; i < entries.size(); i++) {
-            final int extinctionLevel = asList.get(i).getExtinctionLevel();
+            final int extinctionLevel = asList.get(i).getDeadCount();
             if (extinctionLevel > max) {
                 max = extinctionLevel;
             }
@@ -143,10 +160,10 @@ public class ExtinctionSequence {
         return max;
     }
 
-    public int getAliveCount(int killed) {
+    public int getLifeLevel(int killed) {
         for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).getExtinctionLevel() == killed) {
-                return entries.get(i).getLifeLevel();
+            if (entries.get(i).getDeadCount() == killed) {
+                return entries.get(i).getSurvivorCount();
             }
         }
         return -1;
@@ -159,9 +176,9 @@ public class ExtinctionSequence {
     public double getRobustness() {
         double result = 0D;
         for (int i = 1; i < entries.size(); i++) {
-            final Entry previous = entries.get(i - 1);
-            final Entry current = entries.get(i);
-            result += previous.getLifeLevel() * (current.getExtinctionLevel() - previous.getExtinctionLevel());
+            final SurvivorCounts previous = entries.get(i - 1);
+            final SurvivorCounts current = entries.get(i);
+            result += previous.getSurvivorCount() * (current.getDeadCount() - previous.getDeadCount());
         }
         return (result / Math.pow(maximumLifeLevel, 2)) * 100D;
     }
@@ -171,11 +188,11 @@ public class ExtinctionSequence {
         StringBuilder builder = new StringBuilder();
         builder.append("Killed: ");
         for (int i = 0; i < entries.size(); i++) {
-            builder.append(String.format("%6d", entries.get(i).extinctionLevel));
+            builder.append(String.format("%6d", entries.get(i).getDeadCount()));
         }
         builder.append("\nAlive:  ");
         for (int i = 0; i < entries.size(); i++) {
-            builder.append(String.format("%6d", entries.get(i).lifeLevel));
+            builder.append(String.format("%6d", entries.get(i).getSurvivorCount()));
         }
         builder.append("\n");
         return builder.toString();
@@ -185,8 +202,8 @@ public class ExtinctionSequence {
         final StringBuilder result = new StringBuilder();
         final String eol = System.lineSeparator();
         result.append("killed\\alive, 1").append(eol);
-        for (Entry eachEntry: entries) {
-            final String csvLine = String.format("%d, %d", eachEntry.getExtinctionLevel(), eachEntry.getLifeLevel());
+        for (SurvivorCounts eachEntry: entries) {
+            final String csvLine = String.format("%d, %d", eachEntry.getDeadCount(), eachEntry.getSurvivorCount());
             result.append(csvLine).append(eol);
         }
         return result.toString();
@@ -199,40 +216,52 @@ public class ExtinctionSequence {
 
     }
 
-    private static class Entry implements Comparable<Entry> {
+    private static class SurvivorCounts implements Comparable<SurvivorCounts> {
 
-        private final int extinctionLevel;
-        private final int lifeLevel;
+        private final int deadCount;
+        private final List<Integer> survivorCounts;
 
-        public Entry(int extinctionLevel, int lifeLevel) {
-            this.extinctionLevel = rejectIfInvalid(extinctionLevel);
-            this.lifeLevel = rejectIfInvalid(lifeLevel);
+        public SurvivorCounts(int extinctionLevel, int lifeLevel) {
+            this(extinctionLevel, Collections.singletonList(lifeLevel));
         }
-
-        private int rejectIfInvalid(int level) {
-            if (level < 0) {
-                final String error = String.format("Level must be positive in an extinction sequence (%d)", level);
+        
+        public SurvivorCounts(int deadCount, Collection<Integer> survivorCounts) {
+            if (survivorCounts.isEmpty()) {
+                final String error = String.format("Extinction sequences require at least 1 survivor count per dead count (none is given for dead count = %d)", deadCount);
                 throw new IllegalArgumentException(error);
             }
-            return level;
+            this.deadCount = validate(deadCount);
+            this.survivorCounts = new ArrayList<Integer>();
+            for (Integer each: survivorCounts) {
+                this.survivorCounts.add(validate(each));
+            }
+        }
+        
+        private int validate(int count) {
+            if (count < 0) {
+                final String error = String.format("Counts must be positive (found: %d)", count);
+                throw new IllegalArgumentException(error);
+            }
+            return count;
         }
 
-        public int getExtinctionLevel() {
-            return extinctionLevel;
+        public int getDeadCount() {
+            return deadCount;
         }
-
-        public int getLifeLevel() {
-            return lifeLevel;
+                
+        
+        public int getSurvivorCount() {
+            return survivorCounts.get(0);
         }
 
         @Override
-        public int compareTo(Entry o) {
-            return extinctionLevel - o.getExtinctionLevel();
+        public int compareTo(SurvivorCounts o) {
+            return deadCount - o.getDeadCount();
         }
 
         @Override
         public String toString() {
-            return "{" + "killed: " + extinctionLevel + ", alive:" + lifeLevel + '}';
+            return "{" + "killed: " + deadCount + ", alive:" + getSurvivorCount() + '}';
         }
 
        
