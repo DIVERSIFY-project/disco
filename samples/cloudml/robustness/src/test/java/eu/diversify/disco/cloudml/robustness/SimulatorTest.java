@@ -61,7 +61,7 @@ public class SimulatorTest extends TestCase {
 
         final Simulator simulator = new Simulator(deployment);
 
-        assertThat("not killed", simulator.isNotKilled(deployment.getComponents().firstNamed("My VM")));
+        assertThat("not killed", simulator.isAlive(deployment.getComponents().firstNamed("My VM")));
 
     }
 
@@ -76,9 +76,9 @@ public class SimulatorTest extends TestCase {
         final Component theVm = deployment.getComponents().firstNamed("My VM");
 
         final Simulator simulator = new Simulator(deployment);
-        simulator.kill(theVm); 
+        simulator.markAsDead(theVm); 
                 
-        assertThat("not marked as killed", simulator.isKilled(theVm));
+        assertThat("not marked as killed", simulator.isDead(theVm));
     }
     
     
@@ -96,7 +96,7 @@ public class SimulatorTest extends TestCase {
         final Component theVm = deployment.getComponents().firstNamed("VM #1");
 
         final Simulator simulator = new Simulator(deployment);
-        simulator.kill(theVm); 
+        simulator.markAsDead(theVm); 
                 
         assertThat("alive components", simulator.countAliveComponents(), is(equalTo(1)));
     }

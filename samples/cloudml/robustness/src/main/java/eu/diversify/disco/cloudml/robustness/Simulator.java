@@ -34,7 +34,7 @@ public class Simulator {
     public int countAliveComponents() {
         int count = 0;
         for (Component c: deployment.getComponents()) {
-            if (isNotKilled(c) && canStillBeStarted(c)) {
+            if (isAlive(c) && canStillBeStarted(c)) {
                 count++;
             }
         }
@@ -46,7 +46,7 @@ public class Simulator {
     }
 
     private boolean canBeProvisioned(Component c) {
-        if (isKilled(c)) {
+        if (isDead(c)) {
             return false;
         }
         if (c.isExternal()) {
@@ -54,7 +54,7 @@ public class Simulator {
         }
 
         for (Component other: deployment.getComponents()) {
-            if (isNotKilled(other) && c.canHost(c.asInternal())) {
+            if (isAlive(other) && c.canHost(c.asInternal())) {
                 return true;
             }
         }
@@ -79,7 +79,7 @@ public class Simulator {
     private boolean canBeResolved(RequiredPort port) {
         for (Relationship eachRelationship: deployment.getRelationships()) {
             if (eachRelationship.getRequiredEnd() == port) {
-                if (isNotKilled(eachRelationship.getServerComponent())) {
+                if (isAlive(eachRelationship.getServerComponent())) {
                     return true;
                 }
             }
@@ -88,20 +88,20 @@ public class Simulator {
     }
 
   
-    public boolean isNotKilled(Component c) {
-        return !isKilled(c);
+    public boolean isAlive(Component c) {
+        return !isDead(c);
     }
     
-    public boolean isKilled(Component c) {
+    public boolean isDead(Component c) {
         return c.hasProperty("Killed", "true");
     }
 
     public void killOneComponent() {
         int killed = 0;
         for (Component c: deployment.getComponents()) {
-            if (isNotKilled(c)) {
+            if (isAlive(c)) {
                 killed++;
-                kill(c);
+                markAsDead(c);
                 break;
             }
         }
@@ -109,17 +109,30 @@ public class Simulator {
         while (killed != 0) {
             killed = 0;
             for (Component c: deployment.getComponents()) {
-                if (isNotKilled(c) && !canStillBeStarted(c)) {
+                if (isAlive(c) && !canStillBeStarted(c)) {
                     killed++;
-                    kill(c);
+                    markAsDead(c);
                 }
             }
         }
-
     }
 
-    public void kill(Component c) {
+    public void markAsDead(Component c) {
         c.getProperties().add(new Property("Killed", "true"));
+    }
+
+    public void markAllAsAlive() {
+        for (Component c: deployment.getComponents()) {
+            markAsAlive(c);
+        }
+    }
+
+    private void markAsAlive(Component component) {
+        component.getProperties().add(new Property("Killed", "false"));
+    }
+
+    public int countComponents() {
+        return deployment.getComponents().size();
     }
 
 }
