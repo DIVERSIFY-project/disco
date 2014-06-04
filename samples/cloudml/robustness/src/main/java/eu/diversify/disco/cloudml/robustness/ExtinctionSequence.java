@@ -1,37 +1,4 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.cloudml.robustness;
 
 import java.io.*;
@@ -42,10 +9,10 @@ import java.util.*;
  */
 public class ExtinctionSequence {
 
-    public static ExtinctionSequence fromMap(Map<Integer, Integer> lifeLevels) {
-        final List<SurvivorCounts> entries = new ArrayList<SurvivorCounts>(lifeLevels.size());
-        for (Integer eachExtinctionLevel: lifeLevels.keySet()) {
-            entries.add(new SurvivorCounts(eachExtinctionLevel, lifeLevels.get(eachExtinctionLevel)));
+    public static ExtinctionSequence fromMap(Map<Integer, List<Integer>> survivorCounts) {
+        final List<SurvivorCounts> entries = new ArrayList<SurvivorCounts>(survivorCounts.size());
+        for (Integer eachExtinctionLevel: survivorCounts.keySet()) {
+            entries.add(new SurvivorCounts(eachExtinctionLevel, survivorCounts.get(eachExtinctionLevel)));
         }
         return new ExtinctionSequence(entries);
     }
@@ -54,13 +21,16 @@ public class ExtinctionSequence {
         final List<SurvivorCounts> entries = new ArrayList<SurvivorCounts>();
         final String[] lines = csvText.split("\\r?\\n");
         for (String eachLine: lines) {
+            final List<Integer> survivorCounts = new ArrayList<Integer>();
             final String[] cells = eachLine.split(",");
             if (cells[0].equals("killed\\alive")) {
                 // nothing to do, this is the header
             } else {
                 final int extinctionLevel = Integer.parseInt(cells[0].trim());
-                final int lifeLevel = Integer.parseInt(cells[1].trim());
-                entries.add(new SurvivorCounts(extinctionLevel, lifeLevel));
+                for (int i = 1; i < cells.length; i++) {
+                    survivorCounts.add(Integer.parseInt(cells[1].trim()));
+                }
+                entries.add(new SurvivorCounts(extinctionLevel, survivorCounts));
             }
         }
         return new ExtinctionSequence(entries);
@@ -113,9 +83,9 @@ public class ExtinctionSequence {
 
     private int minimumLifeLevel(Collection<SurvivorCounts> entries) {
         final List<SurvivorCounts> asList = new ArrayList<SurvivorCounts>(entries);
-        int min = asList.get(0).getSurvivorCount();
+        int min = asList.get(0).getOneSurvivorCount();
         for (int i = 1; i < entries.size(); i++) {
-            final int lifeLevel = asList.get(i).getSurvivorCount();
+            final int lifeLevel = asList.get(i).getOneSurvivorCount();
             if (lifeLevel < min) {
                 min = lifeLevel;
             }
@@ -137,9 +107,9 @@ public class ExtinctionSequence {
 
     private int maximumLifeLevel(Collection<SurvivorCounts> entries) {
         final List<SurvivorCounts> asList = new ArrayList<SurvivorCounts>(entries);
-        int max = asList.get(0).getSurvivorCount();
+        int max = asList.get(0).getOneSurvivorCount();
         for (int i = 1; i < entries.size(); i++) {
-            final int lifeLevel = asList.get(i).getSurvivorCount();
+            final int lifeLevel = asList.get(i).getOneSurvivorCount();
             if (lifeLevel > max) {
                 max = lifeLevel;
             }
@@ -159,10 +129,14 @@ public class ExtinctionSequence {
         return max;
     }
 
+    public int length() {
+        return entries.size();
+    }
+
     public int getLifeLevel(int killed) {
         for (int i = 0; i < entries.size(); i++) {
             if (entries.get(i).getDeadCount() == killed) {
-                return entries.get(i).getSurvivorCount();
+                return entries.get(i).getOneSurvivorCount();
             }
         }
         return -1;
@@ -186,7 +160,7 @@ public class ExtinctionSequence {
         for (int i = 1; i < entries.size(); i++) {
             final SurvivorCounts previous = entries.get(i - 1);
             final SurvivorCounts current = entries.get(i);
-            result += previous.getSurvivorCount() * (current.getDeadCount() - previous.getDeadCount());
+            result += previous.mean() * (current.getDeadCount() - previous.getDeadCount());
         }
         return (result / Math.pow(maximumLifeLevel, 2)) * 100D;
     }
@@ -200,7 +174,7 @@ public class ExtinctionSequence {
         }
         builder.append("\nAlive:  ");
         for (int i = 0; i < entries.size(); i++) {
-            builder.append(String.format("%6d", entries.get(i).getSurvivorCount()));
+            builder.append(String.format("%6d", entries.get(i).getOneSurvivorCount()));
         }
         builder.append("\n");
         return builder.toString();
@@ -211,7 +185,7 @@ public class ExtinctionSequence {
         final String eol = System.lineSeparator();
         result.append("killed\\alive, 1").append(eol);
         for (SurvivorCounts eachEntry: entries) {
-            final String csvLine = String.format("%d, %d", eachEntry.getDeadCount(), eachEntry.getSurvivorCount());
+            final String csvLine = String.format("%d, %d", eachEntry.getDeadCount(), eachEntry.getOneSurvivorCount());
             result.append(csvLine).append(eol);
         }
         return result.toString();

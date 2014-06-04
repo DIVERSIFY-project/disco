@@ -1,3 +1,37 @@
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.robustness;
@@ -9,9 +43,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Capture a distribution of survivor counts and provides some basic statistics
+ * on it, such as min, max, and standard deviation.
  */
-class SurvivorCounts implements Comparable<SurvivorCounts> {
+public class SurvivorCounts implements Comparable<SurvivorCounts> {
 
     private final int deadCount;
     private final List<Integer> survivorCounts;
@@ -49,7 +84,7 @@ class SurvivorCounts implements Comparable<SurvivorCounts> {
         return deadCount;
     }
 
-    public int getSurvivorCount() {
+    public int getOneSurvivorCount() {
         return survivorCounts.get(0);
     }
 
@@ -70,17 +105,17 @@ class SurvivorCounts implements Comparable<SurvivorCounts> {
         }
         return min;
     }
-    
+
     public int maximum() {
         int max = survivorCounts.get(0);
-        for (int i=1 ; i< survivorCounts.size() ; i++) {
+        for (int i = 1; i < survivorCounts.size(); i++) {
             if (max < survivorCounts.get(i)) {
                 max = survivorCounts.get(i);
             }
         }
         return max;
     }
-    
+
     public double variance() {
         final double mean = mean();
         double sum = 0;
@@ -89,11 +124,15 @@ class SurvivorCounts implements Comparable<SurvivorCounts> {
         }
         return sum / survivorCounts.size();
     }
-    
+
     public double standardDeviation() {
         return Math.sqrt(variance());
     }
 
+    public List<Integer> all() {
+        return Collections.unmodifiableList(this.survivorCounts);
+    }
+    
     @Override
     public int compareTo(SurvivorCounts o) {
         return deadCount - o.getDeadCount();
@@ -101,7 +140,7 @@ class SurvivorCounts implements Comparable<SurvivorCounts> {
 
     @Override
     public String toString() {
-        return "{" + "killed: " + deadCount + ", alive:" + getSurvivorCount() + '}';
+        return "{" + "killed: " + deadCount + ", alive:" + getOneSurvivorCount() + '}';
     }
 
 }

@@ -15,9 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 package eu.diversify.disco.cloudml.robustness;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.cloudml.core.Deployment;
 
@@ -47,20 +51,29 @@ public class Robustness {
     }
 
     private void computeRobustness() {
-        final Map<Integer, Integer> lifeLevels = new HashMap<Integer, Integer>();
+        final Map<Integer, List<Integer>> survivorCounts = new HashMap<Integer, List<Integer>>();
 
         deployment.markAllAsAlive();
 
-        int lifeLevel = deployment.countAliveComponents();
-        lifeLevels.put(0, lifeLevel);
+        int survivorCount = deployment.countAliveComponents();
+        append(survivorCounts, 0, survivorCount);
 
         for (int deathLevel = 1; deathLevel <= deployment.countComponents(); deathLevel++) {
             deployment.killOneComponent();
-            lifeLevel = deployment.countAliveComponents();
-            lifeLevels.put(deathLevel, lifeLevel);
+            survivorCount = deployment.countAliveComponents();
+            append(survivorCounts, deathLevel, survivorCount);
         }
 
-        sequence = ExtinctionSequence.fromMap(lifeLevels);
+        sequence = ExtinctionSequence.fromMap(survivorCounts);
+    }
+    
+    private void append(Map<Integer, List<Integer>> data, int deadCount, int survivorCount) {
+        List<Integer> survivorCounts = data.get(deadCount);
+        if (survivorCounts == null) {
+            survivorCounts = new ArrayList<Integer>();
+            data.put(deadCount, survivorCounts);
+        }
+        survivorCounts.add(survivorCount);
     }
 
 }

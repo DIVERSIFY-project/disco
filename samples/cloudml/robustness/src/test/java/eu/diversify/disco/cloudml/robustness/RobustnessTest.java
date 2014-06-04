@@ -39,7 +39,7 @@ public class RobustnessTest extends TestCase {
 
     @Test
     public void robustnessOfASingleVMShouldBe100Percent() {
-        final Deployment deployment = Samples.aSingleVM().build();
+        final Deployment deployment = CloudML.aSingleVM().build();
 
         final Robustness sut = new Robustness(deployment);
         final double robustness = sut.getExtinctionSequence().getRobustness();
@@ -49,7 +49,7 @@ public class RobustnessTest extends TestCase {
 
     @Test
     public void robustnessOfTwoIndependentVMsShouldBe75Percent() {
-        final Deployment deployment = Samples.twoIndependentVMs().build();
+        final Deployment deployment = CloudML.twoIndependentVMs().build();
 
         final Robustness sut = new Robustness(deployment);
         final double robustness = sut.getExtinctionSequence().getRobustness();
@@ -59,7 +59,7 @@ public class RobustnessTest extends TestCase {
 
     @Test
     public void robustnessOfAnAppDeployedOnItsVMShouldBe75Percent() {
-        final Deployment deployment = Samples.anAppOnAVm().build();
+        final Deployment deployment = CloudML.anAppOnAVm().build();
 
         final ExtinctionSequence sequence = new Robustness(deployment).getExtinctionSequence();
         final double robustness = sequence.getRobustness();

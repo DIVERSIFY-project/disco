@@ -25,10 +25,10 @@ import static org.cloudml.core.builders.Commons.*;
 /**
  * Provide some reusable CloudML models
  */
-public class Samples {
+public class CloudML {
 
     public static DeploymentBuilder aSingleVM() {
-        return Samples.aSingleVM("Anonymous");
+        return CloudML.aSingleVM("Anonymous");
     }
     
     public static DeploymentBuilder aSingleVM(String vmName) {

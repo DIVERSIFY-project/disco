@@ -55,7 +55,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void aliveComponentsShouldIncludeInternalOnes() {
-        final Deployment deployment = Samples.anAppOnAVm().build();
+        final Deployment deployment = CloudML.anAppOnAVm().build();
 
         final Simulator simulator = new Simulator(deployment);
 
@@ -65,7 +65,7 @@ public class SimulatorTest extends TestCase {
     @Test
     public void internalComponentShouldBeAlive() {
         final String appName = "app";
-        final Deployment deployment = Samples.anAppOnAVm(appName, "vm").build();
+        final Deployment deployment = CloudML.anAppOnAVm(appName, "vm").build();
 
         final InternalComponent theApp = deployment.getComponents().onlyInternals().firstNamed(appName);
         final Simulator simulator = new Simulator(deployment);
@@ -77,7 +77,7 @@ public class SimulatorTest extends TestCase {
     public void freshInternalComponentsShouldBeReadyToStart() {
         final String appName = "app";
         final String vmName = "vm";
-        final Deployment deployment = Samples.anAppOnAVm(appName, vmName).build();
+        final Deployment deployment = CloudML.anAppOnAVm(appName, vmName).build();
         
         final InternalComponent theApp = deployment.getComponents().onlyInternals().firstNamed(appName);
         final VM vm = deployment.getComponents().onlyVMs().firstNamed(vmName);
@@ -91,7 +91,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void allComponentsShouldBeAliveAtFirst() {
-        final Deployment deployment = Samples.aSingleVM().build();
+        final Deployment deployment = CloudML.aSingleVM().build();
 
         final Simulator simulator = new Simulator(deployment);
 
@@ -102,7 +102,7 @@ public class SimulatorTest extends TestCase {
     public void brandNewComponentsShouldBeAlive() {
         final String vmName = "My VM";
 
-        final Deployment deployment = Samples.aSingleVM(vmName).build();
+        final Deployment deployment = CloudML.aSingleVM(vmName).build();
         final Simulator simulator = new Simulator(deployment);
         final Component vm = deployment.getComponents().firstNamed(vmName);
 
@@ -112,7 +112,7 @@ public class SimulatorTest extends TestCase {
     @Test
     public void killedComponentsShouldBeDead() {
         final String vmName = "My VM";
-        final Deployment deployment = Samples.aSingleVM(vmName).build();
+        final Deployment deployment = CloudML.aSingleVM(vmName).build();
 
         final Component vm = deployment.getComponents().firstNamed(vmName);
 
@@ -125,7 +125,7 @@ public class SimulatorTest extends TestCase {
     @Test
     public void deadComponentsShouldNotBeCountedAsAlive() {
         final String vmName = "VM #1";
-        final Deployment deployment = Samples.twoIndependentVMs(vmName, "any name").build();
+        final Deployment deployment = CloudML.twoIndependentVMs(vmName, "any name").build();
 
         final Component theVm = deployment.getComponents().firstNamed(vmName);
 
@@ -137,7 +137,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void killingOneComponentShouldDecreaseTheNumberOfAliveComponents() {
-        final Deployment deployment = Samples.twoIndependentVMs().build();
+        final Deployment deployment = CloudML.twoIndependentVMs().build();
 
         final Simulator simulator = new Simulator(deployment);
         assertThat("alive components", simulator.countAliveComponents(), is(equalTo(2)));
