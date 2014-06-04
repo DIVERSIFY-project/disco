@@ -2,20 +2,19 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
  *
  * This file is part of Disco.
@@ -107,7 +106,7 @@ public class ExtinctionSequence {
         final int maximumLifeLevel = maximumLifeLevel(entries);
         final int maximumExtinctionLevel = maximumExtinctionLevel(entries);
         if (maximumLifeLevel != maximumExtinctionLevel) {
-            final String error = String.format("An extinction sequence requires that the maximum life and extinction levels agree (found %d alive & %d killed)\r\n%s" , maximumLifeLevel, maximumExtinctionLevel, entries);
+            final String error = String.format("An extinction sequence requires that the maximum life and extinction levels agree (found %d alive & %d killed)\r\n%s", maximumLifeLevel, maximumExtinctionLevel, entries);
             throw new IllegalArgumentException(error);
         }
     }
@@ -169,6 +168,15 @@ public class ExtinctionSequence {
         return -1;
     }
 
+    public SurvivorCounts getSurvivorCounts(int killed) {
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).getDeadCount() == killed) {
+                return entries.get(i);
+            }
+        }
+        return null;
+    }
+
     public int getUpperBound() {
         return maximumLifeLevel(entries);
     }
@@ -216,54 +224,4 @@ public class ExtinctionSequence {
 
     }
 
-    private static class SurvivorCounts implements Comparable<SurvivorCounts> {
-
-        private final int deadCount;
-        private final List<Integer> survivorCounts;
-
-        public SurvivorCounts(int extinctionLevel, int lifeLevel) {
-            this(extinctionLevel, Collections.singletonList(lifeLevel));
-        }
-        
-        public SurvivorCounts(int deadCount, Collection<Integer> survivorCounts) {
-            if (survivorCounts.isEmpty()) {
-                final String error = String.format("Extinction sequences require at least 1 survivor count per dead count (none is given for dead count = %d)", deadCount);
-                throw new IllegalArgumentException(error);
-            }
-            this.deadCount = validate(deadCount);
-            this.survivorCounts = new ArrayList<Integer>();
-            for (Integer each: survivorCounts) {
-                this.survivorCounts.add(validate(each));
-            }
-        }
-        
-        private int validate(int count) {
-            if (count < 0) {
-                final String error = String.format("Counts must be positive (found: %d)", count);
-                throw new IllegalArgumentException(error);
-            }
-            return count;
-        }
-
-        public int getDeadCount() {
-            return deadCount;
-        }
-                
-        
-        public int getSurvivorCount() {
-            return survivorCounts.get(0);
-        }
-
-        @Override
-        public int compareTo(SurvivorCounts o) {
-            return deadCount - o.getDeadCount();
-        }
-
-        @Override
-        public String toString() {
-            return "{" + "killed: " + deadCount + ", alive:" + getSurvivorCount() + '}';
-        }
-
-       
-    }
 }

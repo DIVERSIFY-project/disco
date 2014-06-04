@@ -2,26 +2,24 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.diversify.disco.cloudml.robustness;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -36,8 +34,6 @@ import static org.hamcrest.MatcherAssert.*;
  */
 @RunWith(JUnit4.class)
 public class ExtinctionSequenceTest extends TestCase {
-    
-    
 
     @Test
     public void fromMapShouldBuildTheSimplestExtinctionSequence() {
@@ -51,7 +47,7 @@ public class ExtinctionSequenceTest extends TestCase {
         assertThat(es.getLifeLevel(0), is(equalTo(1)));
         assertThat(es.getLifeLevel(1), is(equalTo(0)));
     }
-    
+
     @Test
     public void fromMapShouldBuildACorrectExtinctionSequence() {
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
@@ -185,13 +181,13 @@ public class ExtinctionSequenceTest extends TestCase {
 
         final ExtinctionSequence es = ExtinctionSequence.fromMap(map);
         final String csvFileName = "test.csv";
-        
+
         es.toCsvFile(csvFileName);
-        
+
         final File csvFile = new File(csvFileName);
- 
+
         assertThat(csvFileName + " should exist", csvFile.exists());
-        
+
         csvFile.delete();
     }
 
