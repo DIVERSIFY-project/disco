@@ -17,8 +17,9 @@
  */
 package eu.diversify.disco.cloudml.robustness;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import eu.diversify.disco.cloudml.robustness.testing.Run;
+import eu.diversify.disco.cloudml.robustness.testing.RunInThread;
+import java.io.*;
 import junit.framework.TestCase;
 import org.cloudml.codecs.library.CodecsLibrary;
 import org.cloudml.core.Deployment;
@@ -26,7 +27,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static eu.diversify.disco.cloudml.robustness.testing.DidNotRaiseAnyException.didNotReportAnyError;
+import static eu.diversify.disco.cloudml.robustness.testing.DidShowRobustness.didShowRobustness;
+import static eu.diversify.disco.cloudml.robustness.testing.DidShowCopyright.didShowCopyright;
 import static org.cloudml.core.builders.Commons.*;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Specification of user acceptance tests
@@ -34,18 +41,23 @@ import static org.cloudml.core.builders.Commons.*;
 @RunWith(JUnit4.class)
 public class AcceptanceIT extends TestCase {
 
+    private static final String EXTINCTION_SEQUENCE_CSV = "extinction_sequence.csv";
+
     @Test
     public void robustnessShouldBeOneForASingleVM() throws IOException, InterruptedException {
         final String testFile = "test.json";
         createModelWithASingleVM(testFile);
 
-        Run run = Run.withArguments(testFile);
+        Run run = RunInThread.withArguments(testFile);
 
-        run.noErrorShouldBeReported();
-        run.displayedRobustnessShouldBe(100D);
-        run.extinctionSequenceShouldBeAvailableIn("extinction_sequence.csv");
+        assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
+        assertThat(run, didNotReportAnyError());
+        assertThat(run, didShowRobustness(100.0));
 
-        run.deleteGeneratedFiles();
+        ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
+        assertThat(sequence, is(not(nullValue())));
+
+        deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
 
     private void createModelWithASingleVM(String location) throws FileNotFoundException {
@@ -57,6 +69,44 @@ public class AcceptanceIT extends TestCase {
                 .build();
 
         new CodecsLibrary().saveAs(deployment, location);
+    }
+
+    @Test
+    public void robustnessShouldBe75ForTwoSeparateVMs() throws IOException, InterruptedException {
+        final String testFile = "test.json";
+        createModelWithTwoSeparateVMs(testFile);
+
+        Run run = RunInThread.withArguments(testFile);
+
+        assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
+        assertThat(run, didNotReportAnyError());
+        assertThat(run, didShowRobustness(75.0));
+
+        ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
+        assertThat(sequence, is(not(nullValue())));
+
+        deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
+    }
+
+    private void createModelWithTwoSeparateVMs(String location) throws FileNotFoundException {
+        Deployment deployment = aDeployment()
+                .with(aProvider().named("Ec2"))
+                .with(aVM()
+                        .named("VM #1")
+                        .providedBy("Ec2"))
+                .with(aVM()
+                        .named("VM #2")
+                        .providedBy("Ec2"))
+                .build();
+
+        new CodecsLibrary().saveAs(deployment, location);
+    }
+
+    public void deleteFiles(String... fileNames) {
+        for (String eachFile: fileNames) {
+            final File file = new File(eachFile);
+            file.delete();
+        }
     }
 
 }

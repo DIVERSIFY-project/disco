@@ -17,7 +17,7 @@
  */
 
 
-package eu.diversify.disco.cloudml.robustness;
+package eu.diversify.disco.cloudml.robustness.testing;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,7 +1,23 @@
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.cloudml.robustness;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -31,6 +47,23 @@ public class ExtinctionSequence {
             }
         }
         return new ExtinctionSequence(entries);
+    }
+
+    public static ExtinctionSequence fromCsvFile(String csvFile) throws FileNotFoundException, IOException {
+        final BufferedReader br = new BufferedReader(new FileReader(csvFile));
+        final StringBuilder sb = new StringBuilder();
+        try {
+            String line = br.readLine();
+            while (line != null) {
+                sb.append(line).append(System.lineSeparator());
+                line = br.readLine();
+            }
+            return fromCsv(sb.toString());
+
+        } finally {
+            br.close();
+
+        }
     }
 
     private final int maximumLifeLevel;
@@ -134,10 +167,11 @@ public class ExtinctionSequence {
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        builder.append("Killed: ");
         for (int i = 0; i < entries.size(); i++) {
             builder.append(String.format("%6d", entries.get(i).extinctionLevel));
         }
-        builder.append("\n");
+        builder.append("\nAlive:  ");
         for (int i = 0; i < entries.size(); i++) {
             builder.append(String.format("%6d", entries.get(i).lifeLevel));
         }
@@ -160,6 +194,7 @@ public class ExtinctionSequence {
         FileWriter file = new FileWriter(csvFileName);
         file.write(toCsv());
         file.close();
+
     }
 
     private static class Entry implements Comparable<Entry> {

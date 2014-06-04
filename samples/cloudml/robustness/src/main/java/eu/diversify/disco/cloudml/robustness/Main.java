@@ -2,6 +2,23 @@
  *
  * This file is part of Disco.
  *
+ * Disco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ *
+ * This file is part of Disco.
+ *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -21,12 +38,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.cloudml.codecs.library.CodecsLibrary;
-import org.cloudml.core.Component;
 import org.cloudml.core.Deployment;
-import org.cloudml.core.InternalComponent;
-import org.cloudml.core.Property;
-import org.cloudml.core.Relationship;
-import org.cloudml.core.RequiredPort;
 
 /**
  * Entry point of the robustness calculator
@@ -34,6 +46,8 @@ import org.cloudml.core.RequiredPort;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Copyright (c) 2014 - SINTEF ICT");
+        
         final Map<Integer, Integer> lifeLevels = new HashMap<Integer, Integer>();
 
         CodecsLibrary codecs = new CodecsLibrary();
