@@ -15,9 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.cloudml.robustness;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.cloudml.core.*;
 
 /**
@@ -62,7 +81,7 @@ public class Simulator {
         return false;
     }
 
-    private  boolean allMandatoryDependenciesCanBeResolved(Component c) {
+    private boolean allMandatoryDependenciesCanBeResolved(Component c) {
         if (c.isExternal()) {
             return true;
         }
@@ -88,23 +107,20 @@ public class Simulator {
         return false;
     }
 
-  
     public boolean isAlive(Component c) {
         return !isDead(c);
     }
-    
+
     public boolean isDead(Component c) {
         return c.hasProperty("Killed", "true");
     }
 
     public void killOneComponent() {
         int killed = 0;
-        for (Component c: deployment.getComponents()) {
-            if (isAlive(c)) {
-                killed++;
-                markAsDead(c);
-                break;
-            }
+        Component component = pickOneAliveComponent();
+        if (component != null) {
+            markAsDead(component);
+            killed = 1;
         }
 
         while (killed != 0) {
@@ -138,6 +154,28 @@ public class Simulator {
 
     public int countComponents() {
         return deployment.getComponents().size();
+    }
+
+    private Component pickOneAliveComponent() {
+        final List<Component> alive = selectAliveComponents();
+        if (alive.isEmpty()) {
+            return null;
+        }
+        if (alive.size() == 1) {
+            return alive.get(0);
+        }
+        final int draw = new Random().nextInt(alive.size());
+        return alive.get(draw);
+    }
+
+    private List<Component> selectAliveComponents() {
+        final List<Component> selection = new ArrayList<Component>();
+        for (Component each: deployment.getComponents()) {
+            if (isAlive(each)) {
+                selection.add(each);
+            }
+        }
+        return selection;
     }
 
 }

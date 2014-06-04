@@ -162,10 +162,10 @@ public class ExtinctionSequenceTest extends TestCase {
 
         final String eol = System.lineSeparator();
         final String expectation
-                = "killed\\alive, 1" + eol
-                + "0, 10" + eol
-                + "5, 5" + eol
-                + "10, 0" + eol;
+                = "killed\\alive,1" + eol
+                + "0,10" + eol
+                + "5,5" + eol
+                + "10,0" + eol;
 
         assertThat(csvSnippet, is(equalTo(expectation)));
 
@@ -175,10 +175,10 @@ public class ExtinctionSequenceTest extends TestCase {
     public void fromCsvShouldBuildACorrectExtinctionSequence() {
         final String eol = System.lineSeparator();
         final String csvText
-                = "killed\\alive, 1" + eol
-                + "0, 10" + eol
-                + "5, 5" + eol
-                + "10, 0" + eol;
+                = "killed\\alive,1" + eol
+                + "0,10" + eol
+                + "5,5" + eol
+                + "10,0" + eol;
 
         final ExtinctionSequence es = ExtinctionSequence.fromCsv(csvText);
 

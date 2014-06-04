@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.robustness;
@@ -65,6 +82,26 @@ public class RobustnessTest extends TestCase {
         final double robustness = sequence.getRobustness();
 
         assertThat(sequence.toString(), robustness, is(either(equalTo(75.0)).or(equalTo(50.0))));
+    }
+
+    @Test
+    public void meanRobustnessOfAnAppDeployedOnItsVMShouldBeAround62Percent() {
+        final Deployment deployment = CloudML.anAppOnAVm().build();
+
+        final ExtinctionSequence sequence = new Robustness(deployment, 10).getExtinctionSequence();
+        final double robustness = sequence.getRobustness();
+
+        assertThat(sequence.toString(), robustness, is(closeTo(62.5, 5.0)));
+    }
+    
+    @Test 
+    public void meanRobustnessOfAnAppAndItsDependencyOnAVmShouldBeBetween33And66Percent() {
+        final Deployment deployment = CloudML.anAppAndItsDependencyOnAVm().build();
+
+        final ExtinctionSequence sequence = new Robustness(deployment, 10).getExtinctionSequence();
+        final double robustness = sequence.getRobustness();
+
+        assertThat(sequence.toString(), robustness, is(both(greaterThanOrEqualTo(33D)).and(lessThanOrEqualTo(67D))));
     }
 
 }

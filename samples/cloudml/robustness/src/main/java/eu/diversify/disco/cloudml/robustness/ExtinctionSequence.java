@@ -1,4 +1,37 @@
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.cloudml.robustness;
 
 import java.io.*;
@@ -165,28 +198,37 @@ public class ExtinctionSequence {
         return (result / Math.pow(maximumLifeLevel, 2)) * 100D;
     }
 
+    public String summary() {
+        final StringBuilder builder = new StringBuilder();
+        final String eol = System.lineSeparator();
+        builder.append("Extinction sequence:").append(eol);
+        builder.append(String.format("%10s %10s %10s %10s %10s", "dead count", "min", "average", "max", "std. dev.")).append(eol);
+        for(SurvivorCounts each: entries) {
+            builder.append(String.format("%10d %10d %10.2f %10d %10.2f", each.getDeadCount(), each.minimum(), each.mean(), each.maximum(), each.standardDeviation()));
+            builder.append(eol);
+        }
+        return builder.toString();
+    }
+
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Killed: ");
-        for (int i = 0; i < entries.size(); i++) {
-            builder.append(String.format("%6d", entries.get(i).getDeadCount()));
-        }
-        builder.append("\nAlive:  ");
-        for (int i = 0; i < entries.size(); i++) {
-            builder.append(String.format("%6d", entries.get(i).getOneSurvivorCount()));
-        }
-        builder.append("\n");
-        return builder.toString();
+        return toCsv();
     }
 
     public String toCsv() {
         final StringBuilder result = new StringBuilder();
         final String eol = System.lineSeparator();
-        result.append("killed\\alive, 1").append(eol);
+        result.append("killed\\alive");
+        for (int i = 1; i <= entries.get(0).all().size(); i++) {
+            result.append(String.format(",%d", i));
+        }
+        result.append(eol);
         for (SurvivorCounts eachEntry: entries) {
-            final String csvLine = String.format("%d, %d", eachEntry.getDeadCount(), eachEntry.getOneSurvivorCount());
-            result.append(csvLine).append(eol);
+            result.append(String.format("%d", eachEntry.getDeadCount()));
+            for (int eachSurvivorCount: eachEntry.all()) {
+                result.append(String.format(",%d", eachSurvivorCount));
+            }
+            result.append(eol);
         }
         return result.toString();
     }

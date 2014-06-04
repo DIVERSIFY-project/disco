@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.diversify.disco.cloudml.robustness;
 
 import java.io.IOException;
@@ -30,9 +31,9 @@ public class Main {
         System.out.println("Copyright (c) 2014 - SINTEF ICT");
         
         Deployment deployment = new CodecsLibrary().load(args[0]);
-        ExtinctionSequence sequence = new Robustness(deployment).getExtinctionSequence();
+        ExtinctionSequence sequence = new Robustness(deployment, 15).getExtinctionSequence();
                 
-        System.out.println(sequence);
+        System.out.println(sequence.summary());
         sequence.toCsvFile("extinction_sequence.csv");
 
         System.out.printf("Robustness: %.2f %%\r\n", sequence.getRobustness());
