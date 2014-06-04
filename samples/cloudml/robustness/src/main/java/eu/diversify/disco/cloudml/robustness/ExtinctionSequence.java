@@ -2,6 +2,23 @@
  *
  * This file is part of Disco.
  *
+ * Disco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ *
+ * This file is part of Disco.
+ *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -35,7 +52,7 @@ public class ExtinctionSequence {
 
     public static ExtinctionSequence fromCsv(String csvText) {
         final List<Entry> entries = new ArrayList<Entry>();
-        final String[] lines = csvText.split("\\s+\r?\n");
+        final String[] lines = csvText.split("\\r?\\n");
         for (String eachLine: lines) {
             final String[] cells = eachLine.split(",");
             if (cells[0].equals("killed\\alive")) {
@@ -78,7 +95,7 @@ public class ExtinctionSequence {
 
     private void validate(Collection<Entry> entries) {
         if (entries.size() < 2) {
-            throw new IllegalArgumentException("An extinction sequence requires at least two data points");
+            throw new IllegalArgumentException("An extinction sequence requires at least two data points" + entries);
         }
         if (minimumLifeLevel(entries) != 0) {
             throw new IllegalArgumentException("Life level of an extinction sequence must be in [0, +inf]");
@@ -228,5 +245,11 @@ public class ExtinctionSequence {
             return extinctionLevel - o.getExtinctionLevel();
         }
 
+        @Override
+        public String toString() {
+            return "{" + "killed: " + extinctionLevel + ", alive:" + lifeLevel + '}';
+        }
+
+       
     }
 }
