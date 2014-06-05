@@ -61,17 +61,16 @@ public class AssertionTests extends TestCase {
             return "DummyRun{" + "stdout=" + stdout + ", stderr=" + stderr + '}';
         }
         
-        
-        
     }
 
+    
     @Test
     public void didShowRobustnessShouldAcceptCorrectRobustnessValue() {
         String inputText = "Robustness: 89.23 %";
         
         Run run = new DummyRun(inputText, "not relevant");
                 
-        assertThat(run, didShowRobustness(89.23));
+        assertThat(run, didShowRobustness(89.23,  1e-3));
     }
     
     @Test(expected = AssertionError.class)
@@ -80,7 +79,7 @@ public class AssertionTests extends TestCase {
         
         Run run = new DummyRun(inputText, "not relevant");
                 
-        assertThat(run, didShowRobustness(25.5));
+        assertThat(run, didShowRobustness(25.5, 1e-3));
     }
     
     @Test
@@ -92,7 +91,7 @@ public class AssertionTests extends TestCase {
         
         Run run = new DummyRun(inputText, "not relevant");
                 
-        assertThat(run, didShowRobustness(89.23));
+        assertThat(run, didShowRobustness(89.23, 1e-3));
     }
     
     @Test

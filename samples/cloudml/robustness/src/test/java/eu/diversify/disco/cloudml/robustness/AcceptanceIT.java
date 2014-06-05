@@ -40,6 +40,7 @@ import java.io.*;
 import junit.framework.TestCase;
 import org.cloudml.codecs.library.CodecsLibrary;
 import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,6 +61,26 @@ public class AcceptanceIT extends TestCase {
 
     private static final String EXTINCTION_SEQUENCE_CSV = "extinction_sequence.csv";
 
+    
+    @Test
+    public void robustnessOfSensAppShouldBe() throws FileNotFoundException, IOException, InterruptedException {
+        Deployment deployment = SensApp.completeSensApp().build();
+        
+        final String testFile = "sensapp.json";
+        new CodecsLibrary().saveAs(deployment, testFile);
+        
+        Run run = RunInThread.withArguments(testFile);  
+        
+        assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
+        assertThat(run, didNotReportAnyError());
+        assertThat(run, didShowRobustness(45, 10)); 
+        
+        ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
+        assertThat(sequence, is(not(nullValue())));
+
+        deleteFiles(EXTINCTION_SEQUENCE_CSV);
+    }
+    
     @Test
     public void robustnessShouldBeOneForASingleVM() throws IOException, InterruptedException {
         final String testFile = "test.json";
@@ -69,13 +90,14 @@ public class AcceptanceIT extends TestCase {
 
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
-        assertThat(run, didShowRobustness(100.0));
+        assertThat(run, didShowRobustness(100.0, 1e-3));
 
         ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
         assertThat(sequence, is(not(nullValue())));
 
         deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
+   
 
     private void createModelWithASingleVM(String location) throws FileNotFoundException {
         Deployment deployment = aDeployment()
@@ -97,7 +119,7 @@ public class AcceptanceIT extends TestCase {
 
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
-        assertThat(run, didShowRobustness(75.0));
+        assertThat(run, didShowRobustness(75.0, 1e-3));
 
         ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
         assertThat(sequence, is(not(nullValue())));
