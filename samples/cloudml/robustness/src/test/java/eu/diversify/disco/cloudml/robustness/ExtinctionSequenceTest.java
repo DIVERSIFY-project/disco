@@ -135,14 +135,14 @@ public class ExtinctionSequenceTest extends TestCase {
     }
 
     @Test
-    public void getRobustnessShouldBe75WhenDecayIsLinear() {
+    public void getRobustnessShouldBe100WhenDecayIsLinear() {
         Map<Integer, List<Integer>> survivorCounts = aSingleLinearExtinctionSequence();
 
         ExtinctionSequence es = ExtinctionSequence.fromMap(survivorCounts);
         final double robustness = es.getRobustness();
 
         assertThat(es.toString(), robustness, is(both(greaterThanOrEqualTo(0D)).and(lessThanOrEqualTo(100D))));
-        assertThat(es.toString(), robustness, is(equalTo(75D)));
+        assertThat(es.toString(), robustness, is(equalTo(100D)));
     }
 
     private Map<Integer, List<Integer>> aSingleLinearExtinctionSequence() {

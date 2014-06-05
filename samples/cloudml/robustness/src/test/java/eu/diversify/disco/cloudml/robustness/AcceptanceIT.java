@@ -73,12 +73,12 @@ public class AcceptanceIT extends TestCase {
         
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
-        assertThat(run, didShowRobustness(45, 10)); 
+        assertThat(run, didShowRobustness(75, 10)); 
         
         ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
         assertThat(sequence, is(not(nullValue())));
 
-        deleteFiles(EXTINCTION_SEQUENCE_CSV);
+        deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
     
     @Test
@@ -111,7 +111,7 @@ public class AcceptanceIT extends TestCase {
     }
 
     @Test
-    public void robustnessShouldBe75ForTwoSeparateVMs() throws IOException, InterruptedException {
+    public void robustnessShouldBe100ForTwoSeparateVMs() throws IOException, InterruptedException {
         final String testFile = "test.json";
         createModelWithTwoSeparateVMs(testFile);
 
@@ -119,7 +119,7 @@ public class AcceptanceIT extends TestCase {
 
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
-        assertThat(run, didShowRobustness(75.0, 1e-3));
+        assertThat(run, didShowRobustness(100.0, 1e-3));
 
         ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
         assertThat(sequence, is(not(nullValue())));

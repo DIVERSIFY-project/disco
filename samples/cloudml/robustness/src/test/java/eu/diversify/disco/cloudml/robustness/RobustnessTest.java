@@ -65,33 +65,33 @@ public class RobustnessTest extends TestCase {
     }
 
     @Test
-    public void robustnessOfTwoIndependentVMsShouldBe75Percent() {
+    public void robustnessOfTwoIndependentVMsShouldBe100Percent() {
         final Deployment deployment = CloudML.twoIndependentVMs().build();
 
         final Robustness sut = new Robustness(deployment);
         final double robustness = sut.getExtinctionSequence().getRobustness();
 
-        assertThat(robustness, is(equalTo(75.0)));
+        assertThat(robustness, is(equalTo(100.0)));
     }
 
     @Test
-    public void robustnessOfAnAppDeployedOnItsVMShouldBe75Percent() {
+    public void robustnessOfAnAppDeployedOnItsVMShouldBe100Percent() {
         final Deployment deployment = CloudML.anAppOnAVm().build();
 
         final ExtinctionSequence sequence = new Robustness(deployment).getExtinctionSequence();
         final double robustness = sequence.getRobustness();
 
-        assertThat(sequence.toString(), robustness, is(either(equalTo(75.0)).or(equalTo(50.0))));
+        assertThat(sequence.toString(), robustness, is(anyOf(closeTo(50.0, 1e-3), closeTo(200D/3, 1e-3), closeTo(100D, 1e-3))));
     }
 
     @Test
-    public void meanRobustnessOfAnAppDeployedOnItsVMShouldBeAround62Percent() {
+    public void meanRobustnessOfAnAppDeployedOnItsVMShouldBeAround86Percent() {
         final Deployment deployment = CloudML.anAppOnAVm().build();
 
-        final ExtinctionSequence sequence = new Robustness(deployment, 10).getExtinctionSequence();
+        final ExtinctionSequence sequence = new Robustness(deployment, 100).getExtinctionSequence();
         final double robustness = sequence.getRobustness();
 
-        assertThat(sequence.toString(), robustness, is(closeTo(62.5, 5.0)));
+        assertThat(sequence.toString(), robustness, is(closeTo(86.111, 10.0)));
     }
     
     @Test 
@@ -101,7 +101,7 @@ public class RobustnessTest extends TestCase {
         final ExtinctionSequence sequence = new Robustness(deployment, 10).getExtinctionSequence();
         final double robustness = sequence.getRobustness();
 
-        assertThat(sequence.toString(), robustness, is(both(greaterThanOrEqualTo(33D)).and(lessThanOrEqualTo(67D))));
+        assertThat(sequence.toString(), robustness, is(both(greaterThanOrEqualTo(50D)).and(lessThanOrEqualTo(100D))));
     }
 
 }

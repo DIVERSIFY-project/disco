@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.cloudml.robustness;
 
 import java.io.*;
@@ -189,13 +173,34 @@ public class ExtinctionSequence {
     }
 
     public double getRobustness() {
-        double result = 0D;
-        for (int i = 1; i < entries.size(); i++) {
-            final SurvivorCounts previous = entries.get(i - 1);
-            final SurvivorCounts current = entries.get(i);
-            result += previous.mean() * (current.getDeadCount() - previous.getDeadCount());
+        return robustnessOf(meanSequence()) / robustnessOf(optimalSequence()) * 100;
+    }
+    
+    private double[][] meanSequence() {
+        final double[][] result = new double[entries.size()][2];
+        for(int i=0 ; i<entries.size() ; i++) {
+            result[i][0] = entries.get(i).getDeadCount();
+            result[i][1] = entries.get(i).mean();
         }
-        return (result / Math.pow(maximumLifeLevel, 2)) * 100D;
+        return result;
+    }
+    
+    private double[][] optimalSequence() {
+        final double[][] result = new double[entries.size()][2];
+        for(int i=0 ; i<entries.size() ; i++) {
+            final int deadCount = entries.get(i).getDeadCount();
+            result[i][0] = deadCount;
+            result[i][1] = maximumLifeLevel - deadCount;
+        }
+        return result;
+    }
+    
+    private double robustnessOf(double[][] sequence) {
+        double sum = 0;
+        for (int i=1 ; i<sequence.length; i++) {
+            sum += sequence[i-1][1] * (sequence[i][0] - sequence[i-1][0]);
+        }
+        return sum;
     }
 
     public String summary() {
