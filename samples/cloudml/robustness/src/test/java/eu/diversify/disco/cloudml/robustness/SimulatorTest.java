@@ -15,137 +15,86 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+/*
  */
 package eu.diversify.disco.cloudml.robustness;
 
+import static eu.diversify.disco.cloudml.robustness.Action.*;
+
 import junit.framework.TestCase;
-import org.cloudml.core.Component;
-import org.cloudml.core.Deployment;
-import org.cloudml.core.InternalComponent;
-import org.cloudml.core.VM;
+
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * Specification of the extinction sequence simulator
+ *
  */
 @RunWith(JUnit4.class)
 public class SimulatorTest extends TestCase {
 
     @Test
-    public void aliveComponentsShouldIncludeInternalOnes() {
-        final Deployment deployment = CloudML.anAppOnAVm().build();
+    public void aPredifinedSequence() {
+        final Population population = new DummyPopulation("x", "y", "z");
 
-        final Simulator simulator = new Simulator(deployment);
+        final Simulator simulator = new Simulator(population);
+        final Extinction sequence = simulator.run(reviveAll(), kill("x"), kill("y"), kill("z"));
 
-        assertThat(simulator.countAliveComponents(), is(equalTo(2)));
+        assertThat(sequence.length(), is(equalTo(population.headcount() + 1)));
+        assertThat(sequence.survivorCount(), is(equalTo(0)));
+        assertThat(sequence.deadCount(), is(equalTo(population.headcount())));
     }
 
     @Test
-    public void internalComponentShouldBeAlive() {
-        final String appName = "app";
-        final Deployment deployment = CloudML.anAppOnAVm(appName, "vm").build();
+    public void impactOfAction() {
+        final Population population = new DummyPopulation("x", "y", "z");
 
-        final InternalComponent theApp = deployment.getComponents().onlyInternals().firstNamed(appName);
-        final Simulator simulator = new Simulator(deployment);
+        final Simulator simulator = new Simulator(population);
+        final Extinction sequence = simulator.run(reviveAll(), kill("x"), kill("y"), kill("z"));
 
-        assertThat("dead!", simulator.isAlive(theApp));
-    }
-    
-    @Test
-    public void freshInternalComponentsShouldBeReadyToStart() {
-        final String appName = "app";
-        final String vmName = "vm";
-        final Deployment deployment = CloudML.anAppOnAVm(appName, vmName).build();
-        
-        final InternalComponent theApp = deployment.getComponents().onlyInternals().firstNamed(appName);
-        final VM vm = deployment.getComponents().onlyVMs().firstNamed(vmName);
-        final Simulator simulator = new Simulator(deployment);
-
-        assertThat("dead!", simulator.isAlive(theApp));
-        assertThat("cannot be hosted by the VM", vm.canHost(theApp));
-        assertThat("cannot be provisioned!", simulator.canBeProvisioned(theApp));
-        assertThat("cannot start!", simulator.canStillBeStarted(theApp));
+        assertThat(sequence.impactOf(kill("x")), is(equalTo(1)));
     }
 
     @Test
-    public void allComponentsShouldBeAliveAtFirst() {
-        final Deployment deployment = CloudML.aSingleVM().build();
+    public void robustnessShouldBeAvailableForEachExtinction() {
+        final Population population = new DummyPopulation("x", "y", "z");
 
-        final Simulator simulator = new Simulator(deployment);
+        final Simulator simulator = new Simulator(population);
+        final Extinction sequence = simulator.run(reviveAll(), kill("x"), kill("y"), kill("z"));
 
-        assertThat(simulator.countAliveComponents(), is(equalTo(deployment.getComponents().size())));
+        assertThat(sequence.robustness(), is(equalTo(100D)));
     }
 
     @Test
-    public void brandNewComponentsShouldBeAlive() {
-        final String vmName = "My VM";
+    public void groupShouldContainTheRightNumberOfSequence() {
+        final Population population = new DummyPopulation("x", "y", "z");
+        final Simulator simulator = new Simulator(population);
+        final SequenceGroup group = simulator.randomExtinctions(10);
 
-        final Deployment deployment = CloudML.aSingleVM(vmName).build();
-        final Simulator simulator = new Simulator(deployment);
-        final Component vm = deployment.getComponents().firstNamed(vmName);
-
-        assertThat("alive", simulator.isAlive(vm));
+        assertThat(group.size(), is(equalTo(10)));
     }
 
     @Test
-    public void killedComponentsShouldBeDead() {
-        final String vmName = "My VM";
-        final Deployment deployment = CloudML.aSingleVM(vmName).build();
+    public void groupShouldProvideRobustnessDistribution() {
+        final Population population = new DummyPopulation("x", "y", "z");
+        final Simulator simulator = new Simulator(population);
+        final SequenceGroup group = simulator.randomExtinctions(10);
+        Distribution robustness = group.robustness();
 
-        final Component vm = deployment.getComponents().firstNamed(vmName);
-
-        final Simulator simulator = new Simulator(deployment);
-        simulator.markAsDead(vm);
-
-        assertThat("not marked as killed", simulator.isDead(vm));
+        assertThat(group.summary(), robustness.mean(), is(closeTo(100D, 1e-6)));
     }
 
     @Test
-    public void deadComponentsShouldNotBeCountedAsAlive() {
-        final String vmName = "VM #1";
-        final Deployment deployment = CloudML.twoIndependentVMs(vmName, "any name").build();
+    public void groupShouldProvideARankingOfIndividuals() {
+        final Population population = new DummyPopulation("x", "y", "z");
+        final Simulator simulator = new Simulator(population);
+        final SequenceGroup group = simulator.randomExtinctions(10);
 
-        final Component theVm = deployment.getComponents().firstNamed(vmName);
-
-        final Simulator simulator = new Simulator(deployment);
-        simulator.markAsDead(theVm);
-
-        assertThat("alive components", simulator.countAliveComponents(), is(equalTo(1)));
+        assertThat(group.summary(), group.ranking().size(), is(equalTo(population.headcount())));
     }
 
-    @Test
-    public void killingOneComponentShouldDecreaseTheNumberOfAliveComponents() {
-        final Deployment deployment = CloudML.twoIndependentVMs().build();
-
-        final Simulator simulator = new Simulator(deployment);
-        assertThat("alive components", simulator.countAliveComponents(), is(equalTo(2)));
-
-        simulator.killOneComponent();
-        assertThat("alive components", simulator.countAliveComponents(), is(equalTo(1)));
-
-        simulator.killOneComponent();
-        assertThat("alive components", simulator.countAliveComponents(), is(equalTo(0)));
-    }
 }

@@ -31,12 +31,15 @@ public class Main {
         System.out.println("Copyright (c) 2014 - SINTEF ICT");
         
         Deployment deployment = new CodecsLibrary().load(args[0]);
-        ExtinctionSequence sequence = new Robustness(deployment, 15).getExtinctionSequence();
+        
+        Simulator simulator = new Simulator(new TypeLevel(deployment));
+        int count = args.length >= 2 ? Integer.parseInt(args[1]) : 15;
+        SequenceGroup sequences = simulator.randomExtinctions(count);
                 
-        System.out.println(sequence.summary());
-        sequence.toCsvFile("extinction_sequence.csv");
+        System.out.println(sequences.summary());
+        sequences.toCsvFile("extinction_sequence.csv");
 
-        System.out.printf("Robustness: %.2f %%\r\n", sequence.getRobustness());
+        System.out.printf("Robustness: %.2f %%\r\n", sequences.robustness().mean());
     }
 
   

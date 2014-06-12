@@ -19,41 +19,39 @@
  */
 package eu.diversify.disco.cloudml.robustness;
 
+import junit.framework.TestCase;
+
+import static org.hamcrest.Matchers.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static eu.diversify.disco.cloudml.robustness.Action.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
- * Simulate extinction sequences on a given population
+ *
  */
-public class Simulator {
+@RunWith(JUnit4.class)
+public class SimulationTest extends TestCase {
 
-    private final Population subject;
+  
 
-    public Simulator(Population subject) {
-        this.subject = subject;
-    }
+    @Test
+    public void aRandomSequence() {
+        final Population population = new DummyPopulation("x", "y", "z");
 
-    public Extinction run(Action... sequence) {
-        Simulation simulation = new Simulation(subject);
-        for (Action eachAction: sequence) {
-            eachAction.applyTo(simulation);
-        }
-        return simulation.getTrace();
-    }
-
-    public Extinction randomExtinction() {
-        final Simulation simulation = new Simulation(subject);
+        final Simulation simulation = new Simulation(population);
         simulation.reviveAll();
         while (simulation.hasSurvivors()) {
             String victim = simulation.pickRandomVictim();
             simulation.kill(victim);
         }
-        return simulation.getTrace();
-    }
+        Extinction sequence = simulation.getTrace();
 
-    public SequenceGroup randomExtinctions(int count) {
-        final SequenceGroup result = new SequenceGroup(subject);
-        for (int i = 0; i < count; i++) {
-            result.add(randomExtinction());
-        }
-        return result;
+        assertThat(sequence.length(), is(equalTo(population.headcount() + 1)));
+        assertThat(sequence.survivorCount(), is(equalTo(0)));
+        assertThat(sequence.deadCount(), is(equalTo(population.headcount())));
     }
-
 }

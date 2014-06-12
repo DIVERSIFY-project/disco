@@ -15,23 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
+
 package eu.diversify.disco.cloudml.robustness;
 
 import eu.diversify.disco.cloudml.robustness.testing.Run;
@@ -75,9 +59,7 @@ public class AcceptanceIT extends TestCase {
         assertThat(run, didNotReportAnyError());
         assertThat(run, didShowRobustness(75, 10)); 
         
-        ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
-        assertThat(sequence, is(not(nullValue())));
-
+        
         deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
     
@@ -91,10 +73,7 @@ public class AcceptanceIT extends TestCase {
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
         assertThat(run, didShowRobustness(100.0, 1e-3));
-
-        ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
-        assertThat(sequence, is(not(nullValue())));
-
+        
         deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
    
@@ -120,9 +99,6 @@ public class AcceptanceIT extends TestCase {
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
         assertThat(run, didShowRobustness(100.0, 1e-3));
-
-        ExtinctionSequence sequence = ExtinctionSequence.fromCsvFile(EXTINCTION_SEQUENCE_CSV);
-        assertThat(sequence, is(not(nullValue())));
 
         deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
