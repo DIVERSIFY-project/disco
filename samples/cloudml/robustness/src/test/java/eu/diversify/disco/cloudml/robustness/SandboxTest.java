@@ -15,31 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
+
 package eu.diversify.disco.cloudml.robustness;
 
-import java.util.List;
+import junit.framework.TestCase;
+import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
- * Capture the notion of populations where individuals can be killed and revive
+ * A test to play with!
  */
-public abstract class Population {
+@RunWith(JUnit4.class)
+public class SandboxTest extends TestCase {
 
-    public abstract void kill(String victim);
-
-    public abstract void reviveAll();
-
-    public abstract List<String> getIndividualNames();
+    @Test
+    public void testSensapp() {
+        Deployment sensapp = SensApp.completeSensApp().build();
+        SequenceGroup sequences = new Simulator(new TypeLevel(sensapp)).randomExtinctions(1000);
+                
+        System.out.println(sequences.summary());
+        //sequences.toCsvFile("extinction_sequence.csv");
+    }
     
-    public final int headcount() {
-        return getIndividualNames().size();
-    }
-
-    public abstract List<String> getSurvivorNames();
-
-    public final int survivorCount() {
-        return getSurvivorNames().size();
-    }
-
 }

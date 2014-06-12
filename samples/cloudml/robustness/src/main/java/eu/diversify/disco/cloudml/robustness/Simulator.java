@@ -49,7 +49,7 @@ public class Simulator {
     }
 
     public SequenceGroup randomExtinctions(int count) {
-        final SequenceGroup result = new SequenceGroup(subject);
+        final SequenceGroup result = new SequenceGroup(subject.headcount());
         for (int i = 0; i < count; i++) {
             result.add(randomExtinction());
         }

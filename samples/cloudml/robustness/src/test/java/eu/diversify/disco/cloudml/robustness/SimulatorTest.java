@@ -19,9 +19,14 @@
  */
 package eu.diversify.disco.cloudml.robustness;
 
+import java.io.FileNotFoundException;
+
 import static eu.diversify.disco.cloudml.robustness.Action.*;
 
 import junit.framework.TestCase;
+import org.cloudml.codecs.library.CodecsLibrary;
+import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
 
 import static org.hamcrest.Matchers.*;
 
@@ -96,5 +101,9 @@ public class SimulatorTest extends TestCase {
 
         assertThat(group.summary(), group.ranking().size(), is(equalTo(population.headcount())));
     }
+    
+
+    
+
 
 }

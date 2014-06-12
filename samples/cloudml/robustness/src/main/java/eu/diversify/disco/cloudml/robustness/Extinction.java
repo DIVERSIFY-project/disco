@@ -20,7 +20,9 @@
 package eu.diversify.disco.cloudml.robustness;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represent an extinction sequence, as a list of subsequent status
@@ -70,15 +72,21 @@ public class Extinction {
     public int survivorCount() {
         return currentState().survivorCount();
     }
+    
+    public Map<Action, Integer> impacts() {
+        final Map<Action, Integer> results = new HashMap<Action, Integer>();
+        for (int i = 1; i < states.size(); i++) {
+            final State current = states.get(i);
+            final State previous = states.get(i - 1);
+            int impact = previous.survivorCount() - current.survivorCount();
+            results.put(current.getTrigger(), impact);
+        }
+        return results;
+    }
 
     public int impactOf(Action action) {
-        for (int i = 1; i < states.size(); i++) {
-            State status = states.get(i);
-            if (status.isTriggeredBy(action)) {
-                return status.killedCount() - states.get(i - 1).killedCount();
-            }
-        }
-        return -1;
+        final Integer impact = impacts().get(action);
+        return (impact == null) ? -1 : impact;
     }
 
     public int absoluteRobustness() {

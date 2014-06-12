@@ -34,8 +34,10 @@
  */
 package eu.diversify.disco.cloudml.robustness;
 
+import java.io.FileNotFoundException;
 import junit.framework.TestCase;
 import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -49,7 +51,18 @@ import static org.hamcrest.Matchers.*;
  * Specification of the robustness calculator
  */
 @RunWith(JUnit4.class)
-public class TypePopulationTest extends TestCase {
+public class TypeLevelTest extends TestCase {
+
+    @Test
+    public void noVMInSensAppShouldBeACompleteSequence() throws FileNotFoundException {
+        final Population population = new TypeLevel(SensApp.completeSensApp().build());
+
+        population.reviveAll();
+        population.kill("SL");
+        population.kill("ML");
+
+        assertThat("sensapp should have no survivor once ML & SL are killed", population.survivorCount(), is(equalTo(0)));
+    }
 
     @Test
     public void robustnessOfASingleVMShouldBe100Percent() {

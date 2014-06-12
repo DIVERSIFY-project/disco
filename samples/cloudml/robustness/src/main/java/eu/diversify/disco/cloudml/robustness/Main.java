@@ -32,14 +32,20 @@ public class Main {
         
         Deployment deployment = new CodecsLibrary().load(args[0]);
         
-        Simulator simulator = new Simulator(new TypeLevel(deployment));
-        int count = args.length >= 2 ? Integer.parseInt(args[1]) : 15;
-        SequenceGroup sequences = simulator.randomExtinctions(count);
+        SequenceGroup sequences = typeAnalysis(deployment).randomExtinctions(getCount(args));
                 
         System.out.println(sequences.summary());
         sequences.toCsvFile("extinction_sequence.csv");
 
         System.out.printf("Robustness: %.2f %%\r\n", sequences.robustness().mean());
+    }
+
+    public static int getCount(String[] args) throws NumberFormatException {
+        return args.length >= 2 ? Integer.parseInt(args[1]) : 15;
+    }
+
+    public static Simulator typeAnalysis(Deployment deployment) {
+        return new Simulator(new TypeLevel(deployment));
     }
 
   

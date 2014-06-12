@@ -35,11 +35,12 @@ public class SequenceGroupTest extends TestCase {
 
     private static final String EOL = System.lineSeparator();
 
+    
     @Test
     public void groupShouldBeProperlyConvertedToCsv() {
 
         final Population population = new DummyPopulation("x", "y", "z");
-        SequenceGroup sequences = population.emptyGroup();
+        SequenceGroup sequences = new SequenceGroup(3);
         
         final Simulator simulator = new Simulator(population);
         

@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.cloudml.robustness;
 
 import java.io.FileWriter;
@@ -28,14 +45,15 @@ import static eu.diversify.disco.cloudml.robustness.Action.kill;
  */
 public class SequenceGroup {
 
-    private final Population population;
+    //private final Population population;
+    private final int headcount;
     private final List<Extinction> sequences;
 
-    public SequenceGroup(Population population) {
-        this.population = population;
+    public SequenceGroup(int headcount) {
+        this.headcount = headcount;
         this.sequences = new ArrayList<Extinction>();
     }
-    
+
     public void add(Extinction extinction) {
         this.sequences.add(extinction);
     }
@@ -61,11 +79,33 @@ public class SequenceGroup {
     }
 
     public Map<String, Distribution> ranking() {
-        Map<String, Distribution> result = new HashMap<String, Distribution>();
-        for (String eachIndividual: population.getIndividualNames()) {
-            result.put(eachIndividual, sensibilityOf(eachIndividual));
+        final Map<String, List<Double>> result = new HashMap<String, List<Double>>();
+        for (Extinction each: sequences) {
+            aggregate(result, each.impacts());
         }
-        return result;
+        return toMapOfDistribution(result);
+    }
+
+    private void aggregate(Map<String, List<Double>> accumulator, Map<Action, Integer> impacts) {
+        for (Action eachAction: impacts.keySet()) {
+            List<Double> values = accumulator.get(eachAction.toString());
+            final double impact = (double) impacts.get(eachAction);
+            if (values == null) {
+                values = new ArrayList<Double>();
+                values.add(impact);
+                accumulator.put(eachAction.toString(), values);
+            } else {
+                values.add(impact);
+            }
+        }
+    }
+
+    public Map<String, Distribution> toMapOfDistribution(Map<String, List<Double>> data) {
+        final Map<String, Distribution> results = new HashMap<String, Distribution>();
+        for (String eachKey: data.keySet()) {
+            results.put(eachKey, new Distribution(data.get(eachKey)));
+        }
+        return results;
     }
 
     public Distribution sensibilityOf(String eachIndividual) {
@@ -100,11 +140,11 @@ public class SequenceGroup {
             buffer.append(String.format("action %d, survivor count %d", i, i));
         }
         buffer.append(System.lineSeparator());
-        for (int deadcount = 0; deadcount <= population.headcount(); deadcount++) {
-            buffer.append(deadcount);
+        for (int killed = 0; killed <= headcount; killed++) {
+            buffer.append(killed);
             for (Extinction eachSequence: sequences) {
                 buffer.append(", ");
-                State state = eachSequence.stateAt(deadcount);
+                State state = eachSequence.stateAt(killed);
                 if (state == null) {
                     buffer.append("none").append(", ").append(0);
                 } else {
