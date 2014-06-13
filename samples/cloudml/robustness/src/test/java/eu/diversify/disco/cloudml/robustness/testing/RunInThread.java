@@ -41,22 +41,7 @@ import java.io.IOException;
  * RunInThread the robustness calculator and collect the standard output and the
  * standard error.
  */
-public class RunInThread implements Run {
-
-    public static RunInThread withArguments(String fileName) throws IOException, InterruptedException {
-        return new RunInThread(".", new String[]{"java", "-jar",
-                                                 "robustness-final.jar",
-                                                 fileName});
-    }
-
-    public static RunInThread withCommandLine(String... extraArguments) throws IOException, InterruptedException {
-        final String[] all = new String[3 + extraArguments.length];
-        all[0] = "java";
-        all[1] = "-jar";
-        all[2] = "robustness-final.jar";
-        System.arraycopy(extraArguments, 0, all, 3, extraArguments.length);
-        return new RunInThread(".", all);
-    }
+public class RunInThread extends Run {
 
     private final String[] commandLine;
     private final OutputCollector standardOutput;

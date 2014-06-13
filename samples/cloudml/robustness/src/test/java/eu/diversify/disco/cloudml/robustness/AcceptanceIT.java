@@ -35,7 +35,6 @@ import static eu.diversify.disco.cloudml.robustness.testing.DidShowUsage.didShow
 import static org.cloudml.core.builders.Commons.*;
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
 
 /**
  * Specification of user acceptance tests
@@ -47,7 +46,7 @@ public class AcceptanceIT extends TestCase {
 
     @Test
     public void usageShouldBeDisplayedWhenArgumentsAreWrongs() throws IOException, InterruptedException {
-        Run run = RunInThread.withCommandLine("-foo bar");
+        Run run = Run.withCommandLine("-foo bar");
 
         assertThat(run, didShowUsage()); 
     }
@@ -73,7 +72,7 @@ public class AcceptanceIT extends TestCase {
         final String testFile = "test.json";
         createModelWithASingleVM(testFile);
 
-        Run run = RunInThread.withArguments(testFile);
+        Run run = Run.withArguments(testFile);
 
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
@@ -98,7 +97,7 @@ public class AcceptanceIT extends TestCase {
         final String testFile = "test.json";
         createModelWithTwoSeparateVMs(testFile);
 
-        Run run = RunInThread.withArguments(testFile);
+        Run run = Run.withArguments(testFile);
 
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());

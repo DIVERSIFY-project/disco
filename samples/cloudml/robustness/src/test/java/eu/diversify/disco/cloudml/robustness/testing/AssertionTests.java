@@ -35,7 +35,7 @@ import static org.hamcrest.MatcherAssert.*;
 public class AssertionTests extends TestCase {
     
     
-    private static class DummyRun implements Run {
+    private static class DummyRun extends Run {
 
         private final String stdout;
         private final String stderr;

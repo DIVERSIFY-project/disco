@@ -20,13 +20,30 @@
 
 package eu.diversify.disco.cloudml.robustness.testing;
 
+import java.io.IOException;
+
 /**
  * The interface of a run
  */
-public interface Run {
+public abstract class Run {
+    
+      public static RunInThread withArguments(String fileName) throws IOException, InterruptedException {
+        return new RunInThread(".", new String[]{"java", "-jar",
+                                                 "robustness-final.jar",
+                                                 fileName});
+    }
 
-    String getStandardError();
+    public static RunInThread withCommandLine(String... extraArguments) throws IOException, InterruptedException {
+        final String[] all = new String[3 + extraArguments.length];
+        all[0] = "java";
+        all[1] = "-jar";
+        all[2] = "robustness-final.jar";
+        System.arraycopy(extraArguments, 0, all, 3, extraArguments.length);
+        return new RunInThread(".", all);
+    }
 
-    String getStandardOutput();
+    public abstract String getStandardError();
+
+    public abstract String getStandardOutput();
     
 }
