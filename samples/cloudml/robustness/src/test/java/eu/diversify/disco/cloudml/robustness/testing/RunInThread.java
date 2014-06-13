@@ -2,18 +2,18 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 /**
  *
@@ -39,15 +39,23 @@ import java.io.IOException;
 
 /**
  * RunInThread the robustness calculator and collect the standard output and the
- standard error.
+ * standard error.
  */
 public class RunInThread implements Run {
 
-
     public static RunInThread withArguments(String fileName) throws IOException, InterruptedException {
-        return new RunInThread(".", new String[]{"java", "-jar", "robustness-final.jar",
-                                         fileName});
+        return new RunInThread(".", new String[]{"java", "-jar",
+                                                 "robustness-final.jar",
+                                                 fileName});
+    }
 
+    public static RunInThread withCommandLine(String... extraArguments) throws IOException, InterruptedException {
+        final String[] all = new String[3 + extraArguments.length];
+        all[0] = "java";
+        all[1] = "-jar";
+        all[2] = "robustness-final.jar";
+        System.arraycopy(extraArguments, 0, all, 3, extraArguments.length);
+        return new RunInThread(".", all);
     }
 
     private final String[] commandLine;
@@ -88,8 +96,7 @@ public class RunInThread implements Run {
         }
         return result.toString();
     }
- 
-  
+
     @Override
     public String getStandardOutput() {
         return standardOutput.getOutput();
@@ -100,5 +107,4 @@ public class RunInThread implements Run {
         return standardError.getOutput();
     }
 
-  
 }

@@ -2,20 +2,19 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.diversify.disco.cloudml.robustness;
 
 import eu.diversify.disco.cloudml.robustness.testing.Run;
@@ -30,8 +29,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static eu.diversify.disco.cloudml.robustness.testing.DidNotRaiseAnyException.didNotReportAnyError;
-import static eu.diversify.disco.cloudml.robustness.testing.DidShowRobustness.didShowRobustness;
 import static eu.diversify.disco.cloudml.robustness.testing.DidShowCopyright.didShowCopyright;
+import static eu.diversify.disco.cloudml.robustness.testing.DidShowRobustness.didShowRobustness;
+import static eu.diversify.disco.cloudml.robustness.testing.DidShowUsage.didShowUsage;
 import static org.cloudml.core.builders.Commons.*;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -45,26 +45,31 @@ public class AcceptanceIT extends TestCase {
 
     private static final String EXTINCTION_SEQUENCE_CSV = "extinction_sequence.csv";
 
-    
     @Test
-    public void robustnessOfSensAppShouldBe() throws FileNotFoundException, IOException, InterruptedException {
+    public void usageShouldBeDisplayedWhenArgumentsAreWrongs() throws IOException, InterruptedException {
+        Run run = RunInThread.withCommandLine("-foo bar");
+
+        assertThat(run, didShowUsage()); 
+    }
+
+    @Test
+    public void sensappShouldHaveARobustnessOf75() throws FileNotFoundException, IOException, InterruptedException {
         Deployment deployment = SensApp.completeSensApp().build();
-        
+
         final String testFile = "sensapp.json";
         new CodecsLibrary().saveAs(deployment, testFile);
-        
-        Run run = RunInThread.withArguments(testFile);  
-        
+
+        Run run = RunInThread.withArguments(testFile);
+
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
-        assertThat(run, didShowRobustness(75, 10)); 
-        
-        
+        assertThat(run, didShowRobustness(75, 10));
+
         deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
-    
+
     @Test
-    public void robustnessShouldBeOneForASingleVM() throws IOException, InterruptedException {
+    public void oneSingleVMShouldHaveARobustnessOf100() throws IOException, InterruptedException {
         final String testFile = "test.json";
         createModelWithASingleVM(testFile);
 
@@ -73,10 +78,9 @@ public class AcceptanceIT extends TestCase {
         assertThat(run, didShowCopyright(2014, "SINTEF ICT"));
         assertThat(run, didNotReportAnyError());
         assertThat(run, didShowRobustness(100.0, 1e-3));
-        
+
         deleteFiles(testFile, EXTINCTION_SEQUENCE_CSV);
     }
-   
 
     private void createModelWithASingleVM(String location) throws FileNotFoundException {
         Deployment deployment = aDeployment()
@@ -90,7 +94,7 @@ public class AcceptanceIT extends TestCase {
     }
 
     @Test
-    public void robustnessShouldBe100ForTwoSeparateVMs() throws IOException, InterruptedException {
+    public void twoSeparateVMsShouldHaveARobustnessOf100() throws IOException, InterruptedException {
         final String testFile = "test.json";
         createModelWithTwoSeparateVMs(testFile);
 
