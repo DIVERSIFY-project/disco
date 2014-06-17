@@ -94,7 +94,7 @@ public class Arguments {
         try {
             final int count = Integer.parseInt(text.trim());
             if (count <= 1) {
-                final String error = String.format("Run count should be a positive values (found %d)", count);
+                final String error = String.format("Run count should be a positive value (found %d)", count);
                 throw new IllegalArgumentException(error);
             }
             return count;

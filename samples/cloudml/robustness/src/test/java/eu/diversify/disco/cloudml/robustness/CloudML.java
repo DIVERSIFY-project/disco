@@ -92,7 +92,7 @@ public class CloudML {
     public static DeploymentBuilder anAppAndItsDependencyOnAVm() {
         return anAppAndItsDependencyOnAVm("App", "Dep", "VM");
     }
-    
+
     public static DeploymentBuilder anAppAndItsDependencyOnAVm(String appName, String depName, String vmName) {
         return aDeployment()
                 .with(aProvider().named("Ec2"))
@@ -104,23 +104,43 @@ public class CloudML {
                 .with(anInternalComponent()
                         .named(depName)
                         .with(aProvidedPort()
-                            .named("pp")
-                            .remote())
+                                .named("pp")
+                                .remote())
                         .with(aRequiredExecutionPlatform()
                                 .demanding("OS", "Linux")))
                 .with(anInternalComponent()
                         .named(appName)
                         .with(aRequiredPort()
-                            .named("rp")
-                            .mandatory()
-                            .remote())
+                                .named("rp")
+                                .mandatory()
+                                .remote())
                         .with(aRequiredExecutionPlatform()
                                 .demanding("OS", "Linux")))
                 .with(aRelationship()
-                    .named("Connection")
-                    .from(appName, "rp")
-                    .to(depName, "pp"));
+                        .named("Connection")
+                        .from(appName, "rp")
+                        .to(depName, "pp"));
 
+    }
+
+    public static DeploymentBuilder anAppAndNCandidateVMs(int variantCount) {
+        DeploymentBuilder builder = aDeployment()
+                .with(aProvider().named("Ec2"))
+                .with(anInternalComponent()
+                        .named("App")
+                        .with(aRequiredExecutionPlatform()
+                                .demanding("OS", "Linux")));
+
+        for (int i = 0; i < variantCount; i++) {
+            builder.with(aVM()
+                    .named(String.format("VM no. %d", i + 1))
+                    .providedBy("Ec2")
+                    .with(aProvidedExecutionPlatform()
+                            .offering("OS", "Linux")));
+
+        }
+
+        return builder;
     }
 
 }

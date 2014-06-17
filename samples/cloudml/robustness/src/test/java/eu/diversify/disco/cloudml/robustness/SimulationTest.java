@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.robustness;
@@ -31,12 +48,10 @@ import static eu.diversify.disco.cloudml.robustness.Action.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- *
+ * Specification of a simulation given a population
  */
 @RunWith(JUnit4.class)
 public class SimulationTest extends TestCase {
-
-  
 
     @Test
     public void aRandomSequence() {
@@ -54,4 +69,61 @@ public class SimulationTest extends TestCase {
         assertThat(sequence.survivorCount(), is(equalTo(0)));
         assertThat(sequence.deadCount(), is(equalTo(population.headcount())));
     }
+
+    @Test
+    public void killingTheOnlyVMShouldTakedownTheAppIfThereIsNoSubstitute() {
+        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(1).build());
+        final Simulation simulation = new Simulation(population);
+
+        simulation.reviveAll();
+        simulation.kill("VM no. 1");
+        Extinction sequence = simulation.getTrace();
+
+        assertThat(sequence.toString(), sequence.length(), is(equalTo(2)));
+        assertThat("should have no survivors", !sequence.hasSurvivors());
+    }
+
+    @Test
+    public void killingTheAppShouldLetTheVMalive() {
+        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(1).build());
+        final Simulation simulation = new Simulation(population);
+
+        simulation.reviveAll();
+        simulation.kill("App");
+        Extinction sequence = simulation.getTrace();
+
+        assertThat(sequence + " should be a two step sequence", sequence.length(), is(equalTo(2)));
+        assertThat(sequence + " should have 1 survivor", sequence.survivorCount(), is(equalTo(1)));
+    }
+
+    @Test
+    public void killingTheOnlyVMShouldNotTakedownTheAppIfThereAreSubstitute() {
+        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(2).build());
+        final Simulation simulation = new Simulation(population);
+
+        simulation.reviveAll();
+        simulation.kill("VM no. 1");
+        Extinction sequence = simulation.getTrace();
+
+        assertThat(sequence.toString(), sequence.length(), is(equalTo(2)));
+        assertThat(sequence + " should have 2 survivor", sequence.survivorCount(), is(equalTo(2)));
+    }
+
+    @Test
+    public void killingTheOnlyTwoVMShouldNotTakedownTheAppIfThereIsNoOtherSubstitute() {
+        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(2).build());
+        final Simulation simulation = new Simulation(population);
+
+        simulation.reviveAll();
+        simulation.kill("VM no. 1");
+        simulation.kill("VM no. 2");
+        Extinction sequence = simulation.getTrace();
+
+        assertThat(sequence.toString(), sequence.length(), is(equalTo(3)));
+        assertThat(sequence + " should include two killings", sequence.killedCount(), is(equalTo(2)));
+        assertThat(sequence + " should have no survivor", sequence.survivorCount(), is(equalTo(0)));
+        
+        assertThat(sequence.robustness(), is(closeTo(500D/6, 1e-3)));
+    }
+
 }

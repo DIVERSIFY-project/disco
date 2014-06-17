@@ -19,16 +19,12 @@
 
 package eu.diversify.disco.cloudml.robustness;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Provide statistics on a collection of real numbers
  */
-public class Distribution {
+public class Distribution implements Iterable<Double> {
     
     private final List<Double> samples;
     
@@ -42,7 +38,16 @@ public class Distribution {
             this.samples.add(eachSample);
         }
     }
-        
+    
+    public Set<Double> values() {
+        return new HashSet<Double>(samples);
+    }
+
+    @Override
+    public Iterator<Double> iterator() {
+        return samples.iterator();
+    }
+    
     public double minimum() {
         return Collections.min(samples);
     }
