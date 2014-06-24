@@ -37,6 +37,7 @@ public class Distribution implements Iterable<Double> {
         for (Double eachSample: samples) {
             this.samples.add(eachSample);
         }
+        Collections.sort(this.samples);
     }
     
     public Set<Double> values() {
@@ -63,6 +64,14 @@ public class Distribution implements Iterable<Double> {
             
         }
         return sum / samples.size();
+    }
+    
+    public double median() {
+        int size = samples.size();
+        if (size % 2 == 1) {
+            return samples.get((size + 1) / 2);
+        } 
+        return (samples.get(size / 2) + samples.get((size / 2) + 1)) / 2D;
     }
     
     public double variance() {

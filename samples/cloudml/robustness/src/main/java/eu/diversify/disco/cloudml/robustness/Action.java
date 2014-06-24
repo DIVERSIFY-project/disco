@@ -23,6 +23,10 @@ package eu.diversify.disco.cloudml.robustness;
  */
 public abstract class Action {
 
+    public static Action none() {
+        return NoAction.getInstance();
+    }
+    
     public static Action kill(String victim) {
         return new Kill(victim);
     }

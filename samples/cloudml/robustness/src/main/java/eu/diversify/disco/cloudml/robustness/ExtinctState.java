@@ -16,30 +16,13 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package eu.diversify.disco.cloudml.robustness;
 
-import java.io.IOException;
-import junit.framework.TestCase;
-import org.cloudml.core.Deployment;
-import org.cloudml.core.samples.SensApp;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-/**
- * A test to play with!
- */
-@RunWith(JUnit4.class)
-public class SandboxTest extends TestCase {
+public class ExtinctState extends State {
 
-    @Test
-    public void testSensapp() throws IOException {
-        Deployment sensapp = SensApp.completeSensApp().build();
-        SequenceGroup sequences = new Simulator(new TypeLevel(sensapp)).randomExtinctions(1000);
-                
-        System.out.println(sequences.summary());
-        sequences.toCsvFile("extinction_sequence.csv");
-    }
+    public ExtinctState(int killedCount) {
+        super(Action.none(), killedCount, 0, 0);
+    }   
     
 }

@@ -104,9 +104,9 @@ public class TypeLevelTest extends TestCase {
 
         final Extinction sequence = simulator.run(reviveAll(), kill("app"), kill("vm"));
 
-        assertThat(sequence.stateAt(0).survivorCount(), is(equalTo(2)));
-        assertThat(sequence.stateAt(1).survivorCount(), is(equalTo(1)));
-        assertThat(sequence.stateAt(2).survivorCount(), is(equalTo(0)));
+        assertThat(sequence.after(0).survivorCount(), is(equalTo(2)));
+        assertThat(sequence.after(1).survivorCount(), is(equalTo(1)));
+        assertThat(sequence.after(2).survivorCount(), is(equalTo(0)));
     }
 
     @Test
@@ -117,8 +117,8 @@ public class TypeLevelTest extends TestCase {
 
         final Extinction sequence = simulator.run(reviveAll(), kill("vm"));
 
-        assertThat(sequence.stateAt(0).survivorCount(), is(equalTo(2)));
-        assertThat(sequence.stateAt(1).survivorCount(), is(equalTo(0)));
+        assertThat(sequence.after(0).survivorCount(), is(equalTo(2)));
+        assertThat(sequence.after(1).survivorCount(), is(equalTo(0)));
     }
 
     @Test

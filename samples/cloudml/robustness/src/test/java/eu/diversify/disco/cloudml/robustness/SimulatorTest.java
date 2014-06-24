@@ -15,23 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.cloudml.robustness;
 
 import java.util.Arrays;
@@ -42,6 +25,7 @@ import static eu.diversify.disco.cloudml.robustness.Action.*;
 
 import junit.framework.TestCase;
 import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
 
 import static org.hamcrest.Matchers.*;
 
@@ -57,6 +41,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(JUnit4.class)
 public class SimulatorTest extends TestCase {
 
+    @Test
+    public void allSequencesShouldBeDecreasing() {
+        final Population population = new TypeLevel(SensApp.completeSensApp().build());
+        
+        final Simulator simulator = new Simulator(population);
+        final SequenceGroup sequences = simulator.randomExtinctions(100);
+        
+        for(Extinction eachSequence: sequences) {
+            int previous = eachSequence.after(0).survivorCount();
+            for(int killedCount=1 ; killedCount < eachSequence.length() ; killedCount++) {
+                final int current = eachSequence.after(killedCount).survivorCount();
+                int loss = previous - current;
+                assertThat("sequence " + eachSequence + " is constant or increasing!", loss, is(greaterThanOrEqualTo(1)));
+                previous = current;
+            }
+        }
+    }
+    
     @Test
     public void aPredifinedSequence() {
         final Population population = new DummyPopulation("x", "y", "z");
@@ -114,7 +116,7 @@ public class SimulatorTest extends TestCase {
         final Simulator simulator = new Simulator(population);
         final SequenceGroup group = simulator.randomExtinctions(10);
 
-        assertThat(group.summary(), group.ranking().size(), is(equalTo(population.headcount())));
+        assertThat(group.summary(), group.ranking().size(), is(equalTo(population.headcount() + 1)));
     }
 
     @Test

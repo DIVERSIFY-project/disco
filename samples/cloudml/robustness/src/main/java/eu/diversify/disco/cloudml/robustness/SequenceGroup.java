@@ -43,7 +43,7 @@ import static eu.diversify.disco.cloudml.robustness.Action.kill;
 /**
  * A collection of extinction sequence on which some statistics are available
  */
-public class SequenceGroup {
+public class SequenceGroup implements Iterable<Extinction> {
 
     //private final Population population;
     private final int headcount;
@@ -52,6 +52,10 @@ public class SequenceGroup {
     public SequenceGroup(int headcount) {
         this.headcount = headcount;
         this.sequences = new ArrayList<Extinction>();
+    }
+
+    public Iterator<Extinction> iterator() {
+        return sequences.iterator();
     }
 
     public void add(Extinction extinction) {
@@ -120,40 +124,67 @@ public class SequenceGroup {
     }
 
     public String summary() {
-        final StringBuilder builder = new StringBuilder();
-        final String eol = System.lineSeparator();
-        builder.append("Robustness: ").append(robustness()).append(eol);
-        builder.append("Seq. length: ").append(length()).append(eol);
-        builder.append("Sensitivity:").append(eol);
-        final Map<String, Distribution> sensibility = ranking();
-        for (String eachIndividual: sensibility.keySet()) {
-            builder.append(" - ").append(eachIndividual).append(":").append(sensibility.get(eachIndividual)).append(eol);
+        String output = "";
+        output += String.format("%d sequence(s) run.\n", sequences.size());
+        output += String.format("Summary: \n");
+        output += String.format(" - Overall robustness: %.2f %%\n", robustness().mean());
+        output += String.format(" - Sequence length: %s\n", length());
+        output += String.format(" - Sensitive components:\n");
+
+        final List<Map.Entry<String, Distribution>> ranking = new ArrayList<Map.Entry<String, Distribution>>(ranking().entrySet());
+        Collections.sort(ranking, new Comparator<Map.Entry<String, Distribution>>() {
+
+            @Override
+            public int compare(Map.Entry<String, Distribution> o1, Map.Entry<String, Distribution> o2) {
+                final double delta = o2.getValue().mean() - o1.getValue().mean();
+                if (delta == 0D) {
+                    return 0;
+                        
+                } else if (delta < 0) {
+                    return -1;
+                                
+                } else {
+                    return 1;
+                }
+            }
+
+        });
+        for (Map.Entry<String, Distribution> each: ranking) {
+            output += String.format("    %-20s %s\n", each.getKey(), each.getValue());
         }
-        return builder.toString();
+        return output;
     }
+
+    private static final String END_OF_LINE = System.lineSeparator();
+    private static final String SEPARATOR = ",";
 
     public String toCsv() {
         final StringBuilder buffer = new StringBuilder();
-        buffer.append("dead count");
-        for (int i = 1; i <= sequences.size(); i++) {
-            buffer.append(", ");
-            buffer.append(String.format("action %d, survivor count %d", i, i));
-        }
-        buffer.append(System.lineSeparator());
-        for (int killed = 0; killed <= headcount; killed++) {
-            buffer.append(killed);
-            for (Extinction eachSequence: sequences) {
-                buffer.append(", ");
-                State state = eachSequence.stateAt(killed);
-                if (state == null) {
-                    buffer.append("none").append(", ").append(0);
-                } else {
-                    buffer.append(state.getTrigger()).append(", ").append(state.survivorCount());
-                }
-            }
-            buffer.append(System.lineSeparator());
-        }
+        formatCsvHeader(buffer);
+        formatCsvContent(buffer);
         return buffer.toString();
+    }
+
+    private void formatCsvContent(final StringBuilder buffer) {
+        int count = 1;
+        for (Extinction eachSequence: sequences) {
+            for (State eachState: eachSequence) {
+                buffer.append(count).append(SEPARATOR)
+                        .append(eachState.killedCount()).append(SEPARATOR)
+                        .append(eachState.survivorCount()).append(SEPARATOR)
+                        .append(eachState.getTrigger()).append(SEPARATOR)
+                        .append(eachState.loss()).append(END_OF_LINE);
+            }
+            count += 1;
+        }
+    }
+
+    private void formatCsvHeader(final StringBuilder buffer) {
+        buffer.append("sequence").append(SEPARATOR)
+                .append("killed count").append(SEPARATOR)
+                .append("survivor count").append(SEPARATOR)
+                .append("action").append(SEPARATOR)
+                .append("loss").append(END_OF_LINE);
     }
 
     public void toCsvFile(String csvFileName) throws IOException {

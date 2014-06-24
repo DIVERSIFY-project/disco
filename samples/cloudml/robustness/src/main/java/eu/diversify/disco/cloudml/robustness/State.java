@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.robustness;
 
 /**
@@ -27,12 +26,13 @@ public class State {
     private final Action trigger;
     private final int survivorCount;
     private final int killedCount;
-
- 
-    public State(Action trigger, int killedCount, int survivorCount) {
+    private final int loss;
+    
+    public State(Action trigger, int killedCount, int survivorCount, int loss) {
         this.trigger = trigger;
         this.killedCount = killedCount;
         this.survivorCount = survivorCount;
+        this.loss = loss;
     }
 
     public int survivorCount() {
@@ -41,6 +41,10 @@ public class State {
 
     public int killedCount() {
         return this.killedCount;
+    }
+    
+    public int loss() {
+        return this.loss;
     }
 
     public boolean hasSurvivor() {
@@ -57,7 +61,7 @@ public class State {
 
     @Override
     public String toString() {
-        return String.format("%s -> %d", trigger, killedCount);
+        return String.format("%d (%s) -> %d", killedCount, trigger, survivorCount);
     }
 
 }

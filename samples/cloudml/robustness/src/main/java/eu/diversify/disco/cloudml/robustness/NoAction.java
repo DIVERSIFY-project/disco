@@ -15,31 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package eu.diversify.disco.cloudml.robustness;
 
-import java.io.IOException;
-import junit.framework.TestCase;
-import org.cloudml.core.Deployment;
-import org.cloudml.core.samples.SensApp;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 /**
- * A test to play with!
+ * Capture the 'noop' that does noting to a population. Used to represent the
+ * behaviour of sequences once extinct.
  */
-@RunWith(JUnit4.class)
-public class SandboxTest extends TestCase {
-
-    @Test
-    public void testSensapp() throws IOException {
-        Deployment sensapp = SensApp.completeSensApp().build();
-        SequenceGroup sequences = new Simulator(new TypeLevel(sensapp)).randomExtinctions(1000);
-                
-        System.out.println(sequences.summary());
-        sequences.toCsvFile("extinction_sequence.csv");
-    }
+public class NoAction extends Action {
     
+    private static NoAction instance = null;
+    
+    public static Action getInstance() {
+        if (instance == null) {
+            instance = new NoAction();
+        }
+        return instance;
+    }
+
+    private NoAction() {
+        super(0);
+    }
+
+    @Override
+    public String toString() {
+        return "none";
+    }
+
 }

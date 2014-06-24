@@ -15,19 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.robustness;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represent an extinction sequence, as a list of subsequent status
  */
-public class Extinction {
+public class Extinction implements Iterable<State> {
 
     private final int headcount;
     private final List<State> states;
@@ -39,7 +53,13 @@ public class Extinction {
 
     public void record(Action action, int survivorCount) {
         final int killedCount = killedCount() + action.killedCount();
-        this.states.add(new State(action, killedCount, survivorCount));
+        final int loss = survivorCount() - survivorCount;
+        this.states.add(new State(action, killedCount, survivorCount, loss));
+    }
+
+    @Override
+    public Iterator<State> iterator() {
+        return states.iterator();
     }
 
     public int killedCount() {
@@ -70,16 +90,16 @@ public class Extinction {
     }
 
     public int survivorCount() {
+        if (states.isEmpty()) {
+            return headcount;
+        }
         return currentState().survivorCount();
     }
-    
+
     public Map<Action, Integer> impacts() {
         final Map<Action, Integer> results = new HashMap<Action, Integer>();
-        for (int i = 1; i < states.size(); i++) {
-            final State current = states.get(i);
-            final State previous = states.get(i - 1);
-            int impact = previous.survivorCount() - current.survivorCount();
-            results.put(current.getTrigger(), impact);
+        for (State eachState: states) {
+            results.put(eachState.getTrigger(), eachState.loss());
         }
         return results;
     }
@@ -118,12 +138,16 @@ public class Extinction {
         return buffer.toString();
     }
 
-    public State stateAt(int killedCount) {
-        for(State each: states) {
+    public State after(int killedCount) {
+        if (killedCount < 0) {
+            final String error = String.format("killed count must be a positive number (found %d)", killedCount);
+            throw new IllegalArgumentException(error);
+        }
+        for (State each: states) {
             if (each.killedCount() == killedCount) {
                 return each;
             }
         }
-        return null;
+        return new ExtinctState(killedCount);
     }
 }
