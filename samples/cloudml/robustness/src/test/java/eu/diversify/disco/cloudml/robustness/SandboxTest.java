@@ -21,6 +21,7 @@ package eu.diversify.disco.cloudml.robustness;
 
 import java.io.IOException;
 import junit.framework.TestCase;
+import org.cloudml.codecs.library.CodecsLibrary;
 import org.cloudml.core.Deployment;
 import org.cloudml.core.samples.SensApp;
 import org.junit.Test;
@@ -36,6 +37,8 @@ public class SandboxTest extends TestCase {
     @Test
     public void testSensapp() throws IOException {
         Deployment sensapp = SensApp.completeSensApp().build();
+        new CodecsLibrary().saveAs(sensapp, "sensapp.json");
+        
         SequenceGroup sequences = new Simulator(new TypeLevel(sensapp)).randomExtinctions(1000);
                 
         System.out.println(sequences.summary());

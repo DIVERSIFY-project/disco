@@ -15,27 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/*
- */
+
 package eu.diversify.disco.cloudml.robustness;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.cloudml.codecs.library.CodecsLibrary;
@@ -107,12 +90,12 @@ public class Arguments {
 
     public void execute() throws IOException {
         SequenceGroup sequences = new Simulator(level()).randomExtinctions(runCount);
-        System.out.printf("Robustness: %.2f %%\n", sequences.robustness().mean());
-
+       
         System.out.println(sequences.summary());
         try {
             sequences.toCsvFile("extinction_sequence.csv");
-        
+            System.out.printf("Sequence(s) stored in '%s'\n", new File("extinction_sequence.csv").getAbsolutePath());
+            
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }

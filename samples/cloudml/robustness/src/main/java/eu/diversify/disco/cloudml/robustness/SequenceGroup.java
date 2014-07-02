@@ -127,7 +127,7 @@ public class SequenceGroup implements Iterable<Extinction> {
         String output = "";
         output += String.format("%d sequence(s) run.\n", sequences.size());
         output += String.format("Summary: \n");
-        output += String.format(" - Overall robustness: %.2f %%\n", robustness().mean());
+        output += String.format(" - Robustness: %.2f %%\n", robustness().mean());
         output += String.format(" - Sequence length: %s\n", length());
         output += String.format(" - Sensitive components:\n");
 
