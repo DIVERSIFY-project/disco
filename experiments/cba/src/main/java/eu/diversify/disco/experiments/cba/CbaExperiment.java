@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.cloudml.codecs.JsonCodec;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 
 /**
  * The Cost-Benefits Analysis (CBA) on CloudML models
@@ -78,9 +78,9 @@ public class CbaExperiment implements Experiment {
         ArrayList<DataSet> results = new ArrayList<DataSet>();
         DataSet dataset = new DataSet(SCHEMA);
         for (int run = 0; run < setup.getSampleCount(); run++) {
-            DeploymentModel model = loadDeploymentModel();
+            Deployment model = loadDeployment();
             for (double reference : setup.getDiversityLevels()) {
-                DeploymentModel diversifiedModel = diversifyDeployment(model, reference);
+                Deployment diversifiedModel = diversifyDeployment(model, reference);
                 Data data = SCHEMA.newData();
                 data.set(RUN, run);
                 data.set(EXPECTED_DIVERSITY, reference);
@@ -94,8 +94,8 @@ public class CbaExperiment implements Experiment {
         return results;
     }
 
-    private DeploymentModel loadDeploymentModel() {
-        DeploymentModel model;
+    private Deployment loadDeployment() {
+        Deployment model;
         JsonCodec codec = new JsonCodec();
         InputStream stream = null;
         try {
@@ -103,7 +103,7 @@ public class CbaExperiment implements Experiment {
         } catch (FileNotFoundException ex) {
             throw new IllegalArgumentException("Unable to load the given deployment model '" + setup.getDeploymentModel() + "'");
         }
-        model = (DeploymentModel) codec.load(stream);
+        model = (Deployment) codec.load(stream);
         try {
             stream.close();
         } catch (IOException ex) {
@@ -112,7 +112,7 @@ public class CbaExperiment implements Experiment {
         return model;
     }
 
-    private DeploymentModel diversifyDeployment(DeploymentModel model, double reference) {
+    private Deployment diversifyDeployment(Deployment model, double reference) {
         CloudMLController controller = new CloudMLController(new TrueDiversity().normalise());
         // FIXME: the following line fails
         // return controller.applyTo(cloudml).getRoot(); 

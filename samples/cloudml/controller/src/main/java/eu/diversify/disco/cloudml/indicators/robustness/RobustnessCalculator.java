@@ -15,17 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.indicators.robustness;
 
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 
 /**
  * General Interface of a robustness calculator for CloudML models
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public abstract class RobustnessCalculator extends DeploymentIndicator {
 

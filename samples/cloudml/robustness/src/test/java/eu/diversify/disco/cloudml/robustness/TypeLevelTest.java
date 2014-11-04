@@ -55,7 +55,7 @@ public class TypeLevelTest extends TestCase {
 
     @Test
     public void noVMInSensAppShouldBeACompleteSequence() throws FileNotFoundException {
-        final Population population = new TypeLevel(SensApp.completeSensApp().build());
+        final AbstractPopulation population = new TypeLevel(SensApp.completeSensApp().build());
 
         population.reviveAll();
         population.kill("SL");

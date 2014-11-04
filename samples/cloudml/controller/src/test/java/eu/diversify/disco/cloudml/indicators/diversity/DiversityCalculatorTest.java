@@ -22,28 +22,23 @@ package eu.diversify.disco.cloudml.indicators.diversity;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicatorTest;
 import eu.diversify.disco.population.diversity.TrueDiversity;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import static junit.framework.Assert.assertTrue;
-import org.cloudml.codecs.JsonCodec;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
 import org.junit.Test;
 
 /**
- *
- * @author Franck Chauvel
- * @since 0.1
+ * Test the calculation of diversity
  */
 public class DiversityCalculatorTest extends DeploymentIndicatorTest {
 
     @Test
     public void testOrderingDiversity() throws FileNotFoundException, IOException {
         DiversityCalculator diversity = makeDiversityCalculator();
-        DeploymentModel homogeneousDeployment = makeHomogeneousDeployment();
+        Deployment homogeneousDeployment = makeHomogeneousDeployment();
         double lowDiversity = diversity.evaluateOn(homogeneousDeployment);
-        DeploymentModel diverseDeployment = makeDiverseDeployment();
+        Deployment diverseDeployment = makeDiverseDeployment();
         double highDiversity = diversity.evaluateOn(diverseDeployment);
         assertTrue(
                 "Robust model shall have greater or equal robustness than fragile ones",
@@ -54,15 +49,11 @@ public class DiversityCalculatorTest extends DeploymentIndicatorTest {
         return new DiversityCalculator(new TrueDiversity());
     }
 
-    private DeploymentModel makeHomogeneousDeployment() throws FileNotFoundException, IOException {
-        JsonCodec codec = new JsonCodec();
-        InputStream stream = new FileInputStream("../src/test/resources/sensappAdmin.json");
-        DeploymentModel model = (DeploymentModel) codec.load(stream);
-        stream.close();
-        return model;
+    private Deployment makeHomogeneousDeployment() throws FileNotFoundException, IOException {
+        return SensApp.completeSensApp().build();
     }
 
-    private DeploymentModel makeDiverseDeployment() throws FileNotFoundException, IOException {
+    private Deployment makeDiverseDeployment() throws FileNotFoundException, IOException {
         return makeHomogeneousDeployment();
     }
 

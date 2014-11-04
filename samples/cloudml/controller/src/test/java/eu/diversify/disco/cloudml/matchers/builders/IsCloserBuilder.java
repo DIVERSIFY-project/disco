@@ -21,7 +21,7 @@ package eu.diversify.disco.cloudml.matchers.builders;
 
 import eu.diversify.disco.cloudml.matchers.IsCloser;
 import eu.diversify.disco.population.Population;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 
 public class IsCloserBuilder {
 
@@ -33,7 +33,7 @@ public class IsCloserBuilder {
         return this;
     }
 
-    public IsCloser than(DeploymentModel opponent) {
+    public IsCloser than(Deployment opponent) {
         return new IsCloser(reference, opponent);
     }
 }

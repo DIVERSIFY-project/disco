@@ -36,7 +36,7 @@ public class SimulationTest extends TestCase {
 
     @Test
     public void aRandomSequence() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
 
         final Simulation simulation = new Simulation(population);
         simulation.reviveAll();
@@ -53,7 +53,7 @@ public class SimulationTest extends TestCase {
 
     @Test
     public void killingTheOnlyVMShouldTakedownTheAppIfThereIsNoSubstitute() {
-        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(1).build());
+        final AbstractPopulation population = new TypeLevel(CloudML.anAppAndNCandidateVMs(1).build());
         final Simulation simulation = new Simulation(population);
 
         simulation.reviveAll();
@@ -66,7 +66,7 @@ public class SimulationTest extends TestCase {
 
     @Test
     public void killingTheAppShouldLetTheVMalive() {
-        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(1).build());
+        final AbstractPopulation population = new TypeLevel(CloudML.anAppAndNCandidateVMs(1).build());
         final Simulation simulation = new Simulation(population);
 
         simulation.reviveAll();
@@ -79,7 +79,7 @@ public class SimulationTest extends TestCase {
 
     @Test
     public void killingTheOnlyVMShouldNotTakedownTheAppIfThereAreSubstitute() {
-        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(2).build());
+        final AbstractPopulation population = new TypeLevel(CloudML.anAppAndNCandidateVMs(2).build());
         final Simulation simulation = new Simulation(population);
 
         simulation.reviveAll();
@@ -92,7 +92,7 @@ public class SimulationTest extends TestCase {
 
     @Test
     public void killingTheOnlyTwoVMShouldNotTakedownTheAppIfThereIsNoOtherSubstitute() {
-        final Population population = new TypeLevel(CloudML.anAppAndNCandidateVMs(2).build());
+        final AbstractPopulation population = new TypeLevel(CloudML.anAppAndNCandidateVMs(2).build());
         final Simulation simulation = new Simulation(population);
 
         simulation.reviveAll();

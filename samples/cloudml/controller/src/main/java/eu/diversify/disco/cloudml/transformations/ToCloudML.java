@@ -16,28 +16,20 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.samples.commons.DiversityInjection;
 import eu.diversify.disco.population.Population;
 import java.util.List;
-import org.cloudml.core.Artefact;
-import org.cloudml.core.ArtefactInstance;
-import org.cloudml.core.DeploymentModel;
-import org.cloudml.core.Node;
-import org.cloudml.core.NodeInstance;
+import org.cloudml.core.*;
 import org.cloudml.core.actions.StandardLibrary;
 
-
 /**
- * Update a cloud model so as it reflect a given population, as much as possible
- *
- * @author Hui Song
- * @author Franck Chauvel
- *
- * @since 0.1
+ * Update a CloudML model so as it reflects a given population, as much as
+ * possible.
  */
-public class ToCloudML implements DiversityInjection<DeploymentModel>{
+public class ToCloudML implements DiversityInjection<Deployment> {
 
     private final StandardLibrary deployer;
 
@@ -46,29 +38,36 @@ public class ToCloudML implements DiversityInjection<DeploymentModel>{
     }
 
     @Override
-    public DeploymentModel applyTo(Population prescription, DeploymentModel currentModel) {
+    public Deployment applyTo(Population prescription, Deployment currentModel) {
         return applyTo(currentModel, prescription);
     }
 
-    
-    public DeploymentModel applyTo(DeploymentModel deployment, Population toBe) {
+    public Deployment applyTo(Deployment deployment, Population prescription) {
         abortIfInvalid(deployment);
-        abortIfInvalid(toBe);
+        abortIfInvalid(prescription);
         // TODO: Check if the model and the population are consistent?
-        
-        for (Node nodeType: deployment.getNodeTypes()) {
-            adjustNodeInstanceCount(deployment, nodeType, toBe.getSpecie(nodeType.getName()).getHeadcount());
+
+        for (InternalComponent each: deployment.getComponents().onlyInternals()) {
+            adjustInternalComponentInstanceCount(
+                    deployment,
+                    each,
+                    prescription.getSpecie(each.getName()).getHeadcount()
+            );
         }
         
-        for (Artefact artefactType: deployment.getArtefactTypes()) {
-            adjustArtefactInstanceCount(deployment, artefactType, toBe.getSpecie(artefactType.getName()).getHeadcount());
+        
+        for (VM each: deployment.getComponents().onlyVMs()) {
+            adjustVmInstanceCount(
+                    deployment,
+                    each,
+                    prescription.getSpecie(each.getName()).getHeadcount()
+            );
         }
 
         return deployment;
     }
 
-
-    private void abortIfInvalid(DeploymentModel deployment) {
+    private void abortIfInvalid(Deployment deployment) {
         if (deployment == null) {
             throw new IllegalArgumentException("Cannot convert 'null' as input deployment model");
         }
@@ -80,51 +79,112 @@ public class ToCloudML implements DiversityInjection<DeploymentModel>{
         }
     }
 
-    private void adjustNodeInstanceCount(DeploymentModel deployment, final Node nodeType, int desired) {
-        final List<NodeInstance> existings = deployment.getNodeInstances().ofType(nodeType).toList(); 
-        final int error = desired - existings.size();
+    /**
+     * Adjust the number of instance of the given type of VM to the given count
+     *
+     * @param deployment the deployment model where VM instance must be created
+     * or deleted
+     * @param vmType the type of VM instances, whose instance count must be
+     * adjusted
+     * @param desiredCount the desired number of instance of that type
+     */
+    private void adjustVmInstanceCount(Deployment deployment, final VM vmType, int desiredCount) {
+        final List<VMInstance> existings = deployment
+                .getComponentInstances()
+                .onlyVMs()
+                .ofType(vmType.getName())
+                .toList();
+
+        final int error = desiredCount - existings.size();
         if (error < 0) {
-            removeExcessiveNodeInstances(existings, Math.abs(error), deployment);
-        }
-        else if (error > 0) {
-            addExtraNodeInstances(error, deployment, nodeType);
+            removeExcessiveVmInstances(deployment, existings, Math.abs(error));
+
+        } else if (error > 0) {
+            addMissingVmInstances(deployment, error, vmType);
+
         }
     }
 
-    private void addExtraNodeInstances(int missing, DeploymentModel deployment, final Node nodeType) {
-        for (int i = 0; i < missing; i++) {
-            deployer.provision(deployment, nodeType);
+    /**
+     * Add the given number of new instances of a given VMType.
+     *
+     * @param deployment the deployment model where the new instance shall be
+     * created
+     * @param missingCount the number of missing instances
+     * @param vmType the type of VM that shall be instantiated
+     */
+    private void addMissingVmInstances(Deployment deployment, int missingCount, VM vmType) {
+        for (int i = 0; i < missingCount; i++) {
+            deployer.provision(deployment, vmType);
         }
     }
 
-    private void removeExcessiveNodeInstances(List<NodeInstance> existings, int excess, DeploymentModel deployment) {
-        final int bound = Math.min(excess, existings.size());
-        for (int i = 0; i < bound ; i++) {
-            deployer.terminate(deployment, existings.get(i));
+    /**
+     * Remove a given number of instance, from a given set of candidates
+     *
+     * @param deployment the CloudML deployment model, where the instances have
+     * to be taken.
+     * @param candidates the list of existing VM, candidates for removal
+     * @param excessCount the number of VM to remove
+     */
+    private void removeExcessiveVmInstances(Deployment deployment, List<VMInstance> candidates, int excessCount) {
+        final int count = Math.min(excessCount, candidates.size());
+        for (int i = 0; i < count; i++) {
+            deployer.terminate(deployment, candidates.get(i));
         }
     }
 
-    private void adjustArtefactInstanceCount(DeploymentModel deployment, Artefact artefact, int desired) {
-        final List<ArtefactInstance> existings = deployment.getArtefactInstances().ofType(artefact).toList();
-        final int error = desired - existings.size();
+    /**
+     * Adjust the number of instance of a given type of internal component, so
+     * that is match the desired count.
+     *
+     * @param deployment the deployment model to be adjusted
+     * @param componentType the type of internal component, whose number of
+     * instance must be balanced
+     * @param desiredCount the desired number of instance
+     */
+    private void adjustInternalComponentInstanceCount(Deployment deployment, InternalComponent componentType, int desiredCount) {
+        final List<InternalComponentInstance> existings = deployment
+                .getComponentInstances()
+                .onlyInternals()
+                .ofType(componentType.getName())
+                .toList();
+
+        final int error = desiredCount - existings.size();
         if (error < 0) {
-            removeExessiveArtefactInstances(existings, Math.abs(error), deployment);
-        }
-        else if (error > 0) {
-            addExtraArtefactInstances(error, deployment, artefact);
-        } 
-    }
+            removeExcessiveInternalComponentInstances(deployment, existings, Math.abs(error));
 
-    private void addExtraArtefactInstances(final int error, DeploymentModel deployment, Artefact artefactType) {
-        for (int i = 0; i < error; i++) {
-            deployer.install(deployment, artefactType);
+        } else if (error > 0) {
+            addMissingInternalComponentInstances(deployment, error, componentType);
+
         }
     }
 
-    private void removeExessiveArtefactInstances(List<ArtefactInstance> existings, int excess, DeploymentModel deployment) {
-        final int bound = Math.min(excess, existings.size());
-        for (int i = 0; i < bound ; i++) {
-            deployer.uninstall(deployment, existings.get(i));
+    /**
+     * Add new instances of the given internal component type.
+     *
+     * @param deployment the deployment model where the new instances must be
+     * added
+     * @param missingCount the number of missing instances
+     * @param componentType the type of internal component to instantiate
+     */
+    private void addMissingInternalComponentInstances(Deployment deployment, int missingCount, InternalComponent componentType) {
+        for (int i = 0; i < missingCount; i++) {
+            deployer.provision(deployment, componentType);
+        }
+    }
+
+    /**
+     * Remove existing instances, from the given set of candidates.
+     *
+     * @param deployment the deployment model where the candidates belong
+     * @param candidates the given set instances, candidates for removal
+     * @param excessCount the number of instances to remove
+     */
+    private void removeExcessiveInternalComponentInstances(Deployment deployment, List<InternalComponentInstance> candidates, int excessCount) {
+        final int bound = Math.min(excessCount, candidates.size());
+        for (int i = 0; i < bound; i++) {
+            deployer.uninstall(deployment, candidates.get(i));
         }
     }
 

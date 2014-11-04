@@ -18,26 +18,20 @@
 
 package eu.diversify.disco.cloudml.util;
 
-import org.cloudml.core.Artefact;
-import org.cloudml.core.Binding;
-import org.cloudml.core.DeploymentModel;
-import org.cloudml.core.Node;
+import org.cloudml.core.Deployment;
 
 // FIXME: To be moved in cloudml
 public class ToolBox {
 
-    public static int countNodesOfType(DeploymentModel deployment, String typeName) {
-        final Node type = deployment.getNodeTypes().named(typeName);
-        return deployment.getNodeInstances().ofType(type).size();
+    public static int countNodesOfType(Deployment deployment, String typeName) {
+        return deployment.getComponentInstances().ofType(typeName).size();
     }
 
-    public static int countArtefactsOfType(DeploymentModel deployment, String typeName) {
-        final Artefact type = deployment.getArtefactTypes().named(typeName);
-        return deployment.getArtefactInstances().ofType(type).size();
+    public static int countArtefactsOfType(Deployment deployment, String typeName) {
+        return deployment.getComponentInstances().ofType(typeName).size(); 
     }
 
-    public static int countBindingsOfType(DeploymentModel deployment, String typeName) {
-        final Binding type = deployment.getBindingTypes().named(typeName);
-        return deployment.getBindingInstances().ofType(type).size();
+    public static int countBindingsOfType(Deployment deployment, String typeName) {
+        return deployment.getRelationshipInstances().ofType(typeName).size();
     }
 }

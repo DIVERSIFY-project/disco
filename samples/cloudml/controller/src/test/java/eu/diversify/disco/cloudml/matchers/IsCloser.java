@@ -23,23 +23,23 @@ package eu.diversify.disco.cloudml.matchers;
 import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.Specie;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 
-public class IsCloser extends TypeSafeMatcher<DeploymentModel> { 
+public class IsCloser extends TypeSafeMatcher<Deployment> { 
 
     final Population reference;
     final Population opponent;
         
-    public IsCloser(Population reference, DeploymentModel opponent) {
+    public IsCloser(Population reference, Deployment opponent) {
         this.reference = reference;
         this.opponent = new ToPopulation().applyTo(opponent);
     }
 
     @Override
-    public boolean matchesSafely(DeploymentModel deployment) {
+    public boolean matchesSafely(Deployment deployment) {
         Population actual = new ToPopulation().applyTo(deployment);
         return distanceBetween(reference, actual) <= distanceBetween(reference, opponent);
     }

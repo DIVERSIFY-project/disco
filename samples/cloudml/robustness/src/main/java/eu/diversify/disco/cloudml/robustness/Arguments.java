@@ -21,7 +21,7 @@ package eu.diversify.disco.cloudml.robustness;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.cloudml.codecs.library.CodecsLibrary;
+import org.cloudml.codecs.library.CodecsLibrary;  
 import org.cloudml.core.Deployment;
 
 /**
@@ -102,7 +102,7 @@ public class Arguments {
 
     }
 
-    private Population level() {
+    private AbstractPopulation level() {
         try {
             final Deployment deployment = new CodecsLibrary().load(pathToDeployment);
             if (level.equals("type")) {

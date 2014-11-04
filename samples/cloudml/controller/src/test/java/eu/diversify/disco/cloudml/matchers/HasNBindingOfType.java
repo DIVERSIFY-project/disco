@@ -15,21 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 
 package eu.diversify.disco.cloudml.matchers;
 
-import eu.diversify.disco.cloudml.util.ToolBox;
 import java.util.List;
-import org.cloudml.core.Binding;
-import org.cloudml.core.BindingInstance;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Relationship;
+import org.cloudml.core.RelationshipInstance;
+import org.cloudml.core.Deployment;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 
-public class HasNBindingOfType  extends TypeSafeMatcher<DeploymentModel> {
+public class HasNBindingOfType  extends TypeSafeMatcher<Deployment> {
 
     private final int count;
     private final String bindingTypeName;
@@ -42,9 +39,9 @@ public class HasNBindingOfType  extends TypeSafeMatcher<DeploymentModel> {
     
     
     @Override
-    protected boolean matchesSafely(DeploymentModel deployment) {
-        Binding type = deployment.getBindingTypes().named(bindingTypeName);
-        List<BindingInstance> instances = deployment.getBindingInstances().ofType(type).toList();
+    protected boolean matchesSafely(Deployment deployment) {
+        Relationship type = deployment.getRelationships().firstNamed(bindingTypeName);
+        List<RelationshipInstance> instances = deployment.getRelationshipInstances().ofType(type.getName()).toList();
         return instances.size() == count;
     }
 

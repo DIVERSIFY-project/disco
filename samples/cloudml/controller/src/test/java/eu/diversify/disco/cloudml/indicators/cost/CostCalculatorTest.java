@@ -15,34 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.cloudml.indicators.cost;
 
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicatorTest;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import org.cloudml.codecs.JsonCodec;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
+import org.cloudml.core.samples.SensApp;
 import org.junit.Test;
 
 /**
  * Test the behaviour of cost calculator
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public abstract class CostCalculatorTest extends DeploymentIndicatorTest {
 
     @Test
     public void testCostOrdering() throws FileNotFoundException, IOException {
         CostCalculator cost = makeCostCalculator();
-        DeploymentModel cheapModel = makeCheapDeploymentModel();
+        Deployment cheapModel = makeCheapDeployment();
         double lowPrice = cost.evaluateOn(cheapModel);
-        DeploymentModel expensiveModel = makeExpensiveDeploymentModel();
+        Deployment expensiveModel = makeExpensiveDeployment();
         double highPrice = cost.evaluateOn(expensiveModel);
         assertTrue(
                 "Cheap models shall cost less that expensive ones",
@@ -51,16 +45,12 @@ public abstract class CostCalculatorTest extends DeploymentIndicatorTest {
 
     protected abstract CostCalculator makeCostCalculator();
 
-    private DeploymentModel makeCheapDeploymentModel() throws FileNotFoundException, IOException {
-        JsonCodec codec = new JsonCodec();
-        InputStream stream = new FileInputStream("../src/test/resources/sensappAdmin.json");
-        DeploymentModel model = (DeploymentModel) codec.load(stream);
-        stream.close();
-        return model;
+    private Deployment makeCheapDeployment() throws FileNotFoundException, IOException {
+        return SensApp.completeSensApp().build();
     }
 
-    private DeploymentModel makeExpensiveDeploymentModel() throws FileNotFoundException, IOException {
-        return makeCheapDeploymentModel();
+    private Deployment makeExpensiveDeployment() throws FileNotFoundException, IOException {
+        return makeCheapDeployment();
     }
 
     @Override

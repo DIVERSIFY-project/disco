@@ -21,13 +21,13 @@
 package eu.diversify.disco.cloudml.matchers;
 
 import java.util.List;
-import org.cloudml.core.Artefact;
-import org.cloudml.core.ArtefactInstance;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.InternalComponent;
+import org.cloudml.core.InternalComponentInstance;
+import org.cloudml.core.Deployment;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public class HasNArtefactInstanceOfType extends TypeSafeMatcher<DeploymentModel> {
+public class HasNArtefactInstanceOfType extends TypeSafeMatcher<Deployment> {
 
     private final int count;
     private final String artefactTypeName;
@@ -40,9 +40,9 @@ public class HasNArtefactInstanceOfType extends TypeSafeMatcher<DeploymentModel>
     
     
     @Override
-    protected boolean matchesSafely(DeploymentModel deployment) {
-        Artefact type = deployment.getArtefactTypes().named(artefactTypeName);
-        List<ArtefactInstance> instances = deployment.getArtefactInstances().ofType(type).toList();
+    protected boolean matchesSafely(Deployment deployment) {
+        InternalComponent type = deployment.getComponents().onlyInternals().firstNamed(artefactTypeName);
+        List<InternalComponentInstance> instances = deployment.getComponentInstances().onlyInternals().ofType(type.getName()).toList();
         return instances.size() == count;
     }
 

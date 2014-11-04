@@ -21,18 +21,13 @@
 package eu.diversify.disco.cloudml.matchers;
 
 import java.util.List;
-import org.cloudml.core.DeploymentModel;
-import org.cloudml.core.Node;
-import org.cloudml.core.NodeInstance;
+import org.cloudml.core.Deployment;
+import org.cloudml.core.VM;
+import org.cloudml.core.VMInstance;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-/**
- *
- * @author Franck Chauvel
- * @since 0.1
- */
-public class HasNNodeInstanceOfType extends TypeSafeMatcher<DeploymentModel> {
+public class HasNNodeInstanceOfType extends TypeSafeMatcher<Deployment> {
 
     private final int count;
     private final String nodeTypeName;
@@ -45,9 +40,9 @@ public class HasNNodeInstanceOfType extends TypeSafeMatcher<DeploymentModel> {
     
     
     @Override
-    protected boolean matchesSafely(DeploymentModel deployment) {
-        Node type = deployment.getNodeTypes().named(nodeTypeName);
-        List<NodeInstance> instances = deployment.getNodeInstances().ofType(type).toList();
+    protected boolean matchesSafely(Deployment deployment) {
+        VM type = deployment.getComponents().onlyVMs().firstNamed(nodeTypeName);
+        List<VMInstance> instances = deployment.getComponentInstances().onlyVMs().ofType(type).toList();
         return instances.size() == count;
     }
 

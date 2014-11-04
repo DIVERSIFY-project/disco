@@ -30,9 +30,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test the toPopulation transformation on various examples
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(Parameterized.class)
 public class ToPopulationTest extends TestCase {
@@ -41,7 +38,6 @@ public class ToPopulationTest extends TestCase {
     private Population actualOutput;
     private final ToPopulation transformation;
 
-    
     public ToPopulationTest(ToPopulationExample example) { 
         this.example = example;
         this.actualOutput = null;

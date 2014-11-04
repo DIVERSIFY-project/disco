@@ -20,17 +20,17 @@
 
 package eu.diversify.disco.cloudml.matchers;
 
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 import org.cloudml.core.validation.DeploymentValidator;
 import org.cloudml.core.validation.Report;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 
-public class IsValid extends TypeSafeMatcher<DeploymentModel> {
+public class IsValid extends TypeSafeMatcher<Deployment> {
 
     @Override 
-    public boolean matchesSafely(DeploymentModel t) {
+    public boolean matchesSafely(Deployment t) {
         DeploymentValidator validator = new DeploymentValidator();
         return validator.validate(t).pass(Report.WITHOUT_WARNING);
     }

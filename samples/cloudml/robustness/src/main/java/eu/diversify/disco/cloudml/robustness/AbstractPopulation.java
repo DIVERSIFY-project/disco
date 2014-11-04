@@ -22,8 +22,9 @@ import java.util.List;
 /**
  * Capture the notion of populations where individuals can be killed and revive
  */
-public abstract class Population {
+public abstract class AbstractPopulation {
 
+    
     public abstract void kill(String victim);
 
     public abstract void reviveAll();

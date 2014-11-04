@@ -20,7 +20,7 @@
 package eu.diversify.disco.cloudml.indicators;
 
 import junit.framework.TestCase;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -29,9 +29,6 @@ import org.junit.runners.JUnit4;
 
 /**
  * Test the general behaviour of indicators
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
 @RunWith(JUnit4.class)
 public abstract class DeploymentIndicatorTest extends TestCase {
@@ -49,7 +46,7 @@ public abstract class DeploymentIndicatorTest extends TestCase {
     @Test(expected = IllegalArgumentException.class)
     public void testRobustnessOfEmptyCloudMLDeployment() {
         DeploymentIndicator indicator = makeDeploymentIndicator();
-        indicator.evaluateOn(new DeploymentModel());
+        indicator.evaluateOn(new Deployment());
     }
 
     protected abstract DeploymentIndicator makeDeploymentIndicator();

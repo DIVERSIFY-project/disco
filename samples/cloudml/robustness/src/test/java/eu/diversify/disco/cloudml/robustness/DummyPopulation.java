@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * A sample population for testing purpose
  */
-public class DummyPopulation extends Population {
+public class DummyPopulation extends AbstractPopulation {
 
     private final Map<String, Boolean> dead;
 

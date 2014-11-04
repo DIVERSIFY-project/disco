@@ -27,13 +27,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.cloudml.codecs.JsonCodec;
 import org.cloudml.codecs.DotCodec;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 
-public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<DeploymentModel> {
+public class CloudMLModel implements ModelReader<Deployment>, ModelWriter<Deployment> {
 
     private static final String DOT_TO_PNG_COMMAND = "dot -Tpng %s -o %s";
     private String location;
-    private DeploymentModel model;
+    private Deployment model;
     private final ArrayList<CloudMLModelListener> listeners;
 
     public CloudMLModel() {
@@ -45,7 +45,7 @@ public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<D
     }
 
     @Override
-    public DeploymentModel read() {
+    public Deployment read() {
         if (location == null) {
             throw new IllegalStateException("No model has been loaded yet!");
         }
@@ -54,7 +54,7 @@ public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<D
     }
 
     @Override
-    public void write(DeploymentModel model) {
+    public void write(Deployment model) {
         JsonCodec jsonCodec = new JsonCodec();
         try {
             jsonCodec.save(model, new FileOutputStream(getLocation()));
@@ -93,7 +93,7 @@ public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<D
         }
         JsonCodec jsonCodec = new JsonCodec();
         try {
-            model = (DeploymentModel) jsonCodec.load(new FileInputStream(getLocation()));
+            model = (Deployment) jsonCodec.load(new FileInputStream(getLocation()));
             write(model);
 
         } catch (FileNotFoundException ex) {
@@ -112,7 +112,7 @@ public class CloudMLModel implements ModelReader<DeploymentModel>, ModelWriter<D
         return location.replace(".json", extension);
     }
 
-    private void updateVisualisation(DeploymentModel model) {
+    private void updateVisualisation(Deployment model) {
         try {
             new DotCodec().save(model, new FileOutputStream(getLocationOfDotVisualisation()));
 

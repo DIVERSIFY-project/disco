@@ -24,9 +24,9 @@ package eu.diversify.disco.cloudml.robustness;
  */
 public class Simulator {
 
-    private final Population subject;
+    private final AbstractPopulation subject;
 
-    public Simulator(Population subject) {
+    public Simulator(AbstractPopulation subject) {
         this.subject = subject;
     }
 

@@ -43,8 +43,8 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void allSequencesShouldBeDecreasing() {
-        final Population population = new TypeLevel(SensApp.completeSensApp().build());
-        
+        final AbstractPopulation population = new TypeLevel(SensApp.completeSensApp().build());
+         
         final Simulator simulator = new Simulator(population);
         final SequenceGroup sequences = simulator.randomExtinctions(100);
         
@@ -61,7 +61,7 @@ public class SimulatorTest extends TestCase {
     
     @Test
     public void aPredifinedSequence() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
 
         final Simulator simulator = new Simulator(population);
         final Extinction sequence = simulator.run(reviveAll(), kill("x"), kill("y"), kill("z"));
@@ -73,7 +73,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void impactOfAction() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
 
         final Simulator simulator = new Simulator(population);
         final Extinction sequence = simulator.run(reviveAll(), kill("x"), kill("y"), kill("z"));
@@ -83,7 +83,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void robustnessShouldBeAvailableForEachExtinction() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
 
         final Simulator simulator = new Simulator(population);
         final Extinction sequence = simulator.run(reviveAll(), kill("x"), kill("y"), kill("z"));
@@ -93,7 +93,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void groupShouldContainTheRightNumberOfSequence() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
         final Simulator simulator = new Simulator(population);
         final SequenceGroup group = simulator.randomExtinctions(10);
 
@@ -102,7 +102,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void groupShouldProvideRobustnessDistribution() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
         final Simulator simulator = new Simulator(population);
         final SequenceGroup group = simulator.randomExtinctions(10);
         Distribution robustness = group.robustness();
@@ -112,7 +112,7 @@ public class SimulatorTest extends TestCase {
 
     @Test
     public void groupShouldProvideARankingOfIndividuals() {
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
         final Simulator simulator = new Simulator(population);
         final SequenceGroup group = simulator.randomExtinctions(10);
 

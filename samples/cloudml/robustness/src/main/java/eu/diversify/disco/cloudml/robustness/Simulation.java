@@ -28,10 +28,10 @@ import java.util.Random;
  */
 public class Simulation {
         
-    private final Population subject;
+    private final AbstractPopulation subject;
     private final Extinction trace;
 
-    public Simulation(Population subject) {
+    public Simulation(AbstractPopulation subject) {
         this.subject = subject;
         this.trace = new Extinction(subject.headcount());
     }

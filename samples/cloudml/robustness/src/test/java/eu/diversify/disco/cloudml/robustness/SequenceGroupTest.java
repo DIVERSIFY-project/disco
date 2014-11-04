@@ -55,7 +55,7 @@ public class SequenceGroupTest extends TestCase {
     @Test
     public void groupShouldBeProperlyConvertedToCsv() {
 
-        final Population population = new DummyPopulation("x", "y", "z");
+        final AbstractPopulation population = new DummyPopulation("x", "y", "z");
         SequenceGroup sequences = new SequenceGroup(3);
 
         final Simulator simulator = new Simulator(population);

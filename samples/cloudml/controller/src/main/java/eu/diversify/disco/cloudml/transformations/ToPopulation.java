@@ -36,41 +36,43 @@ package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.samples.commons.DiversityExtraction;
 import eu.diversify.disco.population.Population;
+import org.cloudml.core.*;
+
 import static eu.diversify.disco.population.PopulationBuilder.*;
-import org.cloudml.core.Artefact;
-import org.cloudml.core.ArtefactInstance;
-import org.cloudml.core.DeploymentModel;
-import org.cloudml.core.Node;
-import org.cloudml.core.NodeInstance;
+
 import org.cloudml.core.validation.DeploymentValidator;
 import org.cloudml.core.validation.Report;
 import org.cloudml.core.visitors.AbstractVisitListener;
-import org.cloudml.core.visitors.ContainmentDispatcher;
 import org.cloudml.core.visitors.Visitor;
 
-public class ToPopulation implements DiversityExtraction<DeploymentModel> {
+/**
+ * Traverse a given deployment model a generate the associated Population model.
+ */
+public class ToPopulation implements DiversityExtraction<Deployment> {
 
     @Override
-    public Population applyTo(DeploymentModel deployment) {
+    public Population applyTo(Deployment deployment) {
         abortIfInvalidModel(deployment);
         return extract(deployment).getExtractedPopulation();
     }
 
-    private void abortIfInvalidModel(DeploymentModel deployment) {
+    private void abortIfInvalidModel(Deployment deployment) {
         final Report validation = new DeploymentValidator().validate(deployment);
         if (!validation.pass(Report.WITHOUT_WARNING)) {
             throw new IllegalArgumentException("Invalid model: " + validation.toString());
         }
     }
 
-    private PopulationExtractor extract(DeploymentModel deployment) {
-        PopulationExtractor extractor = new PopulationExtractor();
-        Visitor visitor = new Visitor(new ContainmentDispatcher());
-        visitor.addListeners(extractor);
-        deployment.accept(visitor);
+    private PopulationExtractor extract(Deployment deployment) {
+        final PopulationExtractor extractor = new PopulationExtractor();
+        deployment.accept(new Visitor(extractor));
         return extractor;
     }
 
+    /**
+     * Actual deployment visitor object. It traverses a deployment model and
+     * incrementally build the associated deployment model.
+     */
     private static class PopulationExtractor extends AbstractVisitListener {
 
         private final Population population;
@@ -83,27 +85,41 @@ public class ToPopulation implements DiversityExtraction<DeploymentModel> {
         }
 
         @Override
-        public void onNode(Node subject) {
+        public void onVMExit(VM subject) {
             population.addSpecie(subject.getName());
         }
 
         @Override
-        public void onArtefact(Artefact subject) {
+        public void onInternalComponentExit(InternalComponent subject) {
             population.addSpecie(subject.getName());
         }
 
         @Override
-        public void onNodeInstance(NodeInstance subject) {
+        public void onExternalComponentExit(ExternalComponent subject) {
+            population.addSpecie(subject.getName());
+        }
+
+        @Override
+        public void onInternalComponentInstanceExit(InternalComponentInstance subject) {
             final String specieName = subject.getType().getName();
             population.getSpecie(specieName).shiftHeadcountBy(+1);
         }
 
         @Override
-        public void onArtefactInstance(ArtefactInstance subject) {
+        public void onExternalComponentInstanceExit(ExternalComponentInstance subject) {
             final String specieName = subject.getType().getName();
             population.getSpecie(specieName).shiftHeadcountBy(+1);
         }
 
+        @Override
+        public void onVMInstanceExit(VMInstance subject) {
+            final String specieName = subject.getType().getName();
+            population.getSpecie(specieName).shiftHeadcountBy(+1);
+        }
+
+        /**
+         * @return the population associated with the last visited model
+         */
         public Population getExtractedPopulation() {
             return this.population;
         }

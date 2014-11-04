@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  */
 package eu.diversify.disco.cloudml.robustness;
@@ -25,9 +42,14 @@ import java.util.List;
 import org.cloudml.core.*;
 
 /**
- *
+ * Failure propagation at the type level
  */
-public class TypeLevel extends Population {
+public class TypeLevel extends AbstractPopulation {
+
+    private static final String IS_KILLED = "Killed";
+    private static final String NO = "false";
+    private static final String YES = "true";
+
 
     private final Deployment deployment;
 
@@ -37,20 +59,19 @@ public class TypeLevel extends Population {
 
     @Override
     public void reviveAll() {
-        for(Component each: deployment.getComponents()) {
+        for (Component each: deployment.getComponents()) {
             revive(each);
         }
     }
 
-    
     private void revive(final Component component) {
-        if (component.hasProperty("Killed")) {
-            component.getProperties().get("Killed").setValue("false");
+        if (component.hasProperty(IS_KILLED)) {
+            component.getProperties().get(IS_KILLED).setValue(NO);
         } else {
-            component.getProperties().add(new Property("Killed", "false"));
+            component.getProperties().add(new Property(IS_KILLED, NO));
         }
     }
-
+    
     @Override
     public void kill(String victim) {
         int killed = 0;
@@ -140,11 +161,11 @@ public class TypeLevel extends Population {
     }
 
     private boolean isDead(Component c) {
-        return c.hasProperty("Killed", "true");
+        return c.hasProperty(IS_KILLED, YES);
     }
-
+    
     private void markAsDead(Component c) {
-        c.getProperties().get("Killed").setValue("true");
+        c.getProperties().get(IS_KILLED).setValue(YES);
     }
 
     private List<Component> selectAliveComponents() {

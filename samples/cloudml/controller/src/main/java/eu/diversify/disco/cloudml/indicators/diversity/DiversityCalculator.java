@@ -24,13 +24,11 @@ import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.diversity.DiversityMetric;
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 
 /**
  * General Interface of Diversity calculators
- * 
- * @author Franck Chauvel
- * @since 0.1
+
  */
 public class DiversityCalculator extends DeploymentIndicator {
 
@@ -43,7 +41,7 @@ public class DiversityCalculator extends DeploymentIndicator {
     }
 
     @Override
-    protected double doEvaluation(DeploymentModel deployment) {
+    protected double doEvaluation(Deployment deployment) {
         Population population = transformation.applyTo(deployment);
         return metric.applyTo(population); 
     }

@@ -20,7 +20,7 @@
 
 package eu.diversify.disco.cloudml.indicators.robustness;
 
-import org.cloudml.core.DeploymentModel;
+import org.cloudml.core.Deployment;
 
 /**
  * A dummy robustness calculator for integration purpose
@@ -31,7 +31,7 @@ import org.cloudml.core.DeploymentModel;
 public class DummyRobustnessCalculator extends RobustnessCalculator {
 
     @Override
-    public double doEvaluation(DeploymentModel deploymentModel) {
+    public double doEvaluation(Deployment deploymentModel) {
         return 0.5;
     }
 
