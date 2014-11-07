@@ -68,6 +68,12 @@
             <url>http://maven.thingml.org/thirdparty/</url>
         </repository>
         
+        <repository>
+            <id>cloudbees-snapshot</id>
+            <name>Snapshots on CloudBees</name>
+            <url>http://repository-mod4cloud.forge.cloudbees.com/snapshot/</url>
+        </repository>
+
     </repositories>
 
     <distributionManagement>
