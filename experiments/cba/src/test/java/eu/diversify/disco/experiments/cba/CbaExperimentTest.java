@@ -30,8 +30,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import junit.framework.TestCase;
-import static junit.framework.TestCase.assertFalse;
+
+import static junit.framework.TestCase.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,13 +40,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.yaml.snakeyaml.Yaml;
 
-/**
- *
- * @author Franck Chauvel
- * @since 0.1
- */
 @RunWith(JUnit4.class)
-public class CbaExperimentTest extends TestCase {
+public class CbaExperimentTest {
 
     public static final String TEST_RESOURCES_PATH = "../src/test/resources/";
     public static final String TEST_SETUP = "test_setup.yml";

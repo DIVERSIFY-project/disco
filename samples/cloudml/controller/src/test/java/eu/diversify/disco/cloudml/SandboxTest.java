@@ -16,23 +16,33 @@
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.diversify.disco.cloudml.indicators.robustness;
+package eu.diversify.disco.cloudml;
 
-import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
+import eu.diversify.disco.cloudml.transformations.MdmsModelCreator;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import org.cloudml.codecs.JsonCodec;
 import org.cloudml.core.Deployment;
-import org.cloudml.indicators.Robustness;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
- * General Interface of a robustness calculator for CloudML models
+ * Sandbox for experimenting with the code
  */
-public class RobustnessCalculator extends DeploymentIndicator {
+@Ignore
+@RunWith(JUnit4.class)
+public class SandboxTest {
 
-    @Override
-    protected double doEvaluation(Deployment deployment) {
-        final Robustness robustness = Robustness.ofSelfRepairing(deployment);
-        return robustness.value();
+    
+    @Test
+    public void sandbox() throws FileNotFoundException {
+        JsonCodec codec = new JsonCodec();
+        
+        Deployment mdms = new MdmsModelCreator().create();
+            codec.save(mdms, new FileOutputStream("../src/test/resources/mdms.json"));
+        
     }
 
-    
-    
 }

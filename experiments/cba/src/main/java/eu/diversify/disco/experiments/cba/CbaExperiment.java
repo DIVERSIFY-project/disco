@@ -17,11 +17,13 @@
  */
 package eu.diversify.disco.experiments.cba;
 
-import eu.diversify.disco.cloudml.CloudMLController;
+import eu.diversify.disco.cloudml.CloudMLModel;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import eu.diversify.disco.cloudml.indicators.cost.CostAsSize;
 import eu.diversify.disco.cloudml.indicators.diversity.DiversityCalculator;
-import eu.diversify.disco.cloudml.indicators.robustness.DummyRobustnessCalculator;
+import eu.diversify.disco.cloudml.indicators.robustness.RobustnessCalculator;
+import eu.diversify.disco.cloudml.transformations.ToCloudML;
+import eu.diversify.disco.cloudml.transformations.ToPopulation;
 import eu.diversify.disco.experiments.commons.Experiment;
 import eu.diversify.disco.experiments.commons.data.Data;
 import eu.diversify.disco.experiments.commons.data.DataSet;
@@ -29,6 +31,8 @@ import eu.diversify.disco.experiments.commons.data.Field;
 import eu.diversify.disco.experiments.commons.data.Schema;
 import eu.diversify.disco.population.diversity.MetricFactory;
 import eu.diversify.disco.population.diversity.TrueDiversity;
+import eu.diversify.disco.samples.commons.ConstantReference;
+import eu.diversify.disco.samples.commons.DiversityController;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -70,15 +74,15 @@ public class CbaExperiment implements Experiment {
         this.setup = setup;
         diversity = new DiversityCalculator(MetricFactory.create(setup.getDiversityMetric()));
         cost = new CostAsSize();
-        robustness = new DummyRobustnessCalculator();
+        robustness = new RobustnessCalculator();
     }
 
     @Override
     public List<DataSet> run() {
-        ArrayList<DataSet> results = new ArrayList<DataSet>();
-        DataSet dataset = new DataSet(SCHEMA);
+        final ArrayList<DataSet> results = new ArrayList<DataSet>();
+        final DataSet dataset = new DataSet(SCHEMA);
         for (int run = 0; run < setup.getSampleCount(); run++) {
-            Deployment model = loadDeployment();
+            final Deployment model = loadDeployment();
             for (double reference : setup.getDiversityLevels()) {
                 Deployment diversifiedModel = diversifyDeployment(model, reference);
                 Data data = SCHEMA.newData();
@@ -113,9 +117,26 @@ public class CbaExperiment implements Experiment {
     }
 
     private Deployment diversifyDeployment(Deployment model, double reference) {
-        CloudMLController controller = new CloudMLController(new TrueDiversity().normalise());
-        // FIXME: the following line fails
-        // return controller.applyTo(cloudml).getRoot(); 
-        return model;
+        final CloudMLModel source = new CloudMLModel();
+        source.setLocation("source.json");
+        source.write(model);
+
+        final CloudMLModel target = new CloudMLModel();
+        target.setLocation("target.json");
+        
+        final ConstantReference setPoint = new ConstantReference();
+        setPoint.setReference(reference);
+
+        final DiversityController<Deployment> controller = new DiversityController<Deployment>(
+                new TrueDiversity().normalise(), 
+                source, 
+                new ToPopulation(), 
+                setPoint, 
+                new ToCloudML(), 
+                target); 
+        
+        controller.control();
+        
+        return target.read();
     }
 }
