@@ -94,10 +94,13 @@ public class CbaExperimentTest {
         for (int i = 0; i < result.getSize(); i++) {
             final Data data = result.getData(i);
             assertFalse(data.isMissing(CbaExperiment.RUN));
+            assertFalse(data.isMissing(CbaExperiment.INITIAL_DIVERSITY));
+            assertFalse(data.isMissing(CbaExperiment.INITIAL_ROBUSTNESS));
+            assertFalse(data.isMissing(CbaExperiment.INITIAL_COST));
             assertFalse(data.isMissing(CbaExperiment.EXPECTED_DIVERSITY));
             assertFalse(data.isMissing(CbaExperiment.ACTUAL_DIVERSITY));
-            assertFalse(data.isMissing(CbaExperiment.COST));
-            assertFalse(data.isMissing(CbaExperiment.ROBUSTNESS));
+            assertFalse(data.isMissing(CbaExperiment.ACTUAL_COST));
+            assertFalse(data.isMissing(CbaExperiment.ACTUAL_ROBUSTNESS));
         }
     }
 }

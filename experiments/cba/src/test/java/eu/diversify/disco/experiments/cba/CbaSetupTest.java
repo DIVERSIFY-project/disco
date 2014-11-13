@@ -36,7 +36,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class CbaSetupTest extends TestCase {
     
-    private static final int SAMPLE_COUNT = 10;
+    private static final int SAMPLE_COUNT = 1;
     private static final String DEPLOYMENT_MODEL = "./sensappAdmin.json";
     private static final String CONTROL_STRATEGY = "Adaptive Hill Climbing";
     private static final String DIVERSITY_METRIC = "Shannon Index";
@@ -45,7 +45,7 @@ public class CbaSetupTest extends TestCase {
     @Test
     public void testLoadSetupFromYaml() throws FileNotFoundException {
         CbaSetup setup = loadSetupFromYaml("../src/test/resources/test_setup.yml");
-        checkSetup(setup);
+        checkSetup(setup); 
     }
   
     private CbaSetup loadSetupFromYaml(String pathToFile) throws FileNotFoundException {
