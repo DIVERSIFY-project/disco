@@ -41,6 +41,7 @@
                 <include>setup.yml</include>
                 <include>credentials</include>
                 <include>sensappAdmin.json</include>
+                <include>mdms.json</include>
             </includes>
         </fileSet>
         <fileSet>

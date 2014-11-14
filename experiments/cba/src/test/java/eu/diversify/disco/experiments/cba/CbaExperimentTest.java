@@ -89,11 +89,12 @@ public class CbaExperimentTest {
         DataSet result = results.get(0);
         assertEquals(
                 "Wrong number of data",
-                setup.getSampleCount() * setup.getDiversityLevels().size(),
+                setup.getDeploymentModels().size() * setup.getSampleCount() * setup.getDiversityLevels().size(),
                 result.getSize());
         for (int i = 0; i < result.getSize(); i++) {
             final Data data = result.getData(i);
             assertFalse(data.isMissing(CbaExperiment.RUN));
+            assertFalse(data.isMissing(CbaExperiment.DEPLOYMENT));
             assertFalse(data.isMissing(CbaExperiment.INITIAL_DIVERSITY));
             assertFalse(data.isMissing(CbaExperiment.INITIAL_ROBUSTNESS));
             assertFalse(data.isMissing(CbaExperiment.INITIAL_COST));

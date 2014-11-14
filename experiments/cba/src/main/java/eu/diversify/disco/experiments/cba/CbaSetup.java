@@ -25,19 +25,17 @@ import java.util.List;
 
 /**
  * Define the parameters of the Cost-Benefits Analysis experiment.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class CbaSetup implements Setup {
 
-    private String deploymentModel;
+    private final List<String> deploymentModels;
     private final ArrayList<Double> diversityLevels;
     private String controlStrategy;
     private String diversityMetric;
     private int sampleCount;
 
     public CbaSetup() {
+        this.deploymentModels = new ArrayList<String>();
         this.diversityLevels = new ArrayList<Double>();
     }
 
@@ -46,12 +44,13 @@ public class CbaSetup implements Setup {
        return new CbaExperiment(this); 
     }
 
-    public String getDeploymentModel() {
-        return this.deploymentModel;
+    public List<String> getDeploymentModels() {
+        return Collections.unmodifiableList(this.deploymentModels);
     }
 
-    public void setDeploymentModel(String deploymentModel) {
-        this.deploymentModel = deploymentModel;
+    public void setDeploymentModels(List<String> deploymentModels) {
+        this.deploymentModels.clear();
+        this.deploymentModels.addAll(deploymentModels);
     }
 
     public String getControlStrategy() {

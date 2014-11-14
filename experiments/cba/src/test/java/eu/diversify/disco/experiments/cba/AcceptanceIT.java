@@ -31,7 +31,7 @@ public class AcceptanceIT {
 
     @Test
     public void acceptanceTest() throws IOException, InterruptedException {
-        new Tester("cba", "results.csv", "costs.pdf", "robustness.pdf", "diversity_drift.pdf").test();
+        new Tester("cba", "results.csv", "costs.pdf", "robustness.pdf", "diversity_drift.pdf", "correlation.pdf", "cba.pdf").test();
     }
 
 }

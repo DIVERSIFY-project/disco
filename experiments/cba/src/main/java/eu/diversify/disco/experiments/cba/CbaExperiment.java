@@ -2,6 +2,40 @@
  *
  * This file is part of Disco.
  *
+ * Disco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ *
+ * This file is part of Disco.
+ *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -49,6 +83,7 @@ import org.cloudml.core.Deployment;
 public class CbaExperiment implements Experiment {
 
     public static final Field RUN = new Field("run", Integer.class);
+    public static final Field DEPLOYMENT = new Field("deployment", String.class);
     public static final Field INITIAL_DIVERSITY = new Field("initial diversity", Double.class);
     public static final Field EXPECTED_DIVERSITY = new Field("expected diversity", Double.class);
     public static final Field ACTUAL_DIVERSITY = new Field("actual diversity", Double.class);
@@ -59,6 +94,7 @@ public class CbaExperiment implements Experiment {
     private static final Schema SCHEMA = new Schema(
             Arrays.asList(new Field[]{
                 RUN,
+                DEPLOYMENT,
                 INITIAL_DIVERSITY,
                 INITIAL_COST,
                 INITIAL_ROBUSTNESS,
@@ -84,43 +120,46 @@ public class CbaExperiment implements Experiment {
     public List<DataSet> run() {
         final ArrayList<DataSet> results = new ArrayList<DataSet>();
         final DataSet dataset = new DataSet(SCHEMA);
-        for (int run = 0; run < setup.getSampleCount(); run++) {
-            final Deployment model = loadDeployment();
-            final double initialRobustness = robustness.evaluateOn(model);
-            final double initialDiversity = diversity.evaluateOn(model);
-            final double initialCost = cost.evaluateOn(model);
-            for (double reference: setup.getDiversityLevels()) {
-                Deployment diversifiedModel = diversifyDeployment(model, reference);
-                Data data = SCHEMA.newData();
-                data.set(RUN, run);
-                data.set(INITIAL_DIVERSITY, initialDiversity);
-                data.set(INITIAL_COST, initialCost);
-                data.set(INITIAL_ROBUSTNESS, initialRobustness);
-                data.set(EXPECTED_DIVERSITY, reference);
-                data.set(ACTUAL_DIVERSITY, diversity.evaluateOn(diversifiedModel));
-                data.set(ACTUAL_COST, cost.evaluateOn(diversifiedModel));
-                data.set(ACTUAL_ROBUSTNESS, robustness.evaluateOn(diversifiedModel));
-                dataset.add(data);
+        for (String eachDeployment: setup.getDeploymentModels()) {
+            for (int run = 0; run < setup.getSampleCount(); run++) {
+                final Deployment model = loadDeployment(eachDeployment);
+                final double initialRobustness = robustness.evaluateOn(model);
+                final double initialDiversity = diversity.evaluateOn(model);
+                final double initialCost = cost.evaluateOn(model);
+                for (double reference: setup.getDiversityLevels()) {
+                    Deployment diversifiedModel = diversifyDeployment(model, reference);
+                    Data data = SCHEMA.newData();
+                    data.set(RUN, run);
+                    data.set(DEPLOYMENT, model.getName());
+                    data.set(INITIAL_DIVERSITY, initialDiversity);
+                    data.set(INITIAL_COST, initialCost);
+                    data.set(INITIAL_ROBUSTNESS, initialRobustness);
+                    data.set(EXPECTED_DIVERSITY, reference);
+                    data.set(ACTUAL_DIVERSITY, diversity.evaluateOn(diversifiedModel));
+                    data.set(ACTUAL_COST, cost.evaluateOn(diversifiedModel));
+                    data.set(ACTUAL_ROBUSTNESS, robustness.evaluateOn(diversifiedModel));
+                    dataset.add(data);
+                }
             }
         }
         results.add(dataset);
         return results;
     }
 
-    private Deployment loadDeployment() {
+    private Deployment loadDeployment(String deployment) {
         Deployment model;
         JsonCodec codec = new JsonCodec();
         InputStream stream = null;
         try {
-            stream = new FileInputStream(setup.getDeploymentModel());
+            stream = new FileInputStream(deployment);
         } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Unable to load the given deployment model '" + setup.getDeploymentModel() + "'");
+            throw new IllegalArgumentException("Unable to load the given deployment model '" + setup.getDeploymentModels() + "'");
         }
         model = (Deployment) codec.load(stream);
         try {
             stream.close();
         } catch (IOException ex) {
-            throw new IllegalArgumentException("I/O error while closing '" + setup.getDeploymentModel() + "'");
+            throw new IllegalArgumentException("I/O error while closing '" + setup.getDeploymentModels() + "'");
         }
         return model;
     }

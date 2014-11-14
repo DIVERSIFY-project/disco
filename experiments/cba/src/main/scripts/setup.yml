@@ -5,7 +5,9 @@
 #
 
 # The initial CloudML deployment model to use
-deploymentModel: ./sensappAdmin.json
+deploymentModels: 
+  - ./sensappAdmin.json
+  - ./mdms.json
 
 # The diversity metric to use
 diversityMetric: True Diversity
@@ -17,4 +19,4 @@ controlStrategy: Adaptive Hill Climbing
 diversityLevels: [0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
 
 # the number of 'run' to perform (for statistical evidence)
-sampleCount: 10
+sampleCount: 1

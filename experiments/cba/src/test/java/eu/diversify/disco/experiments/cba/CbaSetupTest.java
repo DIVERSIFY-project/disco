@@ -21,23 +21,24 @@ package eu.diversify.disco.experiments.cba;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import junit.framework.TestCase;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.yaml.snakeyaml.Yaml;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 
 
 /**
  * Test the Cost Benefits Analysis experiment (CBA)
- * 
- * @author Franck Chauvel
- * @since 0.1
  */
-public class CbaSetupTest extends TestCase {
+@RunWith(JUnit4.class)
+public class CbaSetupTest {
     
     private static final int SAMPLE_COUNT = 1;
-    private static final String DEPLOYMENT_MODEL = "./sensappAdmin.json";
+    private static final String[] DEPLOYMENT_MODEL = new String[]{"./sensappAdmin.json"};
     private static final String CONTROL_STRATEGY = "Adaptive Hill Climbing";
     private static final String DIVERSITY_METRIC = "Shannon Index";
     private static final Double[] DIVERSITY_LEVELS = new Double[] { 0., 0.25, 0.5, 0.75, 1. };
@@ -55,11 +56,11 @@ public class CbaSetupTest extends TestCase {
     }
 
     private void checkSetup(CbaSetup setup) {
-        assertEquals(SAMPLE_COUNT, setup.getSampleCount());
-        assertEquals(CONTROL_STRATEGY, setup.getControlStrategy());
-        assertEquals(DIVERSITY_METRIC, setup.getDiversityMetric());
-        assertEquals(Arrays.asList(DIVERSITY_LEVELS), setup.getDiversityLevels());
-        assertEquals(DEPLOYMENT_MODEL, setup.getDeploymentModel());
+        assertThat(setup.getSampleCount(), is(equalTo(SAMPLE_COUNT)));
+        assertThat(setup.getControlStrategy(), is(equalTo(CONTROL_STRATEGY)));
+        assertThat(setup.getDiversityMetric(), is(equalTo(DIVERSITY_METRIC)));
+        assertThat(setup.getDiversityLevels(), contains(DIVERSITY_LEVELS));
+        assertThat(setup.getDeploymentModels(), containsInAnyOrder(DEPLOYMENT_MODEL));
     }
 
 }

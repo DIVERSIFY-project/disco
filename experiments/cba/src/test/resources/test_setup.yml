@@ -5,7 +5,8 @@
 #
 
 # The initial CloudML deployment model to use
-deploymentModel: ./sensappAdmin.json
+deploymentModels: 
+  - ./sensappAdmin.json
 
 # The diversity metric to use
 diversityMetric: Shannon Index

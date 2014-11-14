@@ -15,7 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * This file is part of Disco.
+ *
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.diversify.disco.experiments.testing;
 
 import java.io.BufferedReader;
@@ -53,15 +69,13 @@ public class Tester {
         this.experimentName = experimentName;
         this.expectedCsvFiles = new ArrayList<String>();
         this.expectedPdfFiles = new ArrayList<String>();
-        for (String file : expectedFiles) {
+        for (String file: expectedFiles) {
             final String extension = getExtension(file);
             if (extension.equals(".csv")) {
                 expectedCsvFiles.add(file);
-            }
-            else if (extension.equals(".pdf")) {
+            } else if (extension.equals(".pdf")) {
                 expectedPdfFiles.add(file);
-            }
-            else {
+            } else {
                 String message = String.format("Unsupported file extension '%s' (file: %s)", extension, file);
                 throw new IllegalArgumentException(message);
             }
@@ -73,17 +87,16 @@ public class Tester {
         final Matcher matcher = regex.matcher(file);
         if (matcher.matches()) {
             return matcher.group(1);
-        }
-        else {
+        } else {
             final String message = String.format("Unable to extract extension from '%s'", file);
             throw new IllegalArgumentException(message);
         }
     }
-    
+
     public List<String> getExpectedCsvFiles() {
         return Collections.unmodifiableList(expectedCsvFiles);
     }
-    
+
     public List<String> getExpectedPdfFiles() {
         return Collections.unmodifiableList(expectedPdfFiles);
     }
@@ -128,14 +141,14 @@ public class Tester {
 
     private String readContentOf(File readme) throws IOException {
         final StringBuffer buffer = new StringBuffer();
-        for (String line : Files.readAllLines(readme.toPath(), Charset.defaultCharset())) {
+        for (String line: Files.readAllLines(readme.toPath(), Charset.defaultCharset())) {
             buffer.append(line);
         }
         return buffer.toString();
     }
 
     private void checkCsvFilesAreGenerated() {
-        for (String name : expectedCsvFiles) {
+        for (String name: expectedCsvFiles) {
             final String path = String.format("target/%s/%s", experimentName, name);
             File csvFile = new File(path);
             assertThat(path, csvFile.exists());
@@ -143,7 +156,7 @@ public class Tester {
     }
 
     private void checkPdfAreGenerated() {
-        for (String name : expectedPdfFiles) {
+        for (String name: expectedPdfFiles) {
             final String path = String.format("target/%s/%s", experimentName, name);
             File pdfFile = new File(path);
             assertThat(path, pdfFile.exists());
@@ -151,8 +164,8 @@ public class Tester {
     }
 
     private void checkNoErrorIsReported(Run execution) {
-        assertThat("no error reported in stdout", execution.getStandardOutput(), not(containsString("Error")));
-        assertThat("no error reported in stdout", execution.getStandardError(), not(containsString("Error")));
+        assertThat("error reported in stdout!" + execution.summary(), execution.getStandardOutput(), not(containsString("Exception")));
+        assertThat("error reported in stderr!" + execution.summary(), execution.getStandardError(), not(containsString("Exception")));
     }
 
     private void checkLicenseAndCopyrightAreDisplayed(Run execution) {
@@ -198,12 +211,34 @@ public class Tester {
             return standardError;
         }
 
+        /**
+         * @return a string containing the data collected from both the standard
+         * output and the standard error
+         */
+        public String summary() {
+            final StringBuilder result = new StringBuilder();
+
+            result.append(EOL);
+            result.append(EOL);
+            result.append(SEPARATOR).append(EOL);
+            result.append("STDOUT:").append(EOL);
+            result.append(getStandardOutput());
+            result.append(SEPARATOR).append(EOL);
+            result.append("STDERR:").append(EOL);
+            result.append(getStandardError());
+            
+            return result.toString();
+
+        }
+        private static final String EOL = System.lineSeparator();
+        private static final String SEPARATOR = "------------";
+
         private StringBuilder readStandardOutput(Process p) throws IOException {
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line = null;
             while ((line = stdInput.readLine()) != null) {
-                output.append(line);
+                output.append(line).append(EOL);
             }
             return output;
         }
@@ -213,7 +248,7 @@ public class Tester {
             StringBuilder error = new StringBuilder();
             String line = "";
             while ((line = stdError.readLine()) != null) {
-                error.append(line);
+                error.append(line).append(EOL);
             }
             return error;
         }
