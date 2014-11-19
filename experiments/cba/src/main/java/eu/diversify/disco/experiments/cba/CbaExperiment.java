@@ -1,54 +1,3 @@
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
- * Disco is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco. If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.diversify.disco.experiments.cba;
 
 import eu.diversify.disco.cloudml.CloudMLModel;
@@ -147,20 +96,26 @@ public class CbaExperiment implements Experiment {
     }
 
     private Deployment loadDeployment(String deployment) {
-        Deployment model;
-        JsonCodec codec = new JsonCodec();
+        assert deployment != null: "Unable to load 'null'";
+        assert !deployment.isEmpty(): "Unable to load ''";
+
+        final JsonCodec codec = new JsonCodec();
         InputStream stream = null;
         try {
             stream = new FileInputStream(deployment);
+        
         } catch (FileNotFoundException ex) {
             throw new IllegalArgumentException("Unable to load the given deployment model '" + setup.getDeploymentModels() + "'");
         }
-        model = (Deployment) codec.load(stream);
+            
+        final Deployment model = (Deployment) codec.load(stream);
         try {
             stream.close();
+
         } catch (IOException ex) {
             throw new IllegalArgumentException("I/O error while closing '" + setup.getDeploymentModels() + "'");
         }
+        
         return model;
     }
 
@@ -170,7 +125,7 @@ public class CbaExperiment implements Experiment {
         source.write(model);
 
         final CloudMLModel target = new CloudMLModel();
-        target.setLocation("target.json");
+        target.setLocation(makeFileName(model, reference));
 
         final ConstantReference setPoint = new ConstantReference();
         setPoint.setReference(reference);
@@ -186,5 +141,13 @@ public class CbaExperiment implements Experiment {
         controller.control();
 
         return target.read();
+    }
+
+    private String makeFileName(Deployment model, double reference) {
+        assert model != null: "Unable to compute the name of the model";
+
+        final int asPercentage = (int) Math.round(100 * reference);
+
+        return String.format("%s_%03d.json", model.getName(), asPercentage);
     }
 }

@@ -21,6 +21,7 @@ package eu.diversify.disco.cloudml.indicators.robustness;
 import eu.diversify.disco.cloudml.indicators.DeploymentIndicator;
 import org.cloudml.core.Deployment;
 import org.cloudml.indicators.Robustness;
+import org.cloudml.indicators.Selection;
 
 /**
  * General Interface of a robustness calculator for CloudML models
@@ -29,7 +30,7 @@ public class RobustnessCalculator extends DeploymentIndicator {
 
     @Override
     protected double doEvaluation(Deployment deployment) {
-        final Robustness robustness = Robustness.ofSelfRepairing(deployment);
+        final Robustness robustness = Robustness.ofSelfRepairing(deployment, Selection.ALL, Selection.ALL);
         return robustness.value();
     }
 

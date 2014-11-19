@@ -38,7 +38,7 @@ public class RunnerIT extends TestCase {
 
     @Before
     public void setUp() throws IOException {
-        Files.copy(Paths.get("src/test/resources/mdms.json"), Paths.get("mdms.json"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get("../src/test/resources/mdms.json"), Paths.get("mdms.json"), StandardCopyOption.REPLACE_EXISTING);
     }
     
     @Test

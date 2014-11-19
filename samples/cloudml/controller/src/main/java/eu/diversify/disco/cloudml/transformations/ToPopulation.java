@@ -2,23 +2,6 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
- * This file is part of Disco.
- *
  * Disco is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -36,6 +19,9 @@ package eu.diversify.disco.cloudml.transformations;
 
 import eu.diversify.disco.samples.commons.DiversityExtraction;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.PopulationBuilder;
+import java.util.HashMap;
+import java.util.Map;
 import org.cloudml.core.*;
 
 import static eu.diversify.disco.population.PopulationBuilder.*;
@@ -75,53 +61,87 @@ public class ToPopulation implements DiversityExtraction<Deployment> {
      */
     private static class PopulationExtractor extends AbstractVisitListener {
 
-        private final Population population;
+        private final PopulationBuilder population;
+        private final Map<String, Integer> distribution;
 
         public PopulationExtractor() {
+            this.distribution = new HashMap<String, Integer>();
             this.population = aPopulation()
                     .withFixedNumberOfIndividuals()
-                    .withFixedNumberOfSpecies()
-                    .build();
+                    .withFixedNumberOfSpecies();
         }
 
         @Override
         public void onVMExit(VM subject) {
-            population.addSpecie(subject.getName());
+            checkForConstraints(subject);
+            createSpecie(subject);
         }
+
+        private void createSpecie(Component subject) {
+            assert subject != null: "Unable to create a specie for 'null'";
+
+            distribution.put(subject.getName(), 0);
+        }
+
+        /**
+         * Check whether some additional constraints are specified in the
+         * properties of the given CloudML component. Constraints can be either
+         * 'at_least' or 'at_most' multiplicities.
+         *
+         * @param subject the component which could be subject to some
+         * constraints
+         * @throws NumberFormatException if the bound associated with the
+         * constraints cannot be parsed
+         */
+        private void checkForConstraints(Component subject) throws NumberFormatException {
+            assert subject != null: "Unable to check constraints of 'null'";
+
+            if (subject.hasProperty(AT_LEAST)) {
+                int limit = Integer.parseInt(subject.getProperties().valueOf(AT_LEAST));
+                population.withAtLeast(limit, subject.getName());
+            }
+        }
+
+        private static final String AT_LEAST = "at_least";
 
         @Override
         public void onInternalComponentExit(InternalComponent subject) {
-            population.addSpecie(subject.getName());
+            checkForConstraints(subject);
+            createSpecie(subject);
         }
 
         @Override
         public void onExternalComponentExit(ExternalComponent subject) {
-            population.addSpecie(subject.getName());
+            checkForConstraints(subject);
+            createSpecie(subject);
         }
 
         @Override
         public void onInternalComponentInstanceExit(InternalComponentInstance subject) {
-            final String specieName = subject.getType().getName();
-            population.getSpecie(specieName).shiftHeadcountBy(+1);
+            incrementHeadCountFor(subject.getType().getName());
+        }
+
+        private void incrementHeadCountFor(final String specieName) {
+            assert distribution.containsKey(specieName):
+                    "Must have already process '" + specieName + "'";
+            distribution.put(specieName, distribution.get(specieName) + 1);
         }
 
         @Override
         public void onExternalComponentInstanceExit(ExternalComponentInstance subject) {
-            final String specieName = subject.getType().getName();
-            population.getSpecie(specieName).shiftHeadcountBy(+1);
+            incrementHeadCountFor(subject.getType().getName());
         }
 
         @Override
         public void onVMInstanceExit(VMInstance subject) {
-            final String specieName = subject.getType().getName();
-            population.getSpecie(specieName).shiftHeadcountBy(+1);
+            incrementHeadCountFor(subject.getType().getName());
         }
 
         /**
          * @return the population associated with the last visited model
          */
         public Population getExtractedPopulation() {
-            return this.population;
+            return this.population.fromMap(distribution).build();
         }
     }
 }

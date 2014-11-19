@@ -72,7 +72,7 @@ public class MutablePopulation implements Population {
     public boolean allows(Action action) {
         boolean supported = true;
         for (Constraint constraint : constraints) {
-            supported &= constraint.allows(action);
+            supported &= constraint.allows(action, this);
         }
         return supported;
     }

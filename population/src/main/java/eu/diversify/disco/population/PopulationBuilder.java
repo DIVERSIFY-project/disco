@@ -34,6 +34,7 @@
  */
 package eu.diversify.disco.population;
 
+import eu.diversify.disco.population.constraints.AtLeast;
 import eu.diversify.disco.population.constraints.Constraint;
 import eu.diversify.disco.population.constraints.FixedNumberOfIndividuals;
 import eu.diversify.disco.population.constraints.FixedNumberOfSpecies;
@@ -55,9 +56,8 @@ public class PopulationBuilder {
 
     private final ArrayList<Integer> distribution;
     private final ArrayList<String> speciesNames;
+    private final ArrayList<Constraint> constraints;
     private boolean immutable;
-    private boolean fixedNumberOfSpecies;
-    private boolean fixedNumberOfIndividuals;
 
     public static PopulationBuilder aPopulation() {
         return new PopulationBuilder();
@@ -66,15 +66,15 @@ public class PopulationBuilder {
     private PopulationBuilder() {
         distribution = new ArrayList<Integer>();
         speciesNames = new ArrayList<String>();
+        constraints = new ArrayList<Constraint>();
         setDefaultValues();
     }
 
     private void setDefaultValues() {
         distribution.clear();
         speciesNames.clear();
+        constraints.clear();
         immutable = MUTABLE;
-        fixedNumberOfSpecies = FREE;
-        fixedNumberOfIndividuals = FREE;
     }
     
     public PopulationBuilder fromMap(Map<String, Integer> map) {
@@ -119,12 +119,17 @@ public class PopulationBuilder {
     }
 
     public PopulationBuilder withFixedNumberOfIndividuals() {
-        fixedNumberOfIndividuals = true;
+        constraints.add(new FixedNumberOfIndividuals());
         return this;
     }
 
     public PopulationBuilder withFixedNumberOfSpecies() {
-        fixedNumberOfSpecies = true;
+        constraints.add(new FixedNumberOfSpecies());
+        return this;
+    }
+    
+    public PopulationBuilder withAtLeast(int minimalHeadCount, String specieName) {
+        constraints.add(new AtLeast(specieName, minimalHeadCount));
         return this;
     }
 
@@ -144,7 +149,6 @@ public class PopulationBuilder {
     public Population build() {
         makeDefaultSpeciesNamesIfNeeded();
         makeDefaultDistributionIfNeeded();
-        final Collection<Constraint> constraints = prepareConstaints();  
         Population result = new MutablePopulation(speciesNames, distribution, constraints);  
         if (immutable) {
             result = new ImmutablePopulation(speciesNames, distribution, constraints);
@@ -153,16 +157,6 @@ public class PopulationBuilder {
         return result;
     }
 
-    private Collection<Constraint> prepareConstaints() {
-        final ArrayList<Constraint> constraints = new ArrayList<Constraint>();
-        if (fixedNumberOfIndividuals) {
-            constraints.add(new FixedNumberOfIndividuals());
-        }
-        if (fixedNumberOfSpecies) {
-            constraints.add(new FixedNumberOfSpecies());
-        }
-        return constraints;
-    }
 
 
     private void makeDefaultSpeciesNamesIfNeeded() {

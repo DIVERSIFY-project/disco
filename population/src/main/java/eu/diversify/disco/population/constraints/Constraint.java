@@ -17,6 +17,7 @@
  */
 package eu.diversify.disco.population.constraints;
 
+import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.actions.Action;
 
@@ -25,8 +26,16 @@ import eu.diversify.disco.population.actions.Action;
  */
 public interface Constraint {
 
+    
     PopulationBuilder activateOn(PopulationBuilder builder);
     
-    boolean allows(Action action);
+    
+    /**
+     * @return true, is the action is legal on the given population, false otherwise
+     *
+     * @param action the action whose legality must be assess
+     * @param target the population on which the action must be carried out.
+     */
+    boolean allows(Action action, Population target);
 
 }

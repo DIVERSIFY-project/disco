@@ -67,7 +67,20 @@ public class AddSpecie implements Action {
     @Override
     public int impactOnTheNumberOfIndividuals() {
         return 0;
+    
     }
+    
+    @Override
+    public int impactOnSpecie(String specieName, Population target) {
+        return 0;
+    }
+
+        
+    @Override
+    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
+        return true;
+    }
+        
 
     @Override
     public String toString() {
@@ -99,6 +112,7 @@ public class AddSpecie implements Action {
         }
         return true;
     }
+
 
     private boolean hasName() {
         return specieName != NO_SPECIE_NAME;

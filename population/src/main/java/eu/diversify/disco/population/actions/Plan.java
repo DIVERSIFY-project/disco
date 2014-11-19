@@ -24,11 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * macro actions on population, an ordered sequence of actions to be applied on
+ * Macro actions on population, an ordered sequence of actions to be applied on
  * a population.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class Plan implements Action {
 
@@ -57,6 +54,36 @@ public class Plan implements Action {
        return impactOnTheNumberOfIndividuals() == 0;
     }
 
+    @Override
+    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
+        requireValid(target, specieName);
+        final int updatedHeadCount = impactOnSpecie(specieName, target) + target.getSpecie(specieName).getHeadcount();
+        return updatedHeadCount > minimalHeadCount;
+    }
+
+    private void requireValid(Population target, String specieName) throws IllegalArgumentException {
+        if (target == null) {
+            throw new IllegalArgumentException("Unable to ensure minimum headcount on 'null'");
+        }
+        if (!target.hasAnySpecieNamed(specieName)) {
+            final String error = String.format(
+                    "Unknown specie named '%s'. Existing species are %s.",
+                    specieName, 
+                    target.getSpeciesNames().toString());
+            throw new IllegalArgumentException(error);
+        }
+    }
+
+    @Override
+    public int impactOnSpecie(String specieName, Population target) {
+        int totalImpact = 0;
+        for(Action eachAction: actions) {
+            totalImpact += eachAction.impactOnSpecie(specieName, target);
+        }
+        return totalImpact;
+    }
+
+    
     @Override
     public int impactOnTheNumberOfSpecies() {
         int impact = 0;

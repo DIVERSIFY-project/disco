@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
 package eu.diversify.disco.population.actions;
 
 import eu.diversify.disco.population.Population;
@@ -24,9 +22,6 @@ import eu.diversify.disco.population.Population;
 /**
  * Set the number of individual in a given specie, identified either by its
  * index or by its name.
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class SetNumberOfIndividualsIn extends SpecieAccess {
 
@@ -58,6 +53,15 @@ public class SetNumberOfIndividualsIn extends SpecieAccess {
     }
 
     @Override
+    public int impactOnSpecie(String specieName, Population target) {
+        if (target.hasAnySpecieNamed(specieName)
+                && aimsAt(specieName)) {
+            return target.getSpecie(specieName).getHeadcount() - numberOfIndividuals;
+        }
+        return 0;
+    }
+
+    @Override
     public int impactOnTheNumberOfSpecies() {
         return 0;
     }
@@ -66,6 +70,13 @@ public class SetNumberOfIndividualsIn extends SpecieAccess {
     public int impactOnTheNumberOfIndividuals() {
         throw new IllegalStateException("Unable to anticipate the impact of set the number of individuals to a particuar value");
     }
+
+    @Override
+    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
+        return numberOfIndividuals > minimalHeadCount;
+    }
+    
+    
 
     @Override
     public String toString() {

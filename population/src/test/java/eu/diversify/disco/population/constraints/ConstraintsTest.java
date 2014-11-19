@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 package eu.diversify.disco.population.constraints;
 
 import static eu.diversify.disco.population.PopulationBuilder.*;
@@ -47,6 +46,7 @@ public class ConstraintsTest extends TestCase {
 
     public static final boolean LEGAL = true;
     public static final boolean ILLEGAL = false;
+
     private final String name;
     private final Population population;
     private final Action action;
@@ -70,7 +70,10 @@ public class ConstraintsTest extends TestCase {
             new Example("s++ / n & s fixed", withBothConstraints(), addSpecie(), ILLEGAL).toArray(),
             new Example("s-- / n & s fixed", withBothConstraints(), removeSpecie(), ILLEGAL).toArray(),
             new Example("n++ / n & s fixed", withBothConstraints(), shiftNumberOfIndividualsIn(), ILLEGAL).toArray(),
-            new Example("si <-> sj / n & s fixed", withBothConstraints(), moveIndividual(), LEGAL).toArray()});
+            new Example("si <-> sj / n & s fixed", withBothConstraints(), moveIndividual(), LEGAL).toArray(),
+            new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", -1), ILLEGAL).toArray(),
+            new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", +1), LEGAL).toArray()
+        });
     }
 
     public ConstraintsTest(String name, Population population, Action action, boolean legal) {
@@ -143,6 +146,12 @@ public class ConstraintsTest extends TestCase {
         return samplePopulation()
                 .withFixedNumberOfSpecies()
                 .withFixedNumberOfIndividuals()
+                .build();
+    }
+    
+     private static Population withAtLeast(String specieName, int minimalHeadCount) {
+        return samplePopulation()
+                .withAtLeast(minimalHeadCount, specieName)
                 .build();
     }
 

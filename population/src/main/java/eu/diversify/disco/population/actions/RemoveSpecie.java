@@ -22,9 +22,6 @@ import eu.diversify.disco.population.Population;
 
 /**
  * Remove a given specie, identified either by its index or by its name
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class RemoveSpecie extends SpecieAccess {
 
@@ -61,6 +58,20 @@ public class RemoveSpecie extends SpecieAccess {
         return 0;
     }
 
+    
+    @Override
+    public int impactOnSpecie(String specieName, Population target) {
+        if (target.hasAnySpecieNamed(specieName)) {
+            return target.getSpecie(specieName).getHeadcount();
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
+        return !getSpecieName().equals(specieName);
+    }
+    
     @Override
     public String toString() {
         return "del. " + getSpecieName();

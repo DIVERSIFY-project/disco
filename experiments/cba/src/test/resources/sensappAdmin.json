@@ -168,7 +168,13 @@
 						"value" : "true"
 					}
 				]
-			}
+			},
+                        "properties" : [{
+					"eClass" : "net.cloudml.core:Property",
+					"name" : "at_least",
+					"value" : "1"
+				}
+			]
 		}
 	],
 	"internalComponentInstances" : [{

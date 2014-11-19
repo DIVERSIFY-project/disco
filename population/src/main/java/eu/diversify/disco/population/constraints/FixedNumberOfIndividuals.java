@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- */
+
 
 package eu.diversify.disco.population.constraints;
 
+import eu.diversify.disco.population.Population;
 import eu.diversify.disco.population.PopulationBuilder;
 import eu.diversify.disco.population.actions.Action;
 
@@ -34,7 +34,7 @@ public class FixedNumberOfIndividuals implements Constraint {
     
     
     @Override
-    public boolean allows(Action action) {
+    public boolean allows(Action action, Population target) {
         return action.preserveTheTotalNumberOfIndividuals();
     }
     

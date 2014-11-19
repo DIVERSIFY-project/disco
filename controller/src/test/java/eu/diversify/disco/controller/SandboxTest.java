@@ -2,18 +2,18 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.diversify.disco.controller;
 
@@ -25,6 +25,7 @@ import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
 import eu.diversify.disco.controller.solvers.searches.HillClimbing;
 import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
 import eu.diversify.disco.population.Population;
+import eu.diversify.disco.population.diversity.DiversityMetric;
 import eu.diversify.disco.population.diversity.TrueDiversity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,15 +58,18 @@ public class SandboxTest {
             }
         };
 
+        final Population population = aPopulation()
+                .withDistribution(1, 8, 2, 1, 8)
+                .withFixedNumberOfIndividuals()
+                .withFixedNumberOfSpecies()
+                .build();
+
         final PopulationReader input = new PopulationReader() {
 
             @Override
             public Population read() {
-                return aPopulation()
-                        .withDistribution(1, 4, 5)
-                        .withFixedNumberOfIndividuals()
-                        .withFixedNumberOfSpecies()
-                        .build();
+
+                return population;
             }
         };
 
@@ -77,8 +81,11 @@ public class SandboxTest {
             }
         };
 
+        final DiversityMetric trueDiversity = new TrueDiversity().normalise();
+        System.out.println("Diveristy: " + trueDiversity.applyTo(population));
+        
         final ProblemBuilder problemTemplate = aProblem()
-                .withDiversityMetric(new TrueDiversity().normalise());
+                .withDiversityMetric(trueDiversity);
 
         final Controller facade = new Controller(
                 problemTemplate,
@@ -88,7 +95,7 @@ public class SandboxTest {
                 output);
 
         facade.control();
-        
+
     }
-    
+
 }
