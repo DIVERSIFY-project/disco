@@ -56,17 +56,6 @@ public interface Action {
      */
     public boolean preserveTheNumberOfSpecies();
 
-    /**
-     * @return true if this action ensure that the number of individual in the
-     * given specie remains strictly above the given threshold ; false
-     * otherwise.
-     * @param minimalHeadCount the threshold, below which the species head count
-     * must not be fall
-     * @param specieName the specie subject to this constraint
-     * @param target the population on which the action should be carried out
-     *
-     */
-    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target);
 
     /**
      * @return true if this action preserve the total number of individuals,

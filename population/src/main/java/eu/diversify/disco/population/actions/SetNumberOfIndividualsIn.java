@@ -70,12 +70,6 @@ public class SetNumberOfIndividualsIn extends SpecieAccess {
     public int impactOnTheNumberOfIndividuals() {
         throw new IllegalStateException("Unable to anticipate the impact of set the number of individuals to a particuar value");
     }
-
-    @Override
-    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
-        return numberOfIndividuals > minimalHeadCount;
-    }
-    
     
 
     @Override

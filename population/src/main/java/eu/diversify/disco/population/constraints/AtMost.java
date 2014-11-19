@@ -63,7 +63,7 @@ public class AtMost implements Constraint {
         }
         if (target.hasAnySpecieNamed(specieName)) {
             final int impact = action.impactOnSpecie(specieName, target);
-            return target.getSpecie(specieName).getHeadcount() + impact <= maximalHeadCount;
+            return (target.getSpecie(specieName).getHeadcount() + impact) <= maximalHeadCount;
         }
         return true;
     }

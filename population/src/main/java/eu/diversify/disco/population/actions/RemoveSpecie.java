@@ -66,11 +66,6 @@ public class RemoveSpecie extends SpecieAccess {
         }
         return 0;
     }
-
-    @Override
-    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
-        return !getSpecieName().equals(specieName);
-    }
     
     @Override
     public String toString() {

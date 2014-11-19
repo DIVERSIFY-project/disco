@@ -70,10 +70,10 @@ public class ConstraintsTest extends TestCase {
             new Example("s-- / n & s fixed", withBothConstraints(), removeSpecie(), ILLEGAL).toArray(),
             new Example("n++ / n & s fixed", withBothConstraints(), shiftNumberOfIndividualsIn(), ILLEGAL).toArray(),
             new Example("si <-> sj / n & s fixed", withBothConstraints(), moveIndividual(), LEGAL).toArray(),
-            new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", -1), ILLEGAL).toArray(),
-            new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", +1), LEGAL).toArray(),
-            new Example("si < 1", withAtMost("s1", 3), new ShiftNumberOfIndividualsIn("s1", -1), LEGAL).toArray(),
-            new Example("si < 1", withAtMost("s1", 3), new ShiftNumberOfIndividualsIn("s1", +1), ILLEGAL).toArray()
+            new Example("si-1 / si >= 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s4", -1), ILLEGAL).toArray(),
+            new Example("si+1 / si >= 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s4", +1), LEGAL).toArray(),
+            new Example("si-1 / si <= 1", withAtMost("s1", 3), new ShiftNumberOfIndividualsIn("s1", -1), LEGAL).toArray(),
+            new Example("si+1 / si <= 1", withAtMost("s1", 3), new ShiftNumberOfIndividualsIn("s1", +1), ILLEGAL).toArray()
         });
     }
 

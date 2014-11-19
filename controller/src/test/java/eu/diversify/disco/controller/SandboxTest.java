@@ -21,6 +21,7 @@ import eu.diversify.disco.controller.problem.Problem;
 import eu.diversify.disco.controller.problem.ProblemBuilder;
 import eu.diversify.disco.controller.problem.Solution;
 import eu.diversify.disco.controller.solvers.SolverFactory;
+import eu.diversify.disco.controller.solvers.SolverListener;
 import eu.diversify.disco.controller.solvers.searches.AdaptiveHillClimbing;
 import eu.diversify.disco.controller.solvers.searches.HillClimbing;
 import eu.diversify.disco.controller.solvers.searches.IterativeSearch;
@@ -62,6 +63,8 @@ public class SandboxTest {
                 .withDistribution(1, 8, 2, 1, 8)
                 .withFixedNumberOfIndividuals()
                 .withFixedNumberOfSpecies()
+                .withAtLeast(1, "s1")
+                .withAtMost(1, "s1")
                 .build();
 
         final PopulationReader input = new PopulationReader() {
@@ -81,17 +84,34 @@ public class SandboxTest {
             }
         };
 
+        System.out.println("Initial Population: " + population);
         final DiversityMetric trueDiversity = new TrueDiversity().normalise();
         System.out.println("Diveristy: " + trueDiversity.applyTo(population));
         
         final ProblemBuilder problemTemplate = aProblem()
                 .withDiversityMetric(trueDiversity);
+        
+        final IterativeSearch solver = new IterativeSearch(new AdaptiveHillClimbing());
+        solver.subscribe(new SolverListener() {
+            
+            @Override
+            public void onInitialSolution(Solution solution) {
+            }
 
+            @Override
+            public void onIntermediateSolution(Solution solution) {
+                System.out.println(solution);
+            }
+
+            @Override
+            public void onFinalSolution(Solution solution) {
+            }
+        });
+        
         final Controller facade = new Controller(
                 problemTemplate,
                 setPoint,
-                input,
-                new IterativeSearch(new AdaptiveHillClimbing()),
+                input, solver,
                 output);
 
         facade.control();

@@ -42,7 +42,7 @@ public class Solution {
      *
      * @param problem the case against which the population was evaluated
      * @param population the resulting population
-     * @param reference the reference value
+     * @param error the reference value
      * @param diversity the diversity of the resulting population
      */
     public Solution(Problem problem, Population population, double diversity, double error) {

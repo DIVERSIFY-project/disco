@@ -74,12 +74,6 @@ public class AddSpecie implements Action {
     public int impactOnSpecie(String specieName, Population target) {
         return 0;
     }
-
-        
-    @Override
-    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
-        return true;
-    }
         
 
     @Override

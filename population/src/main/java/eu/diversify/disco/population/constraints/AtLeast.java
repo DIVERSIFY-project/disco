@@ -15,7 +15,7 @@ public class AtLeast implements Constraint {
     public AtLeast(String specieName, int minimalHeadCount) {
         requireValid(specieName);
         requireValid(minimalHeadCount);
-        
+
         this.specieName = specieName;
         this.minimalHeadCount = minimalHeadCount;
     }
@@ -57,9 +57,16 @@ public class AtLeast implements Constraint {
 
     @Override
     public boolean allows(Action action, Population target) {
-        return action.ensureAtLeast(minimalHeadCount, specieName, target);
+        if (target == null) {
+            final String error = String.format("Unable to evaluate action '%s' on 'null'", action.toString());
+            throw new IllegalArgumentException(error);
+        }
+        if (target.hasAnySpecieNamed(specieName)) {
+            final int impact = action.impactOnSpecie(specieName, target);
+            final int updatedHeadCount = target.getSpecie(specieName).getHeadcount() + impact;
+            return updatedHeadCount >= minimalHeadCount;
+        }
+        return true;
     }
-    
-    
-    
+
 }

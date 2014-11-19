@@ -73,27 +73,6 @@ public class ShiftNumberOfIndividualsIn extends SpecieAccess {
         return 0;
     }
 
-    @Override
-    public boolean ensureAtLeast(int minimalHeadCount, String specieName, Population target) {
-        requireValid(target, specieName);
-        final Specie specie = target.getSpecie(specieName);
-        return (specie.getHeadcount() + offset) > minimalHeadCount;
-    }
-
-    private void requireValid(Population target, String specieName) throws IllegalArgumentException {
-        if (target == null) {
-            throw new IllegalArgumentException("Unable to check specie minimum headcount on a null population!");
-        }
-        if (!target.hasAnySpecieNamed(specieName)) {
-            final String error = String.format(
-                    "The given population has no specie named '%s'. (Species are %s)",
-                    specieName, 
-                    target.getSpeciesNames().toString());
-            throw new IllegalArgumentException(error);
-        }
-    }
-
-    
     
     @Override
     public String toString() {
