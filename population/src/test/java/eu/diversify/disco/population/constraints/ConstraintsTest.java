@@ -2,20 +2,19 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.diversify.disco.population.constraints;
 
 import static eu.diversify.disco.population.PopulationBuilder.*;
@@ -72,7 +71,9 @@ public class ConstraintsTest extends TestCase {
             new Example("n++ / n & s fixed", withBothConstraints(), shiftNumberOfIndividualsIn(), ILLEGAL).toArray(),
             new Example("si <-> sj / n & s fixed", withBothConstraints(), moveIndividual(), LEGAL).toArray(),
             new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", -1), ILLEGAL).toArray(),
-            new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", +1), LEGAL).toArray()
+            new Example("si > 1", withAtLeast("s4", 1), new ShiftNumberOfIndividualsIn("s1", +1), LEGAL).toArray(),
+            new Example("si < 1", withAtMost("s1", 3), new ShiftNumberOfIndividualsIn("s1", -1), LEGAL).toArray(),
+            new Example("si < 1", withAtMost("s1", 3), new ShiftNumberOfIndividualsIn("s1", +1), ILLEGAL).toArray()
         });
     }
 
@@ -127,7 +128,7 @@ public class ConstraintsTest extends TestCase {
     }
 
     private static Population withNoConstraint() {
-        return samplePopulation().build(); 
+        return samplePopulation().build();
     }
 
     private static Population withFixedNumberOfSpecies() {
@@ -148,10 +149,16 @@ public class ConstraintsTest extends TestCase {
                 .withFixedNumberOfIndividuals()
                 .build();
     }
-    
-     private static Population withAtLeast(String specieName, int minimalHeadCount) {
+
+    private static Population withAtLeast(String specieName, int minimalHeadCount) {
         return samplePopulation()
                 .withAtLeast(minimalHeadCount, specieName)
+                .build();
+    }
+
+    private static Population withAtMost(String specieName, int maximalHeadcount) {
+         return samplePopulation()
+                .withAtMost(maximalHeadcount, specieName)
                 .build();
     }
 
@@ -170,8 +177,8 @@ public class ConstraintsTest extends TestCase {
     private static Action moveIndividual() {
         return new Plan(Arrays.asList(
                 new Action[]{
-            new ShiftNumberOfIndividualsIn("s1", -1),
-            new ShiftNumberOfIndividualsIn("s2", +1)
-        }));
+                    new ShiftNumberOfIndividualsIn("s1", -1),
+                    new ShiftNumberOfIndividualsIn("s2", +1)
+                }));
     }
 }

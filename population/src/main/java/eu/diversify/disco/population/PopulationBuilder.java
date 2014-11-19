@@ -2,18 +2,18 @@
  *
  * This file is part of Disco.
  *
- * Disco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Disco is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Disco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * Disco is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Disco.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disco. If not, see <http://www.gnu.org/licenses/>.
  */
 /**
  *
@@ -34,10 +34,7 @@
  */
 package eu.diversify.disco.population;
 
-import eu.diversify.disco.population.constraints.AtLeast;
-import eu.diversify.disco.population.constraints.Constraint;
-import eu.diversify.disco.population.constraints.FixedNumberOfIndividuals;
-import eu.diversify.disco.population.constraints.FixedNumberOfSpecies;
+import eu.diversify.disco.population.constraints.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -76,15 +73,15 @@ public class PopulationBuilder {
         constraints.clear();
         immutable = MUTABLE;
     }
-    
+
     public PopulationBuilder fromMap(Map<String, Integer> map) {
-        for(Map.Entry<String, Integer> entry: map.entrySet()) {
+        for (Map.Entry<String, Integer> entry: map.entrySet()) {
             speciesNames.add(entry.getKey());
             distribution.add(entry.getValue());
         }
         return this;
     }
-    
+
     /**
      * Set the distribution of population under construction
      *
@@ -127,9 +124,31 @@ public class PopulationBuilder {
         constraints.add(new FixedNumberOfSpecies());
         return this;
     }
-    
+
+    /**
+     * Ensure that the headcount of the selected species will never fall below
+     * the given threshold.
+     *
+     * @param minimalHeadCount the threshold below which the headcount must not
+     * drop
+     * @param specieName the name of the specie subject to this constraint
+     * @return this population builder
+     */
     public PopulationBuilder withAtLeast(int minimalHeadCount, String specieName) {
         constraints.add(new AtLeast(specieName, minimalHeadCount));
+        return this;
+    }
+
+    /**
+     * Ensure that the headcount of the selected species will not exceed the
+     * given threshold.
+     *
+     * @param maximalHeadCount the threshold that must not be exceeded
+     * @param specieName the specie subject to this constraint
+     * @return this population builder
+     */
+    public PopulationBuilder withAtMost(int maximalHeadCount, String specieName) {
+        constraints.add(new AtMost(specieName, maximalHeadCount));
         return this;
     }
 
@@ -149,15 +168,13 @@ public class PopulationBuilder {
     public Population build() {
         makeDefaultSpeciesNamesIfNeeded();
         makeDefaultDistributionIfNeeded();
-        Population result = new MutablePopulation(speciesNames, distribution, constraints);  
+        Population result = new MutablePopulation(speciesNames, distribution, constraints);
         if (immutable) {
             result = new ImmutablePopulation(speciesNames, distribution, constraints);
         }
         setDefaultValues();
         return result;
     }
-
-
 
     private void makeDefaultSpeciesNamesIfNeeded() {
         if (speciesNames.isEmpty() && !distribution.isEmpty()) {
@@ -170,7 +187,7 @@ public class PopulationBuilder {
 
     private void makeDefaultDistributionIfNeeded() {
         if (distribution.isEmpty() && !speciesNames.isEmpty()) {
-            for (String specie : speciesNames) {
+            for (String specie: speciesNames) {
                 this.distribution.add(Population.DEFAULT_NUMBER_OF_INDIVIDUALS_PER_SPECIE);
             }
         }
