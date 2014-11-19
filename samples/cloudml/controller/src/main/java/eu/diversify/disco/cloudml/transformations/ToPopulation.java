@@ -77,8 +77,15 @@ public class ToPopulation implements DiversityExtraction<Deployment> {
             createSpecie(subject);
         }
 
+        /**
+         * Create a specie for the given subject
+         * @param subject the subject that needs an associated specie
+         */
         private void createSpecie(Component subject) {
-            assert subject != null: "Unable to create a specie for 'null'";
+            assert subject != null: 
+                    "Unable to create a specie for 'null'";
+            assert !distribution.containsKey(subject.getName()): 
+                    "There is already a specie associated with component type '" + subject.getName() + "'";
 
             distribution.put(subject.getName(), 0);
         }
@@ -86,7 +93,7 @@ public class ToPopulation implements DiversityExtraction<Deployment> {
         /**
          * Check whether some additional constraints are specified in the
          * properties of the given CloudML component. Constraints can be either
-         * 'at_least' or 'at_most' multiplicities.
+         * 'at_least' or 'at_most' multiplicity.
          *
          * @param subject the component which could be subject to some
          * constraints
@@ -94,13 +101,23 @@ public class ToPopulation implements DiversityExtraction<Deployment> {
          * constraints cannot be parsed
          */
         private void checkForConstraints(Component subject) throws NumberFormatException {
-            assert subject != null: "Unable to check constraints of 'null'";
+            assert subject != null: 
+                    "Unable to check constraints of 'null'";
+            
+            final String specieName = subject.getName();
 
             if (subject.hasProperty(AT_LEAST)) {
                 int limit = Integer.parseInt(subject.getProperties().valueOf(AT_LEAST));
-                population.withAtLeast(limit, subject.getName());
+                population.withAtLeast(limit, specieName);
             }
+            
+            if (subject.hasProperty(AT_MOST)) {
+                int limit = Integer.parseInt(subject.getProperties().valueOf(AT_MOST));
+                population.withAtMost(limit, specieName);
+            }
+            
         }
+        private static final String AT_MOST = "at_most";
 
         private static final String AT_LEAST = "at_least";
 
