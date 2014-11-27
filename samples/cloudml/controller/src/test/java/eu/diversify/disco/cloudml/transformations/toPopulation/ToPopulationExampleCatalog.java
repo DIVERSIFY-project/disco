@@ -111,7 +111,7 @@ public class ToPopulationExampleCatalog {
     private Population populationWithMdms() {
         return aPopulation()
                 .withSpeciesNamed(LARGE_LINUX, LOAD_BALANCER, JS_ENGINE, OPEN_JDK,
-                                  MY_SQL, MDMS)
+                                  REDIS, MDMS)
                 .withDistribution(3, 1, 1, 1, 1, 1)
                 .build();
     }

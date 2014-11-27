@@ -22,9 +22,6 @@ import org.cloudml.core.Deployment;
 
 /**
  * Hold the examples of invocation for the forward transformation
- *
- * @author Franck Chauvel
- * @since 0.1
  */
 public class ToPopulationExample {
 

@@ -30,7 +30,7 @@ public class RobustnessCalculator extends DeploymentIndicator {
 
     @Override
     protected double doEvaluation(Deployment deployment) {
-        final Robustness robustness = Robustness.ofSelfRepairing(deployment, Selection.ALL, Selection.ALL);
+        final Robustness robustness = Robustness.ofSelfRepairing(deployment, Selection.SERVICE, Selection.NOT_SERVICE);
         return robustness.value();
     }
 
