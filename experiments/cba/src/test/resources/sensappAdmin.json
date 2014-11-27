@@ -173,6 +173,16 @@
 					"eClass" : "net.cloudml.core:Property",
 					"name" : "at_least",
 					"value" : "1"
+				},
+                                {
+					"eClass" : "net.cloudml.core:Property",
+					"name" : "at_most",
+					"value" : "1"
+				},
+                                {
+					"eClass" : "net.cloudml.core:Property",
+					"name" : "is_service",
+					"value" : "true"
 				}
 			]
 		}

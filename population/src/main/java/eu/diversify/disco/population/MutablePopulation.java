@@ -67,12 +67,13 @@ public class MutablePopulation implements Population {
     public MutablePopulation prepareUpdate() {
         return this;
     }
-    // TODO refactor the loop below, which is just not exiting on the first false
+
     @Override
     public boolean allows(Action action) {
         boolean supported = true;
-        for (Constraint eachConstraint : constraints) {
-            supported &= eachConstraint.allows(action, this);
+        final Iterator<Constraint> eachConstraint = constraints.iterator();
+        while(supported && eachConstraint.hasNext()) {
+            supported &= eachConstraint.next().allows(action, this);
         }
         return supported;
     }

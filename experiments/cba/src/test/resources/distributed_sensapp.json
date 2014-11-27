@@ -1,0 +1,709 @@
+{ "eClass":"net.cloudml.core:CloudMLModel" ,
+ "name":"no name",
+"providers": [
+{ "eClass":"net.cloudml.core:Provider" ,
+ "name":"AWS-EC2",
+ "credentials":"no given credentials"}
+]
+,
+"internalComponents": [
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"Dispatcher",
+"properties": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"at_least",
+ "value":"1"}
+,
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"is_service",
+ "value":"true"}
+,
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"at_most",
+ "value":"1"}
+]
+,
+"requiredPorts": [
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-registry",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Dispatcher]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-storage",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Dispatcher]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-notifier",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Dispatcher]"}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-admin",
+ "owner":"internalComponents[Dispatcher]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"Servlet Container",
+ "value":"v3.0"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"Storage",
+"properties": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"is_service",
+ "value":"true"}
+]
+,
+"providedPorts": [
+{ "eClass":"net.cloudml.core:ProvidedPort" ,
+ "name":"prov-storage",
+ "isLocal":false,
+ "portNumber":"0",
+ "component":"internalComponents[Storage]"}
+]
+,
+"requiredPorts": [
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-db",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Storage]"}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-storage",
+ "owner":"internalComponents[Storage]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"Servlet Container",
+ "value":"v3.0"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"Registry",
+"properties": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"is_service",
+ "value":"true"}
+]
+,
+"providedPorts": [
+{ "eClass":"net.cloudml.core:ProvidedPort" ,
+ "name":"prov-registry",
+ "isLocal":false,
+ "portNumber":"0",
+ "component":"internalComponents[Registry]"}
+]
+,
+"requiredPorts": [
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-storage",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Registry]"}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-registry",
+ "owner":"internalComponents[Registry]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"Servlet Container",
+ "value":"v3.0"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"Jetty",
+"providedExecutionPlatforms": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatform" ,
+ "name":"sc",
+ "owner":"internalComponents[Jetty]",
+"offers": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"Servlet Container",
+ "value":"v3.0"}
+]
+}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-jetty",
+ "owner":"internalComponents[Jetty]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"jre",
+ "value":"v1.6"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"OpenJDK",
+"providedExecutionPlatforms": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatform" ,
+ "name":"jre1.6",
+ "owner":"internalComponents[OpenJDK]",
+"offers": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"jre",
+ "value":"v1.6"}
+]
+}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-openjdk",
+ "owner":"internalComponents[OpenJDK]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"OS",
+ "value":"Ubuntu 14.04"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"MongoDB",
+"providedPorts": [
+{ "eClass":"net.cloudml.core:ProvidedPort" ,
+ "name":"prov-db",
+ "isLocal":false,
+ "portNumber":"0",
+ "component":"internalComponents[MongoDB]"}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-db",
+ "owner":"internalComponents[MongoDB]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"OS",
+ "value":"Ubuntu 14.04"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"Notifier",
+"properties": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"is_service",
+ "value":"true"}
+]
+,
+"providedPorts": [
+{ "eClass":"net.cloudml.core:ProvidedPort" ,
+ "name":"prov-notifier",
+ "isLocal":false,
+ "portNumber":"0",
+ "component":"internalComponents[Notifier]"}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-notifier",
+ "owner":"internalComponents[Notifier]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"Servlet Container",
+ "value":"v3.0"}
+]
+}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponent" ,
+ "name":"Admin",
+"properties": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"at_least",
+ "value":"1"}
+,
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"is_service",
+ "value":"true"}
+,
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"at_most",
+ "value":"1"}
+]
+,
+"requiredPorts": [
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-registry",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Admin]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-storage",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Admin]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPort" ,
+ "name":"req-notifier",
+ "isLocal":false,
+ "portNumber":"0",
+ "isMandatory":true,
+ "component":"internalComponents[Admin]"}
+]
+,
+"requiredExecutionPlatform":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatform" ,
+ "name":"env-admin",
+ "owner":"internalComponents[Admin]",
+"demands": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"Servlet Container",
+ "value":"v3.0"}
+]
+}
+}
+]
+,
+"internalComponentInstances": [
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"storage1",
+ "type":"internalComponents[Storage]",
+"providedPortInstances": [
+{ "eClass":"net.cloudml.core:ProvidedPortInstance" ,
+ "name":"prov-storage-842740565",
+ "type":"internalComponents[Storage]/providedPorts[prov-storage]"}
+]
+,
+"requiredPortInstances": [
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-db1668438657",
+ "type":"internalComponents[Storage]/requiredPorts[req-db]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-storage1587511869",
+ "owner":"internalComponentInstances[storage1]",
+ "type":"internalComponents[Storage]/requiredExecutionPlatform[env-storage]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"dispatcher1",
+ "type":"internalComponents[Dispatcher]",
+"requiredPortInstances": [
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-storage670805405",
+ "type":"internalComponents[Dispatcher]/requiredPorts[req-storage]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-notifier-294335487",
+ "type":"internalComponents[Dispatcher]/requiredPorts[req-notifier]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-registry-1025273062",
+ "type":"internalComponents[Dispatcher]/requiredPorts[req-registry]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-admin187772850",
+ "owner":"internalComponentInstances[dispatcher1]",
+ "type":"internalComponents[Dispatcher]/requiredExecutionPlatform[env-admin]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"admin",
+ "type":"internalComponents[Admin]",
+"requiredPortInstances": [
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-registry968242387",
+ "type":"internalComponents[Admin]/requiredPorts[req-registry]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-notifier1601628077",
+ "type":"internalComponents[Admin]/requiredPorts[req-notifier]"}
+,
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-storage405096169",
+ "type":"internalComponents[Admin]/requiredPorts[req-storage]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-admin-881509418",
+ "owner":"internalComponentInstances[admin]",
+ "type":"internalComponents[Admin]/requiredExecutionPlatform[env-admin]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"notifier1",
+ "type":"internalComponents[Notifier]",
+"providedPortInstances": [
+{ "eClass":"net.cloudml.core:ProvidedPortInstance" ,
+ "name":"prov-notifier79479726",
+ "type":"internalComponents[Notifier]/providedPorts[prov-notifier]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-notifier1878512614",
+ "owner":"internalComponentInstances[notifier1]",
+ "type":"internalComponents[Notifier]/requiredExecutionPlatform[env-notifier]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"jre1",
+ "type":"internalComponents[OpenJDK]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"jre1.6-521261176",
+ "owner":"internalComponentInstances[jre1]",
+ "type":"internalComponents[OpenJDK]/providedExecutionPlatforms[jre1.6]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-openjdk1042849286",
+ "owner":"internalComponentInstances[jre1]",
+ "type":"internalComponents[OpenJDK]/requiredExecutionPlatform[env-openjdk]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"db1",
+ "type":"internalComponents[MongoDB]",
+"providedPortInstances": [
+{ "eClass":"net.cloudml.core:ProvidedPortInstance" ,
+ "name":"prov-db422754559",
+ "type":"internalComponents[MongoDB]/providedPorts[prov-db]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-db-1117438035",
+ "owner":"internalComponentInstances[db1]",
+ "type":"internalComponents[MongoDB]/requiredExecutionPlatform[env-db]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"jetty1",
+ "type":"internalComponents[Jetty]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"sc-1066447842",
+ "owner":"internalComponentInstances[jetty1]",
+ "type":"internalComponents[Jetty]/providedExecutionPlatforms[sc]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-jetty-2129678953",
+ "owner":"internalComponentInstances[jetty1]",
+ "type":"internalComponents[Jetty]/requiredExecutionPlatform[env-jetty]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"jetty2",
+ "type":"internalComponents[Jetty]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"sc169342775",
+ "owner":"internalComponentInstances[jetty2]",
+ "type":"internalComponents[Jetty]/providedExecutionPlatforms[sc]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-jetty1842009446",
+ "owner":"internalComponentInstances[jetty2]",
+ "type":"internalComponents[Jetty]/requiredExecutionPlatform[env-jetty]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"registry1",
+ "type":"internalComponents[Registry]",
+"providedPortInstances": [
+{ "eClass":"net.cloudml.core:ProvidedPortInstance" ,
+ "name":"prov-registry-382495327",
+ "type":"internalComponents[Registry]/providedPorts[prov-registry]"}
+]
+,
+"requiredPortInstances": [
+{ "eClass":"net.cloudml.core:RequiredPortInstance" ,
+ "name":"req-storage1100724162",
+ "type":"internalComponents[Registry]/requiredPorts[req-storage]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-registry-217307288",
+ "owner":"internalComponentInstances[registry1]",
+ "type":"internalComponents[Registry]/requiredExecutionPlatform[env-registry]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"jetty3",
+ "type":"internalComponents[Jetty]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"sc81448960",
+ "owner":"internalComponentInstances[jetty3]",
+ "type":"internalComponents[Jetty]/providedExecutionPlatforms[sc]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-jetty1502711649",
+ "owner":"internalComponentInstances[jetty3]",
+ "type":"internalComponents[Jetty]/requiredExecutionPlatform[env-jetty]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"jetty4",
+ "type":"internalComponents[Jetty]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"sc649946935",
+ "owner":"internalComponentInstances[jetty4]",
+ "type":"internalComponents[Jetty]/providedExecutionPlatforms[sc]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-jetty1174529439",
+ "owner":"internalComponentInstances[jetty4]",
+ "type":"internalComponents[Jetty]/requiredExecutionPlatform[env-jetty]"}
+}
+,
+{ "eClass":"net.cloudml.core:InternalComponentInstance" ,
+ "name":"jetty5",
+ "type":"internalComponents[Jetty]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"sc1056603211",
+ "owner":"internalComponentInstances[jetty5]",
+ "type":"internalComponents[Jetty]/providedExecutionPlatforms[sc]"}
+]
+,
+"requiredExecutionPlatformInstance":
+{ "eClass":"net.cloudml.core:RequiredExecutionPlatformInstance" ,
+ "name":"env-jetty129849687",
+ "owner":"internalComponentInstances[jetty5]",
+ "type":"internalComponents[Jetty]/requiredExecutionPlatform[env-jetty]"}
+}
+]
+,
+"vms": [
+{ "eClass":"net.cloudml.core:VM" ,
+ "name":"Small Linux",
+ "minRam":"1000",
+ "maxRam":"0",
+ "minCores":"1",
+ "maxCores":"0",
+ "minStorage":"25",
+ "maxStorage":"0",
+ "is64os":true,
+ "provider":"providers[AWS-EC2]",
+"providedExecutionPlatforms": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatform" ,
+ "name":"sl-ubuntu",
+ "owner":"vms[Small Linux]",
+"offers": [
+{ "eClass":"net.cloudml.core:Property" ,
+ "name":"OS",
+ "value":"Ubuntu 14.04"}
+]
+}
+]
+}
+]
+,
+"vmInstances": [
+{ "eClass":"net.cloudml.core:VMInstance" ,
+ "name":"vm1",
+ "publicAddress":"no address given",
+ "type":"vms[Small Linux]",
+"providedExecutionPlatformInstances": [
+{ "eClass":"net.cloudml.core:ProvidedExecutionPlatformInstance" ,
+ "name":"sl-ubuntu885614275",
+ "owner":"vmInstances[vm1]",
+ "type":"vms[Small Linux]/providedExecutionPlatforms[sl-ubuntu]"}
+]
+}
+]
+,
+"relationships": [
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"registry-to-storage",
+ "requiredPort":"internalComponents[Registry]/requiredPorts[req-storage]",
+ "providedPort":"internalComponents[Storage]/providedPorts[prov-storage]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"dispatcher-to-registry",
+ "requiredPort":"internalComponents[Dispatcher]/requiredPorts[req-registry]",
+ "providedPort":"internalComponents[Registry]/providedPorts[prov-registry]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"admin-to-registry",
+ "requiredPort":"internalComponents[Admin]/requiredPorts[req-registry]",
+ "providedPort":"internalComponents[Registry]/providedPorts[prov-registry]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"storage-to-db",
+ "requiredPort":"internalComponents[Storage]/requiredPorts[req-db]",
+ "providedPort":"internalComponents[MongoDB]/providedPorts[prov-db]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"distpacther-to-notifier",
+ "requiredPort":"internalComponents[Dispatcher]/requiredPorts[req-notifier]",
+ "providedPort":"internalComponents[Notifier]/providedPorts[prov-notifier]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"dispatcher-to-storage",
+ "requiredPort":"internalComponents[Dispatcher]/requiredPorts[req-storage]",
+ "providedPort":"internalComponents[Storage]/providedPorts[prov-storage]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"admin-to-storage",
+ "requiredPort":"internalComponents[Admin]/requiredPorts[req-storage]",
+ "providedPort":"internalComponents[Storage]/providedPorts[prov-storage]"}
+,
+{ "eClass":"net.cloudml.core:Relationship" ,
+ "name":"admin-to-notifier",
+ "requiredPort":"internalComponents[Admin]/requiredPorts[req-notifier]",
+ "providedPort":"internalComponents[Notifier]/providedPorts[prov-notifier]"}
+]
+,
+"relationshipInstances": [
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r6",
+ "type":"relationships[dispatcher-to-registry]",
+ "requiredPortInstance":"internalComponentInstances[dispatcher1]/requiredPortInstances[req-registry-1025273062]",
+ "providedPortInstance":"internalComponentInstances[registry1]/providedPortInstances[prov-registry-382495327]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r7",
+ "type":"relationships[dispatcher-to-storage]",
+ "requiredPortInstance":"internalComponentInstances[dispatcher1]/requiredPortInstances[req-storage670805405]",
+ "providedPortInstance":"internalComponentInstances[storage1]/providedPortInstances[prov-storage-842740565]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r8",
+ "type":"relationships[storage-to-db]",
+ "requiredPortInstance":"internalComponentInstances[storage1]/requiredPortInstances[req-db1668438657]",
+ "providedPortInstance":"internalComponentInstances[db1]/providedPortInstances[prov-db422754559]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r1",
+ "type":"relationships[admin-to-notifier]",
+ "requiredPortInstance":"internalComponentInstances[admin]/requiredPortInstances[req-notifier1601628077]",
+ "providedPortInstance":"internalComponentInstances[notifier1]/providedPortInstances[prov-notifier79479726]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r2",
+ "type":"relationships[admin-to-registry]",
+ "requiredPortInstance":"internalComponentInstances[admin]/requiredPortInstances[req-registry968242387]",
+ "providedPortInstance":"internalComponentInstances[registry1]/providedPortInstances[prov-registry-382495327]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r3",
+ "type":"relationships[admin-to-storage]",
+ "requiredPortInstance":"internalComponentInstances[admin]/requiredPortInstances[req-storage405096169]",
+ "providedPortInstance":"internalComponentInstances[storage1]/providedPortInstances[prov-storage-842740565]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r4",
+ "type":"relationships[registry-to-storage]",
+ "requiredPortInstance":"internalComponentInstances[registry1]/requiredPortInstances[req-storage1100724162]",
+ "providedPortInstance":"internalComponentInstances[storage1]/providedPortInstances[prov-storage-842740565]"}
+,
+{ "eClass":"net.cloudml.core:RelationshipInstance" ,
+ "name":"r5",
+ "type":"relationships[distpacther-to-notifier]",
+ "requiredPortInstance":"internalComponentInstances[dispatcher1]/requiredPortInstances[req-notifier-294335487]",
+ "providedPortInstance":"internalComponentInstances[notifier1]/providedPortInstances[prov-notifier79479726]"}
+]
+,
+"executesInstances": [
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn-1411996145",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jetty1]/providedExecutionPlatformInstances[sc-1066447842]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[storage1]/requiredExecutionPlatformInstance[env-storage1587511869]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn443207959",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jre1]/providedExecutionPlatformInstances[jre1.6-521261176]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[jetty3]/requiredExecutionPlatformInstance[env-jetty1502711649]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn1352732553",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jre1]/providedExecutionPlatformInstances[jre1.6-521261176]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[jetty1]/requiredExecutionPlatformInstance[env-jetty-2129678953]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn-1098294166",
+ "providedExecutionPlatformInstance":"vmInstances[vm1]/providedExecutionPlatformInstances[sl-ubuntu885614275]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[jre1]/requiredExecutionPlatformInstance[env-openjdk1042849286]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn1612850483",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jre1]/providedExecutionPlatformInstances[jre1.6-521261176]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[jetty2]/requiredExecutionPlatformInstance[env-jetty1842009446]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn1747481117",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jre1]/providedExecutionPlatformInstances[jre1.6-521261176]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[jetty5]/requiredExecutionPlatformInstance[env-jetty129849687]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn295537821",
+ "providedExecutionPlatformInstance":"vmInstances[vm1]/providedExecutionPlatformInstances[sl-ubuntu885614275]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[db1]/requiredExecutionPlatformInstance[env-db-1117438035]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn-835795967",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jetty1]/providedExecutionPlatformInstances[sc-1066447842]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[notifier1]/requiredExecutionPlatformInstance[env-notifier1878512614]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn1239908013",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jetty1]/providedExecutionPlatformInstances[sc-1066447842]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[admin]/requiredExecutionPlatformInstance[env-admin-881509418]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn81179279",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jre1]/providedExecutionPlatformInstances[jre1.6-521261176]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[jetty4]/requiredExecutionPlatformInstance[env-jetty1174529439]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn664332841",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jetty1]/providedExecutionPlatformInstances[sc-1066447842]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[dispatcher1]/requiredExecutionPlatformInstance[env-admin187772850]"}
+,
+{ "eClass":"net.cloudml.core:ExecuteInstance" ,
+ "name":"runOn-201891264",
+ "providedExecutionPlatformInstance":"internalComponentInstances[jetty1]/providedExecutionPlatformInstances[sc-1066447842]",
+ "requiredExecutionPlatformInstance":"internalComponentInstances[registry1]/requiredExecutionPlatformInstance[env-registry-217307288]"}
+]
+}
