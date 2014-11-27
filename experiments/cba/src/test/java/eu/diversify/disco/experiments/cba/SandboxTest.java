@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import org.cloudml.codecs.DotCodec;
 import org.cloudml.codecs.JsonCodec;
 import org.cloudml.core.Deployment;
+import org.junit.Ignore;
 
 import static org.cloudml.core.builders.Commons.*;
 
@@ -51,6 +52,7 @@ import org.junit.runners.JUnit4;
 /**
  * This is a sandbox test, which is meant to be ignored
  */
+@Ignore
 @RunWith(JUnit4.class)
 public class SandboxTest {
 
